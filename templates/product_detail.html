@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Detalii Produs</title>
+</head>
+
+<body>
+    <h1>{{ product.product_name }}</h1>
+    <h3>Brand: {{ product.brands }}</h3>
+    <h5>Quantity: {{ product.quantity }}</h5>
+    <h5>Categories: {{ product.categories }}</h5>
+    <h5>Nutrients:</h5>
+    <ul>
+        <li>Protein per 100g: {{ product.protein_per_100g }}</li>
+        <li>Carbs per 100g: {{ product.carbs_per_100g }}</li>
+        <li>Fats per 100g: {{ product.fats_per_100g }}</li>
+        <li>Kcal per 100g: {{ product.kcal_per_100g }}</li>
+    </ul>
+    {% if common_allergies %}
+    <h5>Common Allergies:</h5>
+    <ul>
+        {% for allergy in common_allergies %}
+            <li class="allergy-message">{{ allergy }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% if product_rating %}
+    <h5>Product Rating: {{ product_rating }}</h5>
+    {% else %}
+    <p>No rating available for this product.</p>
+    {% endif %}
+</body>
+
+</html>
