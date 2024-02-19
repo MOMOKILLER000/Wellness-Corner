@@ -2,78 +2,95 @@
 <html lang="ro">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Informații Produs</title>
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <title>Informații Produs</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
-  <!-- jQuery library -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-  <!-- Latest compiled JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
+    <style>
+        .allergy-message {
+            color: red;
+        }
+    </style>
 </head>
 
 <body>
-  <nav class="navbar navbar-default" style="background: grey; color: white;">
+    <nav class="navbar navbar-default" style="background: grey; color: white;">
+        <div class="container">
+            <div class="navbar-header">
+                <h1 class="navbar-brand">Informații Produs</h1>
+            </div>
+        </div>
+    </nav>
+    <br />
+    <br />
     <div class="container">
-      <div class="navbar-header">
-        <h1 class="navbar-brand">Informații Produs</h1>
-      </div>
-    </div>
-  </nav>
-  <br />
-  <br />
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <form action="" method="post" class="input-group">
-          {% csrf_token %}
-          <input type="text" class="form-control" name="product_name" placeholder="Introduceți numele produsului">
-          <div class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-              <i class="glyphicon glyphicon-search"></i> Căutare
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <br>
-    {% if product_info %}
-      {% for product in product_info %}
         <div class="row">
-          <div class="col-md-6 col-md-offset-3">
-            <h1>{{ product.product_name }}</h1>
-            <h3>Brand: {{ product.brands }}</h3>
-            <h5>Quantity: {{ product.quantity }}</h5>
-            <h5>Categories: {{ product.categories }}</h5>
-            <h5>Nutrients:</h5>
-            <ul>
-              {% for key, value in product.nutriments.items %}
-                <li>{{ key }}: {{ value }}</li>
-              {% endfor %}
-            </ul>
-            {% if product.id %}
-              <form method="post" action="{% url 'rate_product' product.id 'api' %}">
-                {% csrf_token %}
-                <label for="rating">Rating:</label>
-                <input type="number" name="rating" min="0" max="5" step="0.1" required>
-                <button type="submit" class="btn btn-primary">Submit Rating</button>
-              </form>
-            {% endif %}
-          </div>
+            <div class="col-md-6 col-md-offset-3">
+                <form action="" method="post" class="input-group">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" name="product_name" placeholder="Introduceți numele produsului">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="glyphicon glyphicon-search"></i> Căutare
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        {% if product_info %}
+        {% for product in product_info %}
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h1>{{ product.product_name }}</h1>
+                <h3>Brand: {{ product.brands }}</h3>
+                <h5>Quantity: {{ product.quantity }}</h5>
+                <h5>Categories: {{ product.categories }}</h5>
+                <h5>Nutrients:</h5>
+                <ul>
+                    <li>Protein per 100g: {{ product.protein_per_100g }}</li>
+                    <li>Carbs per 100g: {{ product.carbs_per_100g }}</li>
+                    <li>Fats per 100g: {{ product.fats_per_100g }}</li>
+                    <li>Kcal per 100g: {{ product.kcal_per_100g }}</li>
+                </ul>
+                {% if common_allergies %}
+                    <h5>Allergies:</h5>
+                    <ul>
+                        {% for allergy in common_allergies %}
+                            <li class="allergy-message">{{ allergy }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No common allergies found</p>
+                {% endif %}
+                
+                {% if product.id %}
+                <form method="post" action="{% url 'rate_product' product.id 'api' %}">
+                    {% csrf_token %}
+                    <label for="rating">Rating:</label>
+                    <input type="number" name="rating" min="0" max="5" step="0.1" required>
+                    <button type="submit" class="btn btn-primary">Submit Rating</button>
+                </form>
+                {% endif %}
+            </div>
         </div>
         <hr>
-      {% endfor %}
-    {% else %}
-      <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-          <h2>Niciun produs găsit</h2>
+        {% endfor %}
+        {% else %}
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h2>No products found</h2>
+            </div>
         </div>
-      </div>
-    {% endif %}
-  </div>
+        {% endif %}
+    </div>
 </body>
 
 </html>

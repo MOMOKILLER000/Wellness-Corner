@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Product, ApiProduct
+from .models import Product, ApiProduct, Allergy
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['product_name', 'brands', 'quantity', 'categories', 'product_type']
@@ -13,3 +17,5 @@ class ApiProductAdmin(admin.ModelAdmin):
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ApiProduct, ApiProductAdmin)
+admin.site.register(User)
+admin.site.register(Allergy)
