@@ -46,50 +46,48 @@
         </div>
         <br>
         {% if product_info %}
-{% for product in product_info %}
-<div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <h1>{{ product.product_name }}</h1>
-        <h3>Brand: {{ product.brands }}</h3>
-        <h5>Quantity: {{ product.quantity }}</h5>
-        <h5>Categories: {{ product.categories }}</h5>
-        <h5>Nutrients:</h5>
-        <ul>
-            <li>Protein per 100g: {{ product.protein_per_100g }}</li>
-            <li>Carbs per 100g: {{ product.carbs_per_100g }}</li>
-            <li>Fats per 100g: {{ product.fats_per_100g }}</li>
-            <li>Kcal per 100g: {{ product.kcal_per_100g }}</li>
-        </ul>
-        {% if product.allergies %}
-            <h5>Allergies:</h5>
-            <ul>
-                {% for allergy in product.allergies %}
-                    <li class="allergy-message">{{ allergy }}</li>
-                {% endfor %}
-            </ul>
+            {% for product in product_info %}
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <h1>{{ product.product_name }}</h1>
+                        <h3>Brand: {{ product.brands }}</h3>
+                        <h5>Quantity: {{ product.quantity }}</h5>
+                        <h5>Categories: {{ product.categories }}</h5>
+                        <h5>Nutrients:</h5>
+                        <ul>
+                            <li>Protein per 100g: {{ product.protein_per_100g }}</li>
+                            <li>Carbs per 100g: {{ product.carbs_per_100g }}</li>
+                            <li>Fats per 100g: {{ product.fats_per_100g }}</li>
+                            <li>Kcal per 100g: {{ product.kcal_per_100g }}</li>
+                        </ul>
+                        {% if common_allergies %}
+                        <h5>Common Allergies:</h5>
+                        <ul>
+                            {% for allergy in common_allergies %}
+                                <li class="allergy-message">{{ allergy }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                        
+                        {% if product.id %}
+                            <form method="post" action="{% if product.source == 'database' %}{% url 'rate_product' product.id 'database' %}{% else %}{% url 'rate_product' product.id 'api' %}{% endif %}">
+                                {% csrf_token %}
+                                <label for="rating">Rating:</label>
+                                <input type="number" name="rating" min="0" max="5" step="0.1" required>
+                                <button type="submit" class="btn btn-primary">Submit Rating</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+                <hr>
+            {% endfor %}
         {% else %}
-            <p>No common allergies found</p>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <h2>No products found</h2>
+                </div>
+            </div>
         {% endif %}
-        
-        {% if product.id %}
-              <form method="post" action="{% url 'rate_product' product.id 'api' %}">
-                {% csrf_token %}
-                <label for="rating">Rating:</label>
-                <input type="number" name="rating" min="0" max="5" step="0.1" required>
-                <button type="submit" class="btn btn-primary">Submit Rating</button>
-              </form>
-            {% endif %}
-    </div>
-</div>
-<hr>
-{% endfor %}
-{% else %}
-<div class="row">
-    <div class="col-md-6 col-md-offset-3">
-        <h2>No products found</h2>
-    </div>
-</div>
-{% endif %}
     </div>
 </body>
 

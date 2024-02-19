@@ -17,25 +17,10 @@ from django.core.exceptions import ObjectDoesNotExist
 def index(request):
     if request.method == 'POST':
         product_name = request.POST.get('product_name', '')
-        product_info = search_product(product_name)
-        return render(request, 'index.html', {'product_info': product_info, 'searched_product': product_name})
+        product_info, common_allergies = search_product(product_name, user=request.user)
+        return render(request, 'index.html', {'product_info': product_info, 'common_allergies': common_allergies, 'searched_product': product_name})
     else:
-        # Retrieve products from the database
-        database_products = Product.objects.all()
-
-        # Retrieve user allergies if authenticated
-        common_allergies = []
-        if request.user.is_authenticated:
-            user_allergies = request.user.allergies.all()
-
-            # Find common allergies with database products
-            for product in database_products:
-                allergies_list = product.allergies.split(',') if product.allergies else []  # Parse allergies string into a list
-                if allergies_list and set(allergies_list) & set(allergy.name for allergy in user_allergies):
-                    common_allergies.extend(allergies_list)  # Extend the list of common allergies
-
-        # Pass the combined product information and common allergies to the template
-        return render(request, 'index.html', {'product_info': database_products, 'common_allergies': set(common_allergies)})
+        return render(request, 'index.html')
 
 
 def registration_view(request):
@@ -82,10 +67,25 @@ def add_allergy(request):
     # If form is invalid, or it's a GET request, render the registration page again with the form
     return render(request, 'register.html', {'allergy_form': form})
 
-def search_product(product_name, exclude_allergy=None):
+def search_product(product_name, exclude_allergy=None, user=None):
     # Search for products in both local database and external API
     database_products = Product.objects.filter(product_name__icontains=product_name)
     
+    # Set the source attribute for database products
+    for product in database_products:
+        product.source = 'database'
+
+    common_allergies = set()  # Initialize common allergies set
+
+    # Retrieve user allergies if authenticated and calculate common allergies
+    if user and user.is_authenticated:
+        user_allergies = user.allergies.all()
+
+        for product in database_products:
+            allergies_list = product.allergies.split(',') if product.allergies else []  # Parse allergies string into a list
+            if allergies_list:
+                common_allergies.update(set(allergies_list) & set(allergy.name for allergy in user_allergies))
+
     api_url = f'https://world.openfoodfacts.org/cgi/search.pl?search_terms={product_name}&search_simple=1&action=process&json=1'
     response = requests.get(api_url)
     if response.status_code == 200:
@@ -114,10 +114,6 @@ def search_product(product_name, exclude_allergy=None):
                 # Remove prefix and only keep the allergy name
                 cleaned_allergies = [allergy.split(":")[1] if ":" in allergy else allergy for allergy in allergies]
 
-                # Check if the product has the specified allergy
-                if exclude_allergy and any(exclude_allergy.lower() in allergy.lower() for allergy in cleaned_allergies):
-                    continue  # Skip this product
-
                 # Create or update API product
                 api_product, created = ApiProduct.objects.get_or_create(
                     product_name=name,
@@ -134,13 +130,13 @@ def search_product(product_name, exclude_allergy=None):
                 )
                 api_product.allergies = cleaned_allergies
                 api_product.save()
+                api_product.source = 'api'
 
                 api_products.append(api_product)
 
             if api_products:
-                return list(database_products) + api_products  # Combine both database and API products
-    return list(database_products)
-
+                return list(database_products) + api_products, common_allergies  # Return both database and API products with common allergies
+    return list(database_products), common_allergies
 
 
 def rate_product(request, product_id, source):
