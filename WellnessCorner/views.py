@@ -11,6 +11,7 @@ from django.contrib import messages
 from .forms import AllergyForm # Import the form for adding allergies
 from .models import User
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 # views.py
 # views.py
 def index(request):
@@ -151,11 +152,13 @@ def rate_product(request, product_id, source):
 
         try:
             if source == 'database':
-                product = Product.objects.get(pk=product_id)
+                product_model = Product
             elif source == 'api':
-                product = ApiProduct.objects.get(pk=product_id)
+                product_model = ApiProduct
             else:
                 return HttpResponseBadRequest("Invalid source")
+
+            product = product_model.objects.get(pk=product_id)
 
             if product.user_rating is None:
                 product.user_rating = rating
