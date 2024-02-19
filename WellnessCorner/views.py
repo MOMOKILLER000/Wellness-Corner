@@ -70,52 +70,45 @@ def add_allergy(request):
 def search_product(product_name, exclude_allergy=None, user=None):
     # Search for products in both local database and external API
     database_products = Product.objects.filter(product_name__icontains=product_name)
-    
-    # Set the source attribute for database products
-    for product in database_products:
-        product.source = 'database'
+    api_products = []
 
-    common_allergies = set()  # Initialize common allergies set
-
-    # Retrieve user allergies if authenticated and calculate common allergies
+    # Retrieve user allergies if authenticated
+    common_allergies = set()
     if user and user.is_authenticated:
         user_allergies = user.allergies.all()
 
+        # Calculate common allergies for database products
         for product in database_products:
-            allergies_list = product.allergies.split(',') if product.allergies else []  # Parse allergies string into a list
-            if allergies_list:
+            if product.allergies:
+                allergies_list = json.loads(product.allergies)  # Parse allergies JSON string
                 common_allergies.update(set(allergies_list) & set(allergy.name for allergy in user_allergies))
 
+    # Fetch products from the external API
     api_url = f'https://world.openfoodfacts.org/cgi/search.pl?search_terms={product_name}&search_simple=1&action=process&json=1'
     response = requests.get(api_url)
     if response.status_code == 200:
         product_data = response.json()
         if 'products' in product_data:
-            api_products = []
             for product in product_data['products']:
-                # Extracting data
                 name = product.get('product_name', '')
                 brands = product.get('brands', '')
                 quantity = product.get('quantity', '')
                 categories = product.get('categories', '')
                 nutriments = product.get('nutriments', {})
-                protein_per_100g = nutriments.get('proteins_100g', '')
-                carbs_per_100g = nutriments.get('carbohydrates_100g', '')
-                fats_per_100g = nutriments.get('fat_100g', '')
-                kcal_per_100g = nutriments.get('energy-kcal_100g', '')
-                allergies = product.get('allergens_tags', [])  # Fetching allergies
+                protein_per_100g = Decimal(nutriments.get('proteins_100g', '')) if nutriments.get(
+                    'proteins_100g', '') else None
+                carbs_per_100g = Decimal(nutriments.get('carbohydrates_100g', '')) if nutriments.get(
+                    'carbohydrates_100g', '') else None
+                fats_per_100g = Decimal(nutriments.get('fat_100g', '')) if nutriments.get('fat_100g', '') else None
+                kcal_per_100g = Decimal(nutriments.get('energy-kcal_100g', '')) if nutriments.get(
+                    'energy-kcal_100g', '') else None
+                allergies = product.get('allergens_tags', [])
 
-                # Handle empty string values
-                protein_per_100g = Decimal(protein_per_100g) if protein_per_100g else None
-                carbs_per_100g = Decimal(carbs_per_100g) if carbs_per_100g else None
-                fats_per_100g = Decimal(fats_per_100g) if fats_per_100g else None
-                kcal_per_100g = Decimal(kcal_per_100g) if kcal_per_100g else None
-                
-                # Remove prefix and only keep the allergy name
-                cleaned_allergies = [allergy.split(":")[1] if ":" in allergy else allergy for allergy in allergies]
+                # Extract actual allergy names from the list
+                allergies = [allergy.split(':')[1] for allergy in allergies]
 
                 # Create or update API product
-                api_product, created = ApiProduct.objects.get_or_create(
+                api_product, created = ApiProduct.objects.update_or_create(
                     product_name=name,
                     defaults={
                         'brands': brands,
@@ -125,18 +118,21 @@ def search_product(product_name, exclude_allergy=None, user=None):
                         'carbs_per_100g': carbs_per_100g,
                         'fats_per_100g': fats_per_100g,
                         'kcal_per_100g': kcal_per_100g,
-                        'allergies': json.dumps(cleaned_allergies)   # Save allergies as JSON string
+                        'allergies': json.dumps(allergies)  # Save allergies as JSON string
                     }
                 )
-                api_product.allergies = cleaned_allergies
-                api_product.save()
-                api_product.source = 'api'
-
                 api_products.append(api_product)
 
-            if api_products:
-                return list(database_products) + api_products, common_allergies  # Return both database and API products with common allergies
-    return list(database_products), common_allergies
+                # Calculate common allergies for API products
+                if user and user.is_authenticated:
+                    common_allergies.update(set(allergies) & set(allergy.name for allergy in user_allergies))
+
+    # Combine database and API products
+    all_products = list(database_products) + api_products
+
+    return all_products, common_allergies
+
+
 
 
 def rate_product(request, product_id, source):
