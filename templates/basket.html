@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Basket</title>
+</head>
+<body>
+    <h1>Basket</h1>
+    <ul>
+        {% for product in products_in_basket %}
+            <li>{{ product.product_name }} - {{ product.price }}</li>
+        {% endfor %}
+    </ul>
+    <p>Total Price: {{ total_price }}</p>
+</body>
+</html>

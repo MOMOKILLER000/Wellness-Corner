@@ -74,9 +74,11 @@ class Product(models.Model):
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add price field
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     allergies = models.TextField(null=True, blank=True) 
+
     def __str__(self):
         return self.product_name
 
@@ -100,6 +102,7 @@ class ApiProduct(models.Model):
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
     kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add price field
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     allergies = models.TextField(null=True, blank=True)  # Field to store allergies as JSON string

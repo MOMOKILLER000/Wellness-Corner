@@ -1,20 +1,18 @@
-# views.py
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
 from django.contrib.auth import authenticate, login
-from .models import Product, ApiProduct
+from .models import Product, ApiProduct, Allergy
 from .forms import RegistrationForm, AllergyForm
 import requests
 from decimal import Decimal
 import json
 from django.contrib import messages 
 from django.core.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
 
 def index(request):
     if request.method == 'POST':
         product_name = request.POST.get('product_name', '')
-        product_info, common_allergies = search_product(product_name, user=request.user)
+        product_info = search_product(product_name, user=request.user)
         # Set the source attribute for each product based on its type
         for product in product_info:
             if isinstance(product, Product):
@@ -24,7 +22,7 @@ def index(request):
             else:
                 # Handle other cases if needed
                 pass
-        return render(request, 'index.html', {'product_info': product_info, 'common_allergies': common_allergies, 'searched_product': product_name})
+        return render(request, 'index.html', {'product_info': product_info, 'searched_product': product_name})
     else:
         return render(request, 'index.html')
 
@@ -59,8 +57,8 @@ def login_view(request):
 def search_product(product_name, user=None):
     database_products = Product.objects.filter(product_name__icontains=product_name)
     api_products = []
-    common_allergies = set()
 
+    # Fetch data from API if applicable
     if user and user.is_authenticated:
         user_allergies = user.allergies.all()
 
@@ -102,12 +100,11 @@ def search_product(product_name, user=None):
                 )
                 api_products.append(api_product)
 
-                if user and user.is_authenticated:
-                    common_allergies.update(set(allergies) & set(allergy.name for allergy in user_allergies))
-
+    # Combine database products and API products, and remove duplicates based on product name
     all_products = list(database_products) + api_products
+    unique_products = {product.product_name: product for product in all_products}.values()
 
-    return all_products, common_allergies
+    return unique_products
 
 def rate_product(request, product_id, source):
     if request.method == 'POST':
@@ -138,7 +135,6 @@ def rate_product(request, product_id, source):
 
     return redirect('index')
 
-# views.py
 def product_detail(request, product_id, source):
     try:
         if source == 'database':
@@ -150,20 +146,78 @@ def product_detail(request, product_id, source):
 
         product = get_object_or_404(product_model, pk=product_id)
 
-        # Get the current user's allergies
-        user_allergies = request.user.allergies.all()
-
-        # Parse product's allergies and find common ones with the user
-        try:
-            product_allergies = json.loads(product.allergies) if product.allergies else []
-        except json.JSONDecodeError:
+        # Parse product's allergies based on the source
+        if source == 'database':
             product_allergies = []
+            if product.allergies:
+                product_allergies = product.allergies.split(',')  # Split by comma to get a list of allergies
+        elif source == 'api':
+            product_allergies = []
+            if product.allergies:
+                product_allergies = json.loads(product.allergies)
 
+        # Get the current user's allergies if logged in
+        user_allergies = []
+        if request.user.is_authenticated:
+            user_allergies = request.user.allergies.all()
+
+        # Find common allergies between the product and the user
         common_allergies = set(product_allergies) & set(allergy.name for allergy in user_allergies)
 
         # Get product rating
         product_rating = getattr(product, 'user_rating', None)
 
-        return render(request, 'product_detail.html', {'product': product, 'common_allergies': common_allergies, 'product_rating': product_rating})
+        return render(request, 'product_detail.html', {'product': product, 'common_allergies': common_allergies, 'product_rating': product_rating, 'source': source})
     except product_model.DoesNotExist:
         return HttpResponseBadRequest("Product not found")
+
+def add_to_basket(request, product_id, source):
+    if request.method == 'POST':
+        # Check if source is either 'database' or 'api'
+        if source not in ['database', 'api']:
+            return HttpResponseBadRequest("Invalid source")
+
+        # Determine the model based on the source
+        if source == 'database':
+            product_model = Product
+        elif source == 'api':
+            product_model = ApiProduct
+
+        # Get the product based on the model and product_id
+        product = get_object_or_404(product_model, pk=product_id)
+
+        # Assuming you have a simple solution to store basket items in session
+        basket = request.session.get('basket', [])
+        basket.append({'product_id': product_id, 'source': source})
+        request.session['basket'] = basket
+
+        return redirect('basket_page')  # Redirect to the basket page
+
+    # Handle other request methods if needed
+    return HttpResponseBadRequest("Invalid request method")
+
+def basket_page(request):
+    basket = request.session.get('basket', [])
+    products_in_basket = []
+
+    total_price = Decimal('0.00')  # Initialize total_price as a Decimal
+
+    for item in basket:
+        product_id = item['product_id']
+        source = item['source']
+
+        product_model = None
+        if source == 'database':
+            product_model = Product
+        elif source == 'api':
+            product_model = ApiProduct
+
+        product = get_object_or_404(product_model, pk=product_id)
+
+        # Check if product has a valid price before adding it to total_price
+        if product.price is not None:
+            total_price += product.price
+
+        products_in_basket.append(product)
+
+    return render(request, 'basket.html', {'products_in_basket': products_in_basket, 'total_price': total_price})

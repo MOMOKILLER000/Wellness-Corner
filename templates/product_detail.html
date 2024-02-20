@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Detalii Produs</title>
+    <title>Product Details</title>
 </head>
 
 <body>
@@ -25,6 +25,19 @@
             <li class="allergy-message">{{ allergy }}</li>
         {% endfor %}
     </ul>
+    <p>You cannot add this product to your basket due to common allergies.</p>
+    {% else %}
+    <form method="post" action="{% url 'add_to_basket' product.id source %}">
+        {% csrf_token %}
+        <input type="submit" value="Add to Basket">
+    </form>
+    {% endif %}
+    {% if common_allergies|length == 1 %}
+    <p>There is {{ common_allergies|length }} common allergy.</p>
+    {% elif common_allergies|length > 1 %}
+    <p>There are {{ common_allergies|length }} common allergies.</p>
+    {% else %}
+    <p>No common allergies found.</p>
     {% endif %}
     {% if product_rating %}
     <h5>Product Rating: {{ product_rating }}</h5>
