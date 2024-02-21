@@ -101,6 +101,15 @@ def search_product(product_name, user=None):
                         'allergies': json.dumps(allergies) if allergies else None
                     }
                 )
+
+                # Fetch product rating from the database for API product
+                try:
+                    api_product = ApiProduct.objects.get(product_name=name)
+                    rating = api_product.user_rating
+                except ApiProduct.DoesNotExist:
+                    rating = None
+
+                api_product.user_rating = rating  # Set the rating for the API product
                 api_products.append(api_product)
 
     # Combine database products and API products
@@ -110,6 +119,8 @@ def search_product(product_name, user=None):
     unique_products = {product.product_name: product for product in all_products}
 
     return unique_products.values()
+
+
 
 def rate_product(request, product_id, source):
     if request.method == 'POST':
@@ -211,13 +222,15 @@ def add_to_basket(request, product_id, source):
         basket, created = Basket.objects.get_or_create(user=request.user)
 
         # Add the product to the basket
-        BasketItem.objects.create(basket=basket, product=product if source == 'database' else None, api_product=product if source == 'api' else None, source=source)
+        if source == 'database':
+            BasketItem.objects.create(basket=basket, product=product, source=source)
+        elif source == 'api':
+            BasketItem.objects.create(basket=basket, api_product=product, source=source)
 
         return redirect('basket_page')  # Redirect to the basket page
 
     # Handle other request methods if needed
     return HttpResponseBadRequest("Invalid request method")
-
 @login_required
 def basket_page(request):
     # Get the basket for the current user

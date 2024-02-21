@@ -41,43 +41,43 @@
         </div>
         <br>
         {% if product_info %}
-            {% for product in product_info %}
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-3">
-                        <h1>
-                            {% if product.source == 'database' %}
-                                <a href="{% url 'product_detail' product.id 'database' %}">{{ product.product_name }}</a>
-                            {% elif product.source == 'api' %}
-                                <a href="{% url 'product_detail' product.id 'api' %}">{{ product.product_name }}</a>
-                            {% endif %}
-                        </h1>
-                        <h3>Brand: {{ product.brands }}</h3>
-                        <h5>Quantity: {{ product.quantity }}</h5>
-                        <h5>Categories: {{ product.categories }}</h5>
-                        <h5>Nutrients:</h5>
-                        <ul>
-                            <li>Protein per 100g: {{ product.protein_per_100g|floatformat:"1" }}</li>
-                            <li>Carbs per 100g: {{ product.carbs_per_100g|floatformat:"1" }}</li>
-                            <li>Fats per 100g: {{ product.fats_per_100g|floatformat:"1" }}</li>
-                            <li>Kcal per 100g: {{ product.kcal_per_100g|floatformat:"1" }}</li>
-                            <li>Price: {{ product.price }}</li> <!-- Include price here -->
-                        </ul>
-                        {% if product_rating %}
-                            <h5>Product Rating: {{ product_rating }}</h5>
-                        {% else %}
-                            <p>No rating available for this product.</p>
-                        {% endif %}
-                    </div>
-                </div>
-                <hr>
-            {% endfor %}
-        {% else %}
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <h2>No products found</h2>
-                </div>
+    {% for product in product_info %}
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <h1>
+                    {% if product.source == 'database' %}
+                        <a href="{% url 'product_detail' product.id 'database' %}">{{ product.product_name }}</a>
+                    {% elif product.source == 'api' %}
+                        <a href="{% url 'product_detail' product.id 'api' %}">{{ product.product_name }}</a>
+                    {% endif %}
+                </h1>
+                <h3>Brand: {{ product.brands }}</h3>
+                <h5>Quantity: {{ product.quantity }}</h5>
+                <h5>Categories: {{ product.categories }}</h5>
+                <h5>Nutrients:</h5>
+                <ul>
+                    <li>Protein per 100g: {{ product.protein_per_100g|floatformat:"1" }}</li>
+                    <li>Carbs per 100g: {{ product.carbs_per_100g|floatformat:"1" }}</li>
+                    <li>Fats per 100g: {{ product.fats_per_100g|floatformat:"1" }}</li>
+                    <li>Kcal per 100g: {{ product.kcal_per_100g|floatformat:"1" }}</li>
+                    <li>Price: {{ product.price }}</li> <!-- Include price here -->
+                </ul>
+                {% if product.user_rating %}
+                <h5>Product Rating: {{ product.user_rating }}</h5>
+                {% else %}
+                <p>No rating available for this product.</p>
+                {% endif %}
             </div>
-        {% endif %}
+        </div>
+        <hr>
+    {% endfor %}
+{% else %}
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>No products found</h2>
+        </div>
+    </div>
+{% endif %}
     </div>
 </body>
 
