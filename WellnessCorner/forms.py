@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Allergy
-from .models import PendingProduct
+from .models import PendingProduct, Product
 
 class RegistrationForm(UserCreationForm):
     is_client = forms.BooleanField(
@@ -36,6 +36,6 @@ class ProductForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         product_name = cleaned_data.get("product_name")
-        if PendingProduct.objects.filter(product_name=product_name).exists():
-            raise forms.ValidationError("Product already pending approval.")
+        if Product.objects.filter(product_name=product_name).exists():
+            raise forms.ValidationError("Product already exists.")
         return cleaned_data

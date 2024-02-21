@@ -294,28 +294,36 @@ def create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
-            product_name = form.cleaned_data['product_name']
-            if PendingProduct.objects.filter(product_name=product_name).exists():
-                messages.error(request, 'Product already pending approval.')
+            product = form.save(commit=False)
+            existing_pending_products = PendingProduct.objects.filter(
+                product_name=product.product_name,
+                brands=product.brands,
+                quantity=product.quantity,
+                categories=product.categories,
+                protein_per_100g=product.protein_per_100g,
+                carbs_per_100g=product.carbs_per_100g,
+                fats_per_100g=product.fats_per_100g,
+                kcal_per_100g=product.kcal_per_100g,
+                price=product.price,
+                product_type=product.product_type,
+                user_rating=product.user_rating,
+                allergies=product.allergies,
+                approved=False
+            )
+
+            if existing_pending_products.count() >= 4:
+                approved_product = existing_pending_products.first().handle_similar_products()
+                if approved_product:
+                    messages.success(request, f'Product "{approved_product.product_name}" approved and moved to Products.')
+                else:
+                    messages.success(request, 'Product creation pending approval.')
             else:
-                product = form.save(commit=False)
-                pending_approval = PendingProduct.objects.create(
-                    product_name=product.product_name,
-                    brands=product.brands,
-                    quantity=product.quantity,
-                    categories=product.categories,
-                    protein_per_100g=product.protein_per_100g,
-                    carbs_per_100g=product.carbs_per_100g,
-                    fats_per_100g=product.fats_per_100g,
-                    kcal_per_100g=product.kcal_per_100g,
-                    price=product.price,
-                    product_type=product.product_type,
-                    user_rating=product.user_rating,
-                    allergies=product.allergies,
-                    superuser=request.user
-                )
+                # Save the new PendingProduct
+                pending_product = form.save(commit=False)
+                pending_product.superuser = request.user  # Assign the current user as the superuser
+                pending_product.save()
                 messages.success(request, 'Product creation pending approval.')
-                return redirect('index')  # Redirect to the index page after pending approval
+            return redirect('index')  # Redirect to the index page
     else:
         form = ProductForm()
 

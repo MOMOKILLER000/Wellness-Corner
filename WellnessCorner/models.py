@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.utils import timezone
+from django.db.models import Count
 
 class CustomUserManager(UserManager):
     def create_user(self, email=None, password=None, **extra_fields):
@@ -110,8 +111,8 @@ class PendingProduct(models.Model):
 
     def __str__(self):
         return self.product_name
-
-    def approve_and_move_to_product(self):
+    
+    def approve(self):
         # Create a new Product instance based on the PendingProduct instance
         product = Product.objects.create(
             product_name=self.product_name,
@@ -130,7 +131,48 @@ class PendingProduct(models.Model):
         )
         return product
 
+    def handle_similar_products(self):
+        similar_products = PendingProduct.objects.filter(
+            product_name=self.product_name,
+            brands=self.brands,
+            quantity=self.quantity,
+            categories=self.categories,
+            protein_per_100g=self.protein_per_100g,
+            carbs_per_100g=self.carbs_per_100g,
+            fats_per_100g=self.fats_per_100g,
+            kcal_per_100g=self.kcal_per_100g,
+            price=self.price,
+            product_type=self.product_type,
+            user_rating=self.user_rating,
+            allergies=self.allergies,
+            approved=False
+        )
 
+        if similar_products.count() >= 4:  # Check if there are five or more similar products
+            # Create a new Product instance
+            product = Product.objects.create(
+                product_name=self.product_name,
+                brands=self.brands,
+                quantity=self.quantity,
+                categories=self.categories,
+                protein_per_100g=self.protein_per_100g,
+                carbs_per_100g=self.carbs_per_100g,
+                fats_per_100g=self.fats_per_100g,
+                kcal_per_100g=self.kcal_per_100g,
+                price=self.price,
+                product_type=self.product_type,
+                user_rating=self.user_rating,
+                allergies=self.allergies,
+                approved=True
+            )
+
+            # Delete all similar pending products
+            similar_products.delete()
+
+            return product
+        else:
+            self.save()
+            return None
 
 # models.py
 class ApiProduct(models.Model):
