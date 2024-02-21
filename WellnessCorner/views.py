@@ -8,6 +8,9 @@ from decimal import Decimal
 import json
 from django.contrib import messages 
 from django.core.exceptions import ValidationError
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 
 def index(request):
     if request.method == 'POST':
@@ -219,25 +222,57 @@ def add_to_basket(request, product_id, source):
     # Handle other request methods if needed
     return HttpResponseBadRequest("Invalid request method")
 
+@login_required
 def basket_page(request):
     # Get the basket for the current user
     basket, created = Basket.objects.get_or_create(user=request.user)
 
     # Fetch items from the database
-    items = basket.items.select_related('product')
+    items = basket.items.select_related('product', 'api_product')
 
     total_price = Decimal('0.00')  # Initialize total_price as a Decimal
 
     products_in_basket = []
     for item in items:
-        product = item.product
+        if item.product:
+            product = item.product
+            source = 'database'
+        elif item.api_product:
+            product = item.api_product
+            source = 'api'
+        else:
+            continue
 
         # Check if product has a valid price before adding it to total_price
         if product.price is not None:
             total_price += product.price
 
-        products_in_basket.append(product)
+        products_in_basket.append({'product': product, 'source': source})
 
     return render(request, 'basket.html', {'products_in_basket': products_in_basket, 'total_price': total_price})
 
+def delete_from_basket(request, product_id, source):
+    if request.method == 'POST':
+        # Check if source is either 'database' or 'api'
+        if source not in ['database', 'api']:
+            return HttpResponseBadRequest("Invalid source")
 
+        # Find the basket item to delete based on product_id, source, and user
+        if source == 'database':
+            basket_item = BasketItem.objects.filter(
+                product_id=product_id,
+                source=source,
+                basket__user=request.user
+            ).first()
+        elif source == 'api':
+            basket_item = BasketItem.objects.filter(
+                api_product_id=product_id,
+                source=source,
+                basket__user=request.user
+            ).first()
+
+        if basket_item:
+            basket_item.delete()
+
+    # Redirect to the basket page
+    return redirect('basket_page')

@@ -8,7 +8,17 @@
     <h1>Basket</h1>
     <ul>
         {% for product in products_in_basket %}
-            <li>{{ product.product_name }} - {{ product.price }}</li>
+            <li>
+                {% if product.source == 'database' %}
+                    {{ product.product.product_name }} - {{ product.product.price }}
+                {% elif product.source == 'api' %}
+                    {{ product.api_product.product_name }} - {{ product.api_product.price }}
+                {% endif %}
+                <form method="post" action="{% url 'delete_from_basket' product_id=product.product.id source=product.source %}">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
         {% endfor %}
     </ul>
     <p>Total Price: {{ total_price }}</p>
