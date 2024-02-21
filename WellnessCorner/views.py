@@ -295,34 +295,67 @@ def create(request):
         form = ProductForm(request.POST)
         if form.is_valid():
             product = form.save(commit=False)
+            # Define the margin for price and nutritional data
+            price_margin = 10
+            nutritional_margin = 10
+            
             existing_pending_products = PendingProduct.objects.filter(
                 product_name=product.product_name,
-                brands=product.brands,
-                quantity=product.quantity,
-                categories=product.categories,
-                protein_per_100g=product.protein_per_100g,
-                carbs_per_100g=product.carbs_per_100g,
-                fats_per_100g=product.fats_per_100g,
-                kcal_per_100g=product.kcal_per_100g,
-                price=product.price,
-                product_type=product.product_type,
-                user_rating=product.user_rating,
-                allergies=product.allergies,
-                approved=False
+                approved=False,
+                price__gte=product.price - price_margin,
+                price__lte=product.price + price_margin,
+                protein_per_100g__gte=product.protein_per_100g - nutritional_margin,
+                protein_per_100g__lte=product.protein_per_100g + nutritional_margin,
+                carbs_per_100g__gte=product.carbs_per_100g - nutritional_margin,
+                carbs_per_100g__lte=product.carbs_per_100g + nutritional_margin,
+                fats_per_100g__gte=product.fats_per_100g - nutritional_margin,
+                fats_per_100g__lte=product.fats_per_100g + nutritional_margin,
+                kcal_per_100g__gte=product.kcal_per_100g - nutritional_margin,
+                kcal_per_100g__lte=product.kcal_per_100g + nutritional_margin,
             )
 
-            if existing_pending_products.count() >= 4:
-                approved_product = existing_pending_products.first().handle_similar_products()
+            if existing_pending_products.count() >= 5:
+                # Extract the last appended product
+                last_appended_product = existing_pending_products.last()
+                # Approve one of the pending products and delete the others
+                approved_product = last_appended_product.handle_similar_products()
                 if approved_product:
                     messages.success(request, f'Product "{approved_product.product_name}" approved and moved to Products.')
+                    # Delete the last appended product
+                    last_appended_product.delete()
                 else:
                     messages.success(request, 'Product creation pending approval.')
+            elif existing_pending_products.count() >= 4:
+                # Delete excess similar pending products
+                last_appended_product = existing_pending_products.last()
+                existing_pending_products.exclude(id=last_appended_product.id).delete()
+                # Create a new product using the data from the last pending product
+                pending_product = last_appended_product
+                product = Product.objects.create(
+                    product_name=pending_product.product_name,
+                    brands=pending_product.brands,
+                    quantity=pending_product.quantity,
+                    categories=pending_product.categories,
+                    protein_per_100g=pending_product.protein_per_100g,
+                    carbs_per_100g=pending_product.carbs_per_100g,
+                    fats_per_100g=pending_product.fats_per_100g,
+                    kcal_per_100g=pending_product.kcal_per_100g,
+                    price=pending_product.price,
+                    product_type=pending_product.product_type,
+                    user_rating=pending_product.user_rating,
+                    allergies=pending_product.allergies,
+                    approved=True  # Mark as approved
+                )
+                messages.success(request, 'New product created.')
+                # Delete the last appended product
+                last_appended_product.delete()
             else:
-                # Save the new PendingProduct
+                # Create a new pending product
                 pending_product = form.save(commit=False)
                 pending_product.superuser = request.user  # Assign the current user as the superuser
                 pending_product.save()
-                messages.success(request, 'Product creation pending approval.')
+                messages.success(request, 'New pending product created.')
+                
             return redirect('index')  # Redirect to the index page
     else:
         form = ProductForm()
@@ -340,7 +373,7 @@ def approve_products(request):
         for product_id in approved_products:
             pending_approval = PendingProduct.objects.get(id=product_id)
             # Create a new Product instance based on the pending_approval
-            product = pending_approval.approve_and_move_to_product()
+            product = pending_approval.approve()
             messages.success(request, f'Product "{product.product_name}" approved and moved to Products.')
         
         # Delete all approved pending products
@@ -349,7 +382,6 @@ def approve_products(request):
         return redirect('pending_products_list')  # Redirect to the list of pending products after approval
 
     return render(request, 'pending_products.html', {'pending_products': pending_products})
-
 
 def pending_products(request):
     pending_products = PendingProduct.objects.all()  # Query all pending products

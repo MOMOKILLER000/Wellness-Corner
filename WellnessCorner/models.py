@@ -94,6 +94,7 @@ class PendingProduct(models.Model):
         ('fructe', 'Fructe'),
         # Add more choices as needed
     )
+
     product_name = models.CharField(max_length=100)
     brands = models.CharField(max_length=100)
     quantity = models.CharField(max_length=50)
@@ -130,7 +131,7 @@ class PendingProduct(models.Model):
             approved=True  # Mark as approved
         )
         return product
-
+    
     def handle_similar_products(self):
         similar_products = PendingProduct.objects.filter(
             product_name=self.product_name,
@@ -141,29 +142,26 @@ class PendingProduct(models.Model):
             carbs_per_100g=self.carbs_per_100g,
             fats_per_100g=self.fats_per_100g,
             kcal_per_100g=self.kcal_per_100g,
-            price=self.price,
-            product_type=self.product_type,
-            user_rating=self.user_rating,
-            allergies=self.allergies,
+            price__gte=self.price - 10,
+            price__lte=self.price + 10,
             approved=False
         )
 
-        if similar_products.count() >= 4:  # Check if there are five or more similar products
+        if similar_products.count() >= 4:  # Check if there are four or more similar products
             # Create a new Product instance
             product = Product.objects.create(
                 product_name=self.product_name,
-                brands=self.brands,
-                quantity=self.quantity,
-                categories=self.categories,
-                protein_per_100g=self.protein_per_100g,
-                carbs_per_100g=self.carbs_per_100g,
-                fats_per_100g=self.fats_per_100g,
-                kcal_per_100g=self.kcal_per_100g,
-                price=self.price,
-                product_type=self.product_type,
-                user_rating=self.user_rating,
-                allergies=self.allergies,
-                approved=True
+                price__gte=self.price - 10,
+                price__lte=self.price + 10,
+                protein_per_100g__gte=self.protein_per_100g - 10,
+                protein_per_100g__lte=self.protein_per_100g + 10,
+                carbs_per_100g__gte=self.carbs_per_100g - 10,
+                carbs_per_100g__lte=self.carbs_per_100g + 10,
+                fats_per_100g__gte=self.fats_per_100g - 10,
+                fats_per_100g__lte=self.fats_per_100g + 10,
+                kcal_per_100g__gte=self.kcal_per_100g - 10,
+                kcal_per_100g__lte=self.kcal_per_100g + 10,
+                approved=False
             )
 
             # Delete all similar pending products
@@ -173,6 +171,7 @@ class PendingProduct(models.Model):
         else:
             self.save()
             return None
+
 
 # models.py
 class ApiProduct(models.Model):
