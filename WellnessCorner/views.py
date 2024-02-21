@@ -11,7 +11,10 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from .forms import ProductForm
+from .models import PendingProduct
 
+@login_required
 def index(request):
     if request.method == 'POST':
         product_name = request.POST.get('product_name', '')
@@ -56,7 +59,9 @@ def login_view(request):
             messages.error(request, 'Invalid login credentials. Please try again.')
 
     return render(request, 'login.html')
-
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 def search_product(product_name, user=None):
     database_products = Product.objects.filter(product_name__icontains=product_name)
     api_products = []
@@ -282,3 +287,62 @@ def delete_from_basket(request, product_id, source):
 
     # Return error for invalid request method
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+
+@login_required
+def create(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product_name = form.cleaned_data['product_name']
+            if PendingProduct.objects.filter(product_name=product_name).exists():
+                messages.error(request, 'Product already pending approval.')
+            else:
+                product = form.save(commit=False)
+                pending_approval = PendingProduct.objects.create(
+                    product_name=product.product_name,
+                    brands=product.brands,
+                    quantity=product.quantity,
+                    categories=product.categories,
+                    protein_per_100g=product.protein_per_100g,
+                    carbs_per_100g=product.carbs_per_100g,
+                    fats_per_100g=product.fats_per_100g,
+                    kcal_per_100g=product.kcal_per_100g,
+                    price=product.price,
+                    product_type=product.product_type,
+                    user_rating=product.user_rating,
+                    allergies=product.allergies,
+                    superuser=request.user
+                )
+                messages.success(request, 'Product creation pending approval.')
+                return redirect('index')  # Redirect to the index page after pending approval
+    else:
+        form = ProductForm()
+
+    return render(request, 'create.html', {'form': form})
+
+@login_required
+def approve_products(request):
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("You don't have permission to access this page.")
+
+    pending_products = PendingProduct.objects.filter(approved=False)
+    if request.method == 'POST':
+        approved_products = request.POST.getlist('approved_products')
+        for product_id in approved_products:
+            pending_approval = PendingProduct.objects.get(id=product_id)
+            # Create a new Product instance based on the pending_approval
+            product = pending_approval.approve_and_move_to_product()
+            messages.success(request, f'Product "{product.product_name}" approved and moved to Products.')
+        
+        # Delete all approved pending products
+        pending_products.filter(id__in=approved_products).delete()
+
+        return redirect('pending_products_list')  # Redirect to the list of pending products after approval
+
+    return render(request, 'pending_products.html', {'pending_products': pending_products})
+
+
+def pending_products(request):
+    pending_products = PendingProduct.objects.all()  # Query all pending products
+    return render(request, 'pending_products.html', {'pending_products': pending_products})

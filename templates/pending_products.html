@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Products List</title>
+</head>
+<body>
+    <h1>Pending Products List</h1>
+    <form method="post">
+        {% csrf_token %}
+        {% for product in pending_products %}
+            <input type="checkbox" id="product_{{ product.id }}" name="approved_products" value="{{ product.id }}">
+            <label for="product_{{ product.id }}">{{ product.product_name }}</label><br>
+        {% endfor %}
+        <button type="submit">Approve Selected Products</button>
+    </form>
+</body>
+</html>

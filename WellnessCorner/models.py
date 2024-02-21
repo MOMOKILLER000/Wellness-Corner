@@ -78,8 +78,58 @@ class Product(models.Model):
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     allergies = models.TextField(null=True, blank=True) 
 
+    # Field for approval status
+    approved = models.BooleanField(default=False)
+
     def __str__(self):
         return self.product_name
+
+class PendingProduct(models.Model):
+    PRODUCT_TYPES = (
+        ('None', 'None'),
+        ('lactate', 'Lactate'),
+        ('carne', 'Carne'),
+        ('legume', 'Legume'),
+        ('fructe', 'Fructe'),
+        # Add more choices as needed
+    )
+    product_name = models.CharField(max_length=100)
+    brands = models.CharField(max_length=100)
+    quantity = models.CharField(max_length=50)
+    categories = models.CharField(max_length=200)
+    protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
+    user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    allergies = models.TextField(null=True, blank=True)
+    superuser = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    approved = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.product_name
+
+    def approve_and_move_to_product(self):
+        # Create a new Product instance based on the PendingProduct instance
+        product = Product.objects.create(
+            product_name=self.product_name,
+            brands=self.brands,
+            quantity=self.quantity,
+            categories=self.categories,
+            protein_per_100g=self.protein_per_100g,
+            carbs_per_100g=self.carbs_per_100g,
+            fats_per_100g=self.fats_per_100g,
+            kcal_per_100g=self.kcal_per_100g,
+            price=self.price,
+            product_type=self.product_type,
+            user_rating=self.user_rating,
+            allergies=self.allergies,
+            approved=True  # Mark as approved
+        )
+        return product
+
 
 
 # models.py
