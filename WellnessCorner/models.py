@@ -1,8 +1,7 @@
-# models.py
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.utils import timezone
-from django.conf import settings
 
 class CustomUserManager(UserManager):
     def create_user(self, email=None, password=None, **extra_fields):
@@ -109,3 +108,27 @@ class ApiProduct(models.Model):
 
     def __str__(self):
         return self.product_name
+
+class Basket(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class BasketItem(models.Model):
+    BASKET_SOURCES = (
+        ('database', 'Database'),
+        ('api', 'API'),
+    )
+
+    basket = models.ForeignKey(Basket, related_name='items', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
+    api_product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE)
+    source = models.CharField(max_length=20, choices=BASKET_SOURCES)
+
+    def __str__(self):
+        if self.product:
+            return f"Product: {self.product.product_name}"
+        elif self.api_product:
+            return f"API Product: {self.api_product.product_name}"
+        else:
+            return "Unknown Product"

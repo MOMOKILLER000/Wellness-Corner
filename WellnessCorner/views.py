@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
 from django.contrib.auth import authenticate, login
-from .models import Product, ApiProduct, Allergy
-from .forms import RegistrationForm, AllergyForm
+from .models import Product, ApiProduct, Allergy, Basket, BasketItem
+from .forms import RegistrationForm
 import requests
 from decimal import Decimal
 import json
@@ -186,10 +186,33 @@ def add_to_basket(request, product_id, source):
         # Get the product based on the model and product_id
         product = get_object_or_404(product_model, pk=product_id)
 
-        # Assuming you have a simple solution to store basket items in session
-        basket = request.session.get('basket', [])
-        basket.append({'product_id': product_id, 'source': source})
-        request.session['basket'] = basket
+        # Get or create the basket for the current user
+        basket, created = Basket.objects.get_or_create(user=request.user)
+
+        # Check if the product is of type Product or ApiProduct
+        if isinstance(product, Product):
+            product_instance = product
+        elif isinstance(product, ApiProduct):
+            # Create a Product instance from the ApiProduct
+            product_instance = Product.objects.create(
+                product_name=product.product_name,
+                brands=product.brands,
+                quantity=product.quantity,
+                categories=product.categories,
+                protein_per_100g=product.protein_per_100g,
+                carbs_per_100g=product.carbs_per_100g,
+                fats_per_100g=product.fats_per_100g,
+                kcal_per_100g=product.kcal_per_100g,
+                price=product.price,
+                product_type=product.product_type,
+                user_rating=product.user_rating,
+                allergies=product.allergies
+            )
+        else:
+            return HttpResponseBadRequest("Invalid product type")
+
+        # Add the product to the basket
+        BasketItem.objects.create(basket=basket, product=product_instance, source=source)
 
         return redirect('basket_page')  # Redirect to the basket page
 
@@ -197,22 +220,17 @@ def add_to_basket(request, product_id, source):
     return HttpResponseBadRequest("Invalid request method")
 
 def basket_page(request):
-    basket = request.session.get('basket', [])
-    products_in_basket = []
+    # Get the basket for the current user
+    basket, created = Basket.objects.get_or_create(user=request.user)
+
+    # Fetch items from the database
+    items = basket.items.select_related('product')
 
     total_price = Decimal('0.00')  # Initialize total_price as a Decimal
 
-    for item in basket:
-        product_id = item['product_id']
-        source = item['source']
-
-        product_model = None
-        if source == 'database':
-            product_model = Product
-        elif source == 'api':
-            product_model = ApiProduct
-
-        product = get_object_or_404(product_model, pk=product_id)
+    products_in_basket = []
+    for item in items:
+        product = item.product
 
         # Check if product has a valid price before adding it to total_price
         if product.price is not None:
@@ -221,3 +239,5 @@ def basket_page(request):
         products_in_basket.append(product)
 
     return render(request, 'basket.html', {'products_in_basket': products_in_basket, 'total_price': total_price})
+
+
