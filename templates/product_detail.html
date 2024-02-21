@@ -44,6 +44,14 @@
     {% else %}
     <p>No rating available for this product.</p>
     {% endif %}
+    {% if product.id %}
+        <form method="post" action="{% if product.source == 'database' %}{% url 'rate_product' product.id 'database' %}{% else %}{% url 'rate_product' product.id 'api' %}{% endif %}">
+            {% csrf_token %}
+            <label for="rating">Rating:</label>
+            <input type="number" name="rating" min="0" max="5" step="0.1" required>
+            <button type="submit" class="btn btn-primary">Submit Rating</button>
+        </form>
+    {% endif %}
 </body>
 
 </html>

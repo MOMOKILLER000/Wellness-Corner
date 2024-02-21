@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse
 from django.contrib.auth import authenticate, login
 from .models import Product, ApiProduct, Allergy, Basket, BasketItem
 from .forms import RegistrationForm
@@ -103,11 +103,13 @@ def search_product(product_name, user=None):
                 )
                 api_products.append(api_product)
 
-    # Combine database products and API products, and remove duplicates based on product name
+    # Combine database products and API products
     all_products = list(database_products) + api_products
-    unique_products = {product.product_name: product for product in all_products}.values()
 
-    return unique_products
+    # Create a dictionary of unique products based on product name
+    unique_products = {product.product_name: product for product in all_products}
+
+    return unique_products.values()
 
 def rate_product(request, product_id, source):
     if request.method == 'POST':
@@ -131,12 +133,28 @@ def rate_product(request, product_id, source):
             else:
                 product.user_rating = (product.user_rating + rating) / Decimal(2)
             product.save()
+
+            # Get the common allergies for rendering in the template
+            common_allergies = None
+
+            if source == 'database':
+                product_allergies = product.allergies.split(',') if product.allergies else []
+            elif source == 'api':
+                product_allergies = json.loads(product.allergies) if product.allergies else []
+
+            user_allergies = request.user.allergies.all()
+            common_allergies = set(product_allergies) & set(allergy.name for allergy in user_allergies)
+
+            # Render the same product detail template with the updated rating
+            return render(request, 'product_detail.html', {'product': product, 'common_allergies': common_allergies, 'product_rating': product.user_rating, 'source': source})
+
         except (Product.DoesNotExist, ApiProduct.DoesNotExist):
             return HttpResponseBadRequest("Product not found")
         except ValidationError:
             return HttpResponseBadRequest("Invalid rating")
 
-    return redirect('index')
+    return HttpResponseBadRequest("Invalid request method")
+
 
 def product_detail(request, product_id, source):
     try:
@@ -192,30 +210,8 @@ def add_to_basket(request, product_id, source):
         # Get or create the basket for the current user
         basket, created = Basket.objects.get_or_create(user=request.user)
 
-        # Check if the product is of type Product or ApiProduct
-        if isinstance(product, Product):
-            product_instance = product
-        elif isinstance(product, ApiProduct):
-            # Create a Product instance from the ApiProduct
-            product_instance = Product.objects.create(
-                product_name=product.product_name,
-                brands=product.brands,
-                quantity=product.quantity,
-                categories=product.categories,
-                protein_per_100g=product.protein_per_100g,
-                carbs_per_100g=product.carbs_per_100g,
-                fats_per_100g=product.fats_per_100g,
-                kcal_per_100g=product.kcal_per_100g,
-                price=product.price,
-                product_type=product.product_type,
-                user_rating=product.user_rating,
-                allergies=product.allergies
-            )
-        else:
-            return HttpResponseBadRequest("Invalid product type")
-
         # Add the product to the basket
-        BasketItem.objects.create(basket=basket, product=product_instance, source=source)
+        BasketItem.objects.create(basket=basket, product=product if source == 'database' else None, api_product=product if source == 'api' else None, source=source)
 
         return redirect('basket_page')  # Redirect to the basket page
 
@@ -255,24 +251,21 @@ def delete_from_basket(request, product_id, source):
     if request.method == 'POST':
         # Check if source is either 'database' or 'api'
         if source not in ['database', 'api']:
-            return HttpResponseBadRequest("Invalid source")
+            return JsonResponse({'error': 'Invalid source'}, status=400)
 
         # Find the basket item to delete based on product_id, source, and user
-        if source == 'database':
-            basket_item = BasketItem.objects.filter(
-                product_id=product_id,
-                source=source,
-                basket__user=request.user
-            ).first()
-        elif source == 'api':
-            basket_item = BasketItem.objects.filter(
-                api_product_id=product_id,
-                source=source,
-                basket__user=request.user
-            ).first()
+        basket_item = BasketItem.objects.filter(
+            basket__user=request.user,
+            source=source,
+            product_id=product_id if source == 'database' else None,
+            api_product_id=product_id if source == 'api' else None
+        ).first()
 
         if basket_item:
             basket_item.delete()
+            return redirect('basket_page')  # Redirect to the basket page after successful deletion
+        else:
+            return JsonResponse({'error': 'Item not found'}, status=404)
 
-    # Redirect to the basket page
-    return redirect('basket_page')
+    # Return error for invalid request method
+    return JsonResponse({'error': 'Invalid request method'}, status=405)

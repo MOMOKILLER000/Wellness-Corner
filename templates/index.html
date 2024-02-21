@@ -13,11 +13,6 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-    <style>
-        .allergy-message {
-            color: red;
-        }
-    </style>
 </head>
 
 <body>
@@ -49,7 +44,8 @@
             {% for product in product_info %}
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
-                        <h1>{% if product.source == 'database' %}
+                        <h1>
+                            {% if product.source == 'database' %}
                                 <a href="{% url 'product_detail' product.id 'database' %}">{{ product.product_name }}</a>
                             {% elif product.source == 'api' %}
                                 <a href="{% url 'product_detail' product.id 'api' %}">{{ product.product_name }}</a>
@@ -66,14 +62,10 @@
                             <li>Kcal per 100g: {{ product.kcal_per_100g|floatformat:"1" }}</li>
                             <li>Price: {{ product.price }}</li> <!-- Include price here -->
                         </ul>
-                        
-                        {% if product.id %}
-                            <form method="post" action="{% if product.source == 'database' %}{% url 'rate_product' product.id 'database' %}{% else %}{% url 'rate_product' product.id 'api' %}{% endif %}">
-                                {% csrf_token %}
-                                <label for="rating">Rating:</label>
-                                <input type="number" name="rating" min="0" max="5" step="0.1" required>
-                                <button type="submit" class="btn btn-primary">Submit Rating</button>
-                            </form>
+                        {% if product_rating %}
+                            <h5>Product Rating: {{ product_rating }}</h5>
+                        {% else %}
+                            <p>No rating available for this product.</p>
                         {% endif %}
                     </div>
                 </div>

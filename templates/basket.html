@@ -12,10 +12,12 @@
                 {% if product.source == 'database' %}
                     {{ product.product.product_name }} - {{ product.product.price }}
                 {% elif product.source == 'api' %}
-                    {{ product.api_product.product_name }} - {{ product.api_product.price }}
+                    {{ product.product.product_name }} - {{ product.product.price }}
                 {% endif %}
                 <form method="post" action="{% url 'delete_from_basket' product_id=product.product.id source=product.source %}">
                     {% csrf_token %}
+                    <input type="hidden" name="source" value="{{ product.source }}">
+                    <input type="hidden" name="product_id" value="{{ product.product.id }}">
                     <button type="submit">Delete</button>
                 </form>
             </li>
