@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Pending Products</title>
+</head>
+<body>
+    <h1>My Pending Products</h1>
+    <ul>
+        {% for product in pending_products %}
+            <li>{{ product.product_name }} 
+                <a href="{% url 'edit_product' product.pk %}">Edit</a> 
+                <a href="{% url 'delete_product' product.pk %}">Delete</a>
+            </li>
+            <!-- Display other product details as needed -->
+        {% empty %}
+            <li>No pending products found.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

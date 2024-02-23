@@ -303,7 +303,20 @@ def create(request):
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
+            user = request.user  # Get the current user
+            
+            # Check if a pending product with the same name exists for the current user
+            existing_pending_product = PendingProduct.objects.filter(
+                product_name=form.cleaned_data['product_name'],
+                user=user
+            ).exists()
+            
+            if existing_pending_product:
+                messages.error(request, f'A pending product with the name "{form.cleaned_data["product_name"]}" already exists.')
+                return render(request, 'create.html', {'form': form})  # Render the page with the form and error message
+            
             product = form.save(commit=False)
+            product.user = user
             product.save()  # Save the product first
             
             # Define the margin for price and nutritional data
@@ -401,3 +414,43 @@ def approve_products(request):
 def pending_products(request):
     pending_products = PendingProduct.objects.all()  # Query all pending products
     return render(request, 'pending_products.html', {'pending_products': pending_products})
+
+@login_required
+def my_products(request):
+    # Retrieve the pending products associated with the current user
+    pending_products = PendingProduct.objects.filter(user=request.user)
+    return render(request, 'my_products.html', {'pending_products': pending_products})
+
+@login_required
+def edit_product(request, pk):
+    # Retrieve the pending product to edit
+    pending_product = get_object_or_404(PendingProduct, pk=pk)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=pending_product)
+        if form.is_valid():
+            # Check if a product with the same name already exists
+            product_exists = Product.objects.filter(product_name=form.cleaned_data['product_name']).exists()
+            api_product_exists = ApiProduct.objects.filter(product_name=form.cleaned_data['product_name']).exists()
+
+            if product_exists or api_product_exists:
+                messages.error(request, f'A product with the name "{form.cleaned_data["product_name"]}" already exists.')
+                return render(request, 'create.html', {'form': form})  # Render the page with the form and error message
+            else:
+                form.save()
+                return redirect('my_products')
+    else:
+        form = ProductForm(instance=pending_product)
+
+    return render(request, 'edit_product.html', {'form': form})
+
+@login_required
+def delete_product(request, pk):
+    # Retrieve the pending product to delete
+    pending_product = get_object_or_404(PendingProduct, pk=pk)
+
+    if request.method == 'POST':
+        pending_product.delete()
+        return redirect('my_products')
+
+    return render(request, 'delete_product.html', {'pending_product': pending_product})

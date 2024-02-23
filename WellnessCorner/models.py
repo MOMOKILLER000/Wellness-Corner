@@ -95,7 +95,7 @@ class PendingProduct(models.Model):
         ('fructe', 'Fructe'),
         # Add more choices as needed
     )
-
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     product_name = models.CharField(max_length=100)
     brands = models.CharField(max_length=100)
     quantity = models.CharField(max_length=50)
