@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+from django.conf.urls.static import static
+from django.conf import settings
+
 urlpatterns = [
     path('', views.index, name='index'),
     path('rate/<int:product_id>/<str:source>/', views.rate_product, name='rate_product'),
@@ -14,3 +17,6 @@ urlpatterns = [
     path('approve-products/', views.approve_products, name='approve_products'),
     path('pending-products/', views.pending_products, name='pending_products'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

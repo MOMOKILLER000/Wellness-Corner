@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest, JsonResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from .models import Product, ApiProduct, Allergy, Basket, BasketItem
 from .forms import RegistrationForm
 import requests
@@ -13,6 +13,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import ProductForm
 from .models import PendingProduct
+from django.core.files.base import ContentFile
+from django.http import HttpResponseForbidden
 
 @login_required
 def index(request):
@@ -63,7 +65,9 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 def search_product(product_name, user=None):
+    # Fetch database products matching the search term
     database_products = Product.objects.filter(product_name__icontains=product_name)
+
     api_products = []
 
     # Fetch data from API if applicable
@@ -117,6 +121,14 @@ def search_product(product_name, user=None):
                 api_product.user_rating = rating  # Set the rating for the API product
                 api_products.append(api_product)
 
+                # Fetch and save image for each API product
+                if product.get('image_url'):
+                    image_url = product.get('image_url')
+                    response = requests.get(image_url)
+                    if response.status_code == 200:
+                        # Save the image to the product
+                        api_product.image.save(f'{name}_image.jpg', ContentFile(response.content), save=True)
+
     # Combine database products and API products
     all_products = list(database_products) + api_products
 
@@ -124,8 +136,6 @@ def search_product(product_name, user=None):
     unique_products = {product.product_name: product for product in all_products}
 
     return unique_products.values()
-
-
 
 def rate_product(request, product_id, source):
     if request.method == 'POST':
@@ -288,13 +298,14 @@ def delete_from_basket(request, product_id, source):
     # Return error for invalid request method
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
-
 @login_required
 def create(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             product = form.save(commit=False)
+            product.save()  # Save the product first
+            
             # Define the margin for price and nutritional data
             price_margin = 10
             nutritional_margin = 10
@@ -320,6 +331,8 @@ def create(request):
                 # Approve one of the pending products and delete the others
                 approved_product = last_appended_product.handle_similar_products()
                 if approved_product:
+                    approved_product.approved = True  # Mark as approved
+                    approved_product.save()
                     messages.success(request, f'Product "{approved_product.product_name}" approved and moved to Products.')
                     # Delete the last appended product
                     last_appended_product.delete()
@@ -344,16 +357,15 @@ def create(request):
                     product_type=pending_product.product_type,
                     user_rating=pending_product.user_rating,
                     allergies=pending_product.allergies,
-                    approved=True  # Mark as approved
+                    approved=True, 
+                    image=pending_product.image
                 )
                 messages.success(request, 'New product created.')
                 # Delete the last appended product
                 last_appended_product.delete()
             else:
-                # Create a new pending product
-                pending_product = form.save(commit=False)
-                pending_product.superuser = request.user  # Assign the current user as the superuser
-                pending_product.save()
+                # Save the pending product
+                product.save()
                 messages.success(request, 'New pending product created.')
                 
             return redirect('index')  # Redirect to the index page
@@ -374,12 +386,15 @@ def approve_products(request):
             pending_approval = PendingProduct.objects.get(id=product_id)
             # Create a new Product instance based on the pending_approval
             product = pending_approval.approve()
+            # Copy image from pending product to approved product
+            product.image = pending_approval.image
+            product.save()
             messages.success(request, f'Product "{product.product_name}" approved and moved to Products.')
         
         # Delete all approved pending products
         pending_products.filter(id__in=approved_products).delete()
 
-        return redirect('pending_products_list')  # Redirect to the list of pending products after approval
+        return redirect('pending_products') # Redirect to the list of pending products after approval
 
     return render(request, 'pending_products.html', {'pending_products': pending_products})
 

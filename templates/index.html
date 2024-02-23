@@ -51,6 +51,10 @@
                         <a href="{% url 'product_detail' product.id 'api' %}">{{ product.product_name }}</a>
                     {% endif %}
                 </h1>
+                <!-- Display image -->
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}" style="max-width: 100%;">
+                {% endif %}
                 <h3>Brand: {{ product.brands }}</h3>
                 <h5>Quantity: {{ product.quantity }}</h5>
                 <h5>Categories: {{ product.categories }}</h5>

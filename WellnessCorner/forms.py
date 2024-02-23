@@ -31,7 +31,10 @@ class AllergyForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = PendingProduct
-        fields = ['product_name', 'brands', 'quantity', 'categories', 'protein_per_100g', 'carbs_per_100g', 'fats_per_100g', 'kcal_per_100g', 'price', 'product_type', 'allergies']
+        fields = ['product_name', 'brands', 'quantity', 'categories', 'image', 'protein_per_100g', 'carbs_per_100g', 'fats_per_100g', 'kcal_per_100g', 'price', 'product_type', 'allergies']
+        widgets = {
+            'image': forms.FileInput(attrs={'accept': 'image/*'}),  # Add an accept attribute to limit file types to images
+        }
 
     def clean(self):
         cleaned_data = super().clean()
@@ -39,3 +42,9 @@ class ProductForm(forms.ModelForm):
         if Product.objects.filter(product_name=product_name).exists():
             raise forms.ValidationError("Product already exists.")
         return cleaned_data
+
+    def clean_image(self):
+        image = self.cleaned_data.get('image', False)
+        if not image:
+            raise forms.ValidationError("Image is required.")
+        return image
