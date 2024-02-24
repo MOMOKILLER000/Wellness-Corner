@@ -16,6 +16,8 @@ from .models import PendingProduct
 from django.core.files.base import ContentFile
 from django.http import HttpResponseForbidden
 from django.conf import settings
+from .forms import PostForm
+from .models import Post
 
 @login_required
 def index(request):
@@ -487,3 +489,37 @@ def delete_product(request, pk):
 
     return render(request, 'delete_product.html', {'pending_product': pending_product})
 
+def create_post(request):
+    products = Product.objects.all()
+    api_products = ApiProduct.objects.all()
+
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            product_instance = form.cleaned_data.get('product')
+            api_product_instance = form.cleaned_data.get('api_product')
+            
+            # Ensure that at least one product is selected
+            if not product_instance and not api_product_instance:
+                form.add_error(None, "Please select a product or an API product.")
+                return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products})
+            
+            post = form.save(commit=False)
+            post.user = request.user
+            
+            if product_instance:
+                post.product_id = product_instance.id  # Assign the product ID to the post
+            if api_product_instance:
+                post.api_product_id = api_product_instance.id  # Assign the API product ID to the post
+            
+            post.save()
+            
+            return redirect('index')
+    else:
+        form = PostForm()
+    
+    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products})
+
+def post_list(request):
+    posts = Post.objects.all()
+    return render(request, 'post_list.html', {'posts': posts})

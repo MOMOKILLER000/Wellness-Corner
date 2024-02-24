@@ -225,3 +225,12 @@ class BasketItem(models.Model):
         else:
             return "Unknown Product"
             
+class Post(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
+    api_product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Post by {self.user}: {self.content}"

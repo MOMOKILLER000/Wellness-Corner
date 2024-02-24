@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Allergy
-from .models import PendingProduct, Product
+from .models import PendingProduct, Product, ApiProduct, Post
+from itertools import chain
 
 class RegistrationForm(UserCreationForm):
 
@@ -48,3 +49,14 @@ class ProductForm(forms.ModelForm):
         return image
     
 
+class PostForm(forms.ModelForm):
+    product = forms.ModelChoiceField(queryset=Product.objects.all(), empty_label=None)
+    api_product = forms.ModelChoiceField(queryset=ApiProduct.objects.all(), empty_label=None)
+
+    class Meta:
+        model = Post
+        fields = ['product', 'api_product', 'content']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Write your post here', 'rows': 6})

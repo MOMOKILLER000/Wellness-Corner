@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+</head>
+<body>
+    <h1>Create Post</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="id_product">Product:</label>
+            <select name="product" id="id_product">
+                <option value="">Select a product</option>
+                {% for product in products %}
+                    <option value="{{ product.id }}">{{ product }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="id_api_product">API Product:</label>
+            <select name="api_product" id="id_api_product">
+                <option value="">Select an API product</option>
+                {% for api_product in api_products %}
+                    <option value="{{ api_product.id }}">{{ api_product }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label for="id_content">Content:</label>
+            <textarea name="content" id="id_content" rows="4"></textarea>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
