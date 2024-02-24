@@ -1,37 +1,57 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'style1.css' %}">
-<div class="wrapper login">
-  <div class="container">
-      <div class="col-left">
-          <div class="login-text">
-              <h2>Welcome!</h2>
-              <p>Create your account.<br>For Free!</p>
-              <a href="{% url 'register' %}" class="btn">Sign Up</a>
-          </div>
-      </div>
-
-      <div class="col-right">
-          <div class="login-form">
-              <h2>Login</h2>
-              <form method="post" action="{% url 'login' %}">
-                {% csrf_token %}
-        
-        
-                <div>
-                    <label for="id_email">Email:</label>
-                    <input type="email" name="email" required>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'style1.css' %}">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+    <div class="wrapper login">
+        <div class="container">
+            <div class="col-left">
+                <div class="login-text">
+                    <h2>Welcome!</h2>
+                    <p>Don't have an account?</p>
+                    <a href="{% url 'register' %}" class="btn">Sign Up</a>
                 </div>
-        
-                <div>
-                    <label for="id_password">Password:</label>
-                    <input type="password" name="password" required>
-                </div>
-        
-                <button type="submit">Login</button>
-            </form>
-          </div>
-      </div>
+            </div>
+  
+            <div class="col-right">
+                <div class="login-form">
+                    <h2>Login</h2>
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
 
-  </div>
-</div>
+                        <div class="inputContainer">
+                            <label for="{{ form.email.id_for_label }}">Email:</label>
+                            {{ form.email }}
+                            {{ form.email.errors }}
+                        </div>
+
+                        <div class="inputContainer">
+                            <label for="{{ form.password.id_for_label }}">Password:</label>
+                            {{ form.password }}
+                            {{ form.password.errors }}
+                        </div>
+
+                        <div class="g-recaptcha" data-sitekey="6Le2Qn4pAAAAAEdR17TBrFFUmfJjvSW6TQ1p316s"></div>
+                        {% if messages %}
+                            <ul class="messages">
+                                {% for message in messages %}
+                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

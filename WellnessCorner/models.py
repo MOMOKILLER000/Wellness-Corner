@@ -37,7 +37,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     date_joined = models.DateTimeField(default=timezone.now)
     last_login = models.DateTimeField(blank=True, null=True)
-    is_client = models.BooleanField(default=False, help_text="Check this box if you are a client.")
     allergies = models.ManyToManyField(Allergy, blank=True)  # ManyToManyField to store allergies
 
     objects = CustomUserManager()
@@ -225,3 +224,4 @@ class BasketItem(models.Model):
             return f"API Product: {self.api_product.product_name}"
         else:
             return "Unknown Product"
+            

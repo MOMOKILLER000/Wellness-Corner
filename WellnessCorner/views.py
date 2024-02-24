@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.contrib.auth import authenticate, login, logout
 from .models import Product, ApiProduct, Allergy, Basket, BasketItem
-from .forms import RegistrationForm
+from .forms import RegistrationForm, LoginForm
 import requests
 from decimal import Decimal
 import json
@@ -15,6 +15,7 @@ from .forms import ProductForm
 from .models import PendingProduct
 from django.core.files.base import ContentFile
 from django.http import HttpResponseForbidden
+from django.conf import settings
 
 @login_required
 def index(request):
@@ -38,29 +39,56 @@ def registration_view(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
-            form.save_m2m()  # Save many-to-many relationships (allergies)
-            return redirect('index')
+            # Add reCAPTCHA verification here
+            response_token = request.POST.get('g-recaptcha-response', '')
+            if verify_recaptcha(response_token):
+                user = form.save(commit=False)
+                user.save()
+                form.save_m2m()  # Save many-to-many relationships (allergies)
+                return redirect('index')
+            else:
+                messages.error(request, 'reCAPTCHA verification failed. Please try again.')
+        else:
+            messages.error(request, 'Invalid form submission. Please correct the errors.')
     else:
         form = RegistrationForm()
-    
     return render(request, 'register.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            # Add reCAPTCHA verification here
+            response_token = request.POST.get('g-recaptcha-response', '')
+            if verify_recaptcha(response_token):
+                email = form.cleaned_data.get('email')
+                password = form.cleaned_data.get('password')
+                user = authenticate(request, email=email, password=password)
 
-        user = authenticate(request, email=email, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('index')  # Redirect to the index page upon successful login
+                if user is not None:
+                    login(request, user)
+                    return redirect('index')
+                else:
+                    messages.error(request, 'Invalid login credentials. Please try again.')
+            else:
+                messages.error(request, 'reCAPTCHA verification failed. Please try again.')
         else:
-            messages.error(request, 'Invalid login credentials. Please try again.')
+            messages.error(request, 'Invalid form submission. Please correct the errors.')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
 
-    return render(request, 'login.html')
+def verify_recaptcha(response_token):
+    secret_key = '6Le2Qn4pAAAAAPMo61FnEEKdFKApauuRG9dh0Hrt'  # Replace 'YOUR_SECRET_KEY' with your actual secret key obtained from the reCAPTCHA admin console
+    payload = {
+        'secret': secret_key,
+        'response': response_token
+    }
+    response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=payload)
+    result = response.json()
+    return result['success']
+
+
 def logout_view(request):
     logout(request)
     return redirect('login')
@@ -379,13 +407,17 @@ def create(request):
             else:
                 # Save the pending product
                 product.save()
-                messages.success(request, 'New pending product created.')
                 
-            return redirect('index')  # Redirect to the index page
+            return HttpResponseRedirect(reverse('product_created'))  # Redirect to the success page
     else:
         form = ProductForm()
 
     return render(request, 'create.html', {'form': form})
+
+@login_required
+def product_created(request):
+    # Render a page confirming that the product was successfully created
+    return render(request, 'product_created.html')
 
 @login_required
 def approve_products(request):
@@ -454,3 +486,4 @@ def delete_product(request, pk):
         return redirect('my_products')
 
     return render(request, 'delete_product.html', {'pending_product': pending_product})
+

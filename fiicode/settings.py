@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'WellnessCorner.middleware.NoCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'fiicode.urls'
@@ -126,3 +127,12 @@ STATICFILES_DIRS= (os.path.join(BASE_DIR, 'static'),)
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+RECAPTCHA_SITE_KEY = '6Le2Qn4pAAAAAEdR17TBrFFUmfJjvSW6TQ1p316s'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'exploresphereapp@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = 'totn osbt rung vqsg'  # Replace with your Gmail app password

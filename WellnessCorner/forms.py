@@ -4,12 +4,6 @@ from .models import User, Allergy
 from .models import PendingProduct, Product
 
 class RegistrationForm(UserCreationForm):
-    is_client = forms.BooleanField(
-        required=False,
-        initial=False,
-        widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        help_text="Check this box if you are a client."
-    )
 
     allergies = forms.ModelMultipleChoiceField(
         queryset=Allergy.objects.all(),
@@ -21,7 +15,11 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'password1', 'password2', 'is_client', 'allergies']
+        fields = ['email', 'name', 'password1', 'password2', 'allergies']
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label='Email')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
 class AllergyForm(forms.ModelForm):
     class Meta:
@@ -48,3 +46,5 @@ class ProductForm(forms.ModelForm):
         if not image:
             raise forms.ValidationError("Image is required.")
         return image
+    
+

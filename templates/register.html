@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
     <link rel="stylesheet" href="{% static 'style1.css' %}">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         .container {
             max-width: 600px; /* Set the maximum width of the container */
@@ -57,13 +58,7 @@
                             {{ form.password2 }}
                             {{ form.password2.errors }}
                         </div>
-
-                        <div class="inputContainer">
-                            <label for="{{ form.is_client.id_for_label }}">Are you a client?</label>
-                            {{ form.is_client }}
-                            {{ form.is_client.errors }}
-                        </div>
-
+                        
                         <div class="inputContainer">
                             <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
                             <select name="{{ form.allergies.name }}" id="{{ form.allergies.id_for_label }}" multiple>
@@ -74,6 +69,7 @@
                             {{ form.allergies.errors }}
                         </div>
 
+                        <div class="g-recaptcha" data-sitekey="6Le2Qn4pAAAAAEdR17TBrFFUmfJjvSW6TQ1p316s"></div> <!-- Include the reCAPTCHA widget here -->
                         <button type="submit">Register</button>
                     </form>
                 </div>
