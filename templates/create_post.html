@@ -10,17 +10,25 @@
     <form method="post">
         {% csrf_token %}
         <div>
+            <label for="id_product_type">Product Type:</label>
+            <select name="product_type" id="id_product_type">
+                <option value="" selected disabled>Select product type</option>
+                <option value="Product">Product</option>
+                <option value="ApiProduct">API Product</option>
+            </select>
+        </div>
+        <div id="product-div" style="display: none;">
             <label for="id_product">Product:</label>
-            <select name="product" id="id_product">
+            <select name="object_id" id="id_product">
                 <option value="">Select a product</option>
                 {% for product in products %}
                     <option value="{{ product.id }}">{{ product }}</option>
                 {% endfor %}
             </select>
         </div>
-        <div>
+        <div id="api-product-div" style="display: none;">
             <label for="id_api_product">API Product:</label>
-            <select name="api_product" id="id_api_product">
+            <select name="object_id" id="id_api_product">
                 <option value="">Select an API product</option>
                 {% for api_product in api_products %}
                     <option value="{{ api_product.id }}">{{ api_product }}</option>
@@ -28,10 +36,45 @@
             </select>
         </div>
         <div>
+            <label for="id_title">Title:</label>
+            <input type="text" name="title" id="id_title">
+        </div>
+        <div>
             <label for="id_content">Content:</label>
             <textarea name="content" id="id_content" rows="4"></textarea>
         </div>
         <button type="submit">Submit</button>
     </form>
+
+    <script>
+        document.getElementById('id_product_type').addEventListener('change', function() {
+            var productDiv = document.getElementById('product-div');
+            var apiProductDiv = document.getElementById('api-product-div');
+            var productSelect = document.getElementById('id_product');
+            var apiProductSelect = document.getElementById('id_api_product');
+            if (this.value === 'Product') {
+                productDiv.style.display = 'block';
+                apiProductDiv.style.display = 'none';
+                productSelect.setAttribute('name', 'object_id');  // Set name attribute for product selection
+                productSelect.setAttribute('required', 'required');  // Make product selection required
+                apiProductSelect.removeAttribute('name');  // Remove name attribute for API product selection
+                apiProductSelect.removeAttribute('required');  // Remove required attribute for API product selection
+            } else if (this.value === 'ApiProduct') {
+                productDiv.style.display = 'none';
+                apiProductDiv.style.display = 'block';
+                apiProductSelect.setAttribute('name', 'object_id');  // Set name attribute for API product selection
+                apiProductSelect.setAttribute('required', 'required');  // Make API product selection required
+                productSelect.removeAttribute('name');  // Remove name attribute for product selection
+                productSelect.removeAttribute('required');  // Remove required attribute for product selection
+            } else {
+                productDiv.style.display = 'none';
+                apiProductDiv.style.display = 'none';
+                productSelect.removeAttribute('name');
+                productSelect.removeAttribute('required');
+                apiProductSelect.removeAttribute('name');
+                apiProductSelect.removeAttribute('required');
+            }
+        });
+    </script>
 </body>
 </html>

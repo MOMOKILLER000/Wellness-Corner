@@ -50,13 +50,25 @@ class ProductForm(forms.ModelForm):
     
 
 class PostForm(forms.ModelForm):
-    product = forms.ModelChoiceField(queryset=Product.objects.all(), empty_label=None)
-    api_product = forms.ModelChoiceField(queryset=ApiProduct.objects.all(), empty_label=None)
-
     class Meta:
         model = Post
-        fields = ['product', 'api_product', 'content']
+        fields = ['user', 'product_type', 'object_id', 'content_type', 'title', 'content']
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['content'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Write your post here', 'rows': 6})
+        super(PostForm, self).__init__(*args, **kwargs)
+        self.fields['product_type'].widget = forms.Select(choices=Post.PRODUCT_CHOICES)
+
+        # Customize the widget for the object_id field based on product_type
+        self.fields['object_id'].widget = forms.Select(choices=[])  # Empty choices initially
+
+        # Optionally, you can add JavaScript to dynamically update the choices based on product_type
+
+    def set_product_choices(self, product_type):
+        if product_type == 'Product':
+            products = Product.objects.all()
+        elif product_type == 'ApiProduct':
+            products = ApiProduct.objects.all()
+        else:
+            products = []
+
+        self.fields['object_id'].queryset = products

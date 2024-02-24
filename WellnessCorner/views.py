@@ -489,6 +489,7 @@ def delete_product(request, pk):
 
     return render(request, 'delete_product.html', {'pending_product': pending_product})
 
+@login_required
 def create_post(request):
     products = Product.objects.all()
     api_products = ApiProduct.objects.all()
@@ -496,28 +497,42 @@ def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            product_instance = form.cleaned_data.get('product')
-            api_product_instance = form.cleaned_data.get('api_product')
-            
-            # Ensure that at least one product is selected
-            if not product_instance and not api_product_instance:
-                form.add_error(None, "Please select a product or an API product.")
-                return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products})
-            
-            post = form.save(commit=False)
-            post.user = request.user
-            
-            if product_instance:
-                post.product_id = product_instance.id  # Assign the product ID to the post
-            if api_product_instance:
-                post.api_product_id = api_product_instance.id  # Assign the API product ID to the post
-            
+            product_type = form.cleaned_data.get('product_type')
+            content = form.cleaned_data.get('content')
+            title = form.cleaned_data.get('title')
+
+            # Ensure the current user is associated with the post
+            user = request.user
+
+            post = Post(content=content, title=title, user=user, product_type=product_type)
+
+            # Set the appropriate product instance based on the product type
+            if product_type == 'Product':
+                product_instance_id = form.cleaned_data.get('object_id')
+                try:
+                    product_instance = Product.objects.get(id=product_instance_id)
+                    post.product = product_instance
+                    post.product_name = product_instance.product_name  # Set the product_name attribute
+                except Product.DoesNotExist:
+                    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products, 'error_message': 'Selected product does not exist'})
+            elif product_type == 'ApiProduct':
+                api_product_instance_id = form.cleaned_data.get('object_id')
+                try:
+                    api_product_instance = ApiProduct.objects.get(id=api_product_instance_id)
+                    post.product = api_product_instance
+                    post.product_name = api_product_instance.product_name  # Set the product_name attribute
+                except ApiProduct.DoesNotExist:
+                    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products, 'error_message': 'Selected API product does not exist'})
+
             post.save()
-            
+
             return redirect('index')
     else:
-        form = PostForm()
-    
+        # If it's a GET request, initialize the form and set the choices based on the initial product_type
+        initial_product_type = request.GET.get('product_type', 'Product')  # Default to 'Product' if not provided
+        form = PostForm(initial={'product_type': initial_product_type})
+        form.set_product_choices(initial_product_type)  # Set the initial choices for the object_id field
+
     return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products})
 
 def post_list(request):

@@ -1,3 +1,4 @@
+<!-- post_list.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +10,16 @@
     <h1>Posts</h1>
     <ul>
         {% for post in posts %}
-        <li>{{ post.title }}</li>
-        <li>{{ post.content }}</li>
+        <li>
+            {% if post.product_type == 'Product' %}
+                <p>Product Link: <a href="{% url 'product_detail' post.object_id 'database' %}">{{ post.product_name }}</a></p>
+            {% elif post.product_type == 'ApiProduct' %}
+                <p>API Product Link: <a href="{% url 'product_detail' post.object_id 'api' %}">{{ post.product_name }}</a></p>
+            {% else %}
+                <p>No Product Data Available</p>
+            {% endif %}
+        </li>
+        <li>{{ post.content|truncatewords:50 }}</li>
         <!-- Add other fields as needed -->
         {% endfor %}
     </ul>

@@ -3,6 +3,8 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, UserManager
 from django.utils import timezone
 from django.db.models import Count
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 
 class CustomUserManager(UserManager):
     def create_user(self, email=None, password=None, **extra_fields):
@@ -226,11 +228,24 @@ class BasketItem(models.Model):
             return "Unknown Product"
             
 class Post(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
-    api_product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    PRODUCT_CHOICES = (
+        ('Product', 'Product'),
+        ('ApiProduct', 'API Product'),
+    )
+
+    product_type = models.CharField(max_length=20, choices=PRODUCT_CHOICES, null=True, blank=True)
+    object_id = models.PositiveIntegerField(default=0)  # Default value for the ID
+    product = GenericForeignKey('content_type', 'object_id')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    title = models.CharField(max_length=150, null=True, blank=True)
     content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+    product_name = models.CharField(max_length=255, null=True, blank=True)  # Field to store the name of the product or API product
 
     def __str__(self):
-        return f"Post by {self.user}: {self.content}"
+        return f"{self.product_type} Post"
+
+    def save(self, *args, **kwargs):
+        if self.product:
+            self.product_name = self.product.product_name  # Assuming the product model has a 'product_name' attribute
+        super().save(*args, **kwargs)
