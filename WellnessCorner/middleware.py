@@ -6,5 +6,13 @@ class NoCacheMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
-        add_never_cache_headers(response)
+        
+        # Check if the current page is the product_detail page
+        if request.path.startswith('/product_detail/'):
+            # Exclude product_detail page from caching
+            add_never_cache_headers(response)
+        else:
+            # Cache other pages
+            pass
+        
         return response

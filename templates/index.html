@@ -1,88 +1,192 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="ro">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Informații Produs</title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellnesscorner</title>
 
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
+    <!-- custom css file link  -->
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
-
 <body>
-    <nav class="navbar navbar-default" style="background: grey; color: white;">
-        <div class="container">
-            <div class="navbar-header">
-                <h1 class="navbar-brand">Informații Produs</h1>
-            </div>
-        </div>
-    </nav>
-    <br />
-    <br />
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <form action="" method="post" class="input-group">
-                    {% csrf_token %}
-                    <input type="text" class="form-control" name="product_name" placeholder="Introduceți numele produsului">
-                    <div class="input-group-btn">
-                        <button class="btn btn-default" type="submit">
-                            <i class="glyphicon glyphicon-search"></i> Căutare
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <br>
-        {% if product_info %}
-    {% for product in product_info %}
-        <div class="row">
-            <div class="col-md-6 col-md-offset-3">
-                <h1>
-                    {% if product.source == 'database' %}
-                        <a href="{% url 'product_detail' product.id 'database' %}">{{ product.product_name }}</a>
-                    {% elif product.source == 'api' %}
-                        <a href="{% url 'product_detail' product.id 'api' %}">{{ product.product_name }}</a>
-                    {% endif %}
-                </h1>
-                <!-- Display image -->
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}" style="max-width: 100%;">
-                {% endif %}
-                <h3>Brand: {{ product.brands }}</h3>
-                <h5>Quantity: {{ product.quantity }}</h5>
-                <h5>Categories: {{ product.categories }}</h5>
-                <h5>Nutrients:</h5>
-                <ul>
-                    <li>Protein per 100g: {{ product.protein_per_100g|floatformat:"1" }}</li>
-                    <li>Carbs per 100g: {{ product.carbs_per_100g|floatformat:"1" }}</li>
-                    <li>Fats per 100g: {{ product.fats_per_100g|floatformat:"1" }}</li>
-                    <li>Kcal per 100g: {{ product.kcal_per_100g|floatformat:"1" }}</li>
-                    <li>Price: {{ product.price }}</li> <!-- Include price here -->
-                </ul>
-                {% if product.user_rating %}
-                <h5>Product Rating: {{ product.user_rating }}</h5>
-                {% else %}
-                <p>No rating available for this product.</p>
-                {% endif %}
-            </div>
-        </div>
-        <hr>
-    {% endfor %}
-{% else %}
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <h2>No products found</h2>
-        </div>
+<div class="left-bar">
+    <button class="close-button" onclick="closeBar()">
+        <i class="fa-solid fa-times"></i>
+    </button>
+    <div class="links">
+        <a href="{% url 'create' %}">Create Product</a>
+        <a href="{% url 'my_products' %}">My Products</a>
+        <a href="{% url 'create_post' %}">Create Post</a>
+        <a href="{% url 'post_list' %}">Posts</a>
     </div>
-{% endif %}
+</div>
+<div class="eu">
+<header>
+    <div class="more">
+        <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
     </div>
-</body>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
 
+    <nav class="navbar">    
+        <a href="{% url 'index' %}">Home</a>
+        <a href="#about">about</a>
+        <a href="#menu">menu</a>
+        <a href="#review">review</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon"></i>
+        <a href="#" class="fas fa-heart"></a>
+        <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+    </div>
+
+</header>
+<div class="search-container">
+    <form action="{% url 'index' %}" method="post" class="search-form">
+        {% csrf_token %}
+        <input type="text" class="search-input" name="product_name" placeholder="Introduceți numele produsului">
+        <button class="search-button" type="submit">
+            <i class="search-icon fas fa-search"></i> Căutare
+        </button>
+    </form>
+</div>
+
+    {% if search_query %}
+    <div class="products-container">
+        {% if search_results %}
+            {% for product in search_results %}
+                <div class="product">
+                    <!-- Display smaller image -->
+                    <div class="top">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                    {% endif %}
+                    </div>
+                    <div class="middle">
+                    <h1>{{ product.product_name }}</h1>
+                    </div>
+                    <div class="bottom">
+                    <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                    <h3>Quantity: {{ product.quantity }}</h3>
+                    {% if product.user_rating %}
+                        <h3>Product Rating: {{ product.user_rating }}</h3>
+                    {% else %}
+                        <h3>No rating available for this product.</h3>
+                    {% endif %}
+                    <h3>Price: {{ product.price }}</h3>
+                    <div class="product-button">
+                    {% if product.source == 'database' %}
+                            <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
+                    {% elif product.source == 'api' %}
+                            <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
+                    {% endif %}
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-products">
+                <h2>No products found for your search</h2>
+            </div>
+        {% endif %}
+    </div>
+    {% else %}
+        {% if best_rated_products %}
+        <div class="heading">Best rated products</div>
+        <div class="products-container">
+            {% for product in best_rated_products %}
+                <div class="product">
+                    <!-- Display smaller image -->
+                    <div class="top">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                    {% endif %}
+                    </div>
+                    <div class="middle">
+                    <h1>{{ product.product_name }}</h1>
+                    </div>
+                    <div class="bottom">
+                    <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                    <h3>Quantity: {{ product.quantity }}</h3>
+                    {% if product.user_rating %}
+                        <h3>Product Rating: {{ product.user_rating }}</h3>
+                    {% else %}
+                        <h3>No rating available for this product.</h3>
+                    {% endif %}
+                    <h3>Price: {{ product.price }}</h3>
+                    <div class="product-button">
+                    {% if product.source == 'database' %}
+                            <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
+                    {% elif product.source == 'api' %}
+                            <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
+                    {% endif %}
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-products">
+                <h2>No best rated products found</h2>
+            </div>
+        {% endif %}
+        </div>
+        
+        {% if cheapest_products %}
+        <div class="heading">Cheapest Products</div>
+        <div class="products-container">
+            {% for product in cheapest_products %}
+                <div class="product">
+                    <!-- Display smaller image -->
+                    <div class="top">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                    {% endif %}
+                    </div>
+                    <div class="middle">
+                    <h1>{{ product.product_name }}</h1>
+                    </div>
+                    <div class="bottom">
+                    <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                    <h3>Quantity: {{ product.quantity }}</h3>
+                    {% if product.user_rating %}
+                        <h3>Product Rating: {{ product.user_rating }}</h3>
+                    {% else %}
+                        <h3>No rating available for this product.</h3>
+                    {% endif %}
+                    <h3>Price: {{ product.price }}</h3>
+                    <div class="product-button">
+                    {% if product.source == 'database' %}
+                            <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
+                    {% elif product.source == 'api' %}
+                            <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
+                    {% endif %}
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-products">
+                <h2>No products found</h2>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+             
+<script>
+    function toggleBar() {
+document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+document.querySelector(".content-page").classList.toggle("content-page-extended");
+}
+function closeBar() {
+ document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+ document.querySelector(".content-page").classList.remove("content-page-extended");
+}
+ </script>
+ <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+</body>
 </html>

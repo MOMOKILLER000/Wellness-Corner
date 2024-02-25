@@ -18,14 +18,45 @@ from django.http import HttpResponseForbidden
 from django.conf import settings
 from .forms import PostForm
 from .models import Post
+from django.db.models import F
+from itertools import chain
 
 @login_required
 def index(request):
     if request.method == 'POST':
         product_name = request.POST.get('product_name', '')
-        product_info = search_product(product_name, user=request.user)
+        if product_name.strip():  # Check if the search query is not empty
+            product_info = search_product(product_name, user=request.user)
+            # Set the source attribute for each product based on its type
+            for product in product_info:
+                if isinstance(product, Product):
+                    product.source = 'database'
+                elif isinstance(product, ApiProduct):
+                    product.source = 'api'
+                else:
+                    # Handle other cases if needed
+                    pass
+            return render(request, 'index.html', {'search_query': product_name, 'search_results': product_info})
+        else:  # If the search query is empty, display the default products
+            best_rated_products = Product.objects.filter(user_rating__isnull=False).order_by('-user_rating')[:4]
+            cheapest_products = Product.objects.filter(price__gt=0).order_by('price')[:4]
+            return render(request, 'index.html', {'best_rated_products': best_rated_products, 'cheapest_products': cheapest_products})
+    else:
+        # Get the top 4 best-rated products from both models
+        best_rated_products = sorted(
+            chain(Product.objects.filter(user_rating__isnull=False), ApiProduct.objects.filter(user_rating__isnull=False)),
+            key=lambda x: x.user_rating if x.user_rating else float('-inf'),
+            reverse=True
+        )[:4]
+        
+        # Get the top 4 cheapest products from both models
+        cheapest_products = sorted(
+            chain(Product.objects.filter(price__gt=0), ApiProduct.objects.filter(price__gt=0)),
+            key=lambda x: x.price
+        )[:4]
+        
         # Set the source attribute for each product based on its type
-        for product in product_info:
+        for product in chain(best_rated_products, cheapest_products):
             if isinstance(product, Product):
                 product.source = 'database'
             elif isinstance(product, ApiProduct):
@@ -33,9 +64,9 @@ def index(request):
             else:
                 # Handle other cases if needed
                 pass
-        return render(request, 'index.html', {'product_info': product_info, 'searched_product': product_name})
-    else:
-        return render(request, 'index.html')
+        
+        return render(request, 'index.html', {'best_rated_products': best_rated_products, 'cheapest_products': cheapest_products})
+    
 
 def registration_view(request):
     if request.method == 'POST':
@@ -151,8 +182,8 @@ def search_product(product_name, user=None):
                 api_product.user_rating = rating  # Set the rating for the API product
                 api_products.append(api_product)
 
-                # Fetch and save image for each API product
-                if product.get('image_url'):
+                # Fetch and save image for each API product if it's not already saved
+                if product.get('image_url') and not api_product.image:
                     image_url = product.get('image_url')
                     response = requests.get(image_url)
                     if response.status_code == 200:
