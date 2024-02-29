@@ -1,57 +1,59 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="{% static 'style1.css' %}">
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-</head>
-<body>
-    <div class="wrapper login">
-        <div class="container">
-            <div class="col-left">
-                <div class="login-text">
-                    <h2>Welcome!</h2>
-                    <p>Don't have an account?</p>
-                    <a href="{% url 'register' %}" class="btn">Sign Up</a>
-                </div>
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script
+   src="https://kit.fontawesome.com/64d58efce2.js"
+   crossorigin="anonymous"
+  ></script>
+  <link rel="stylesheet" href="{% static 'login-register.css' %}">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <title>Sign in & Sign up Form</title>` 
+ </head>
+ <body>
+    <div class="container">
+        <div class="forms-container">
+            <div class="signin-signup">
+                <form method="post" action="{% url 'login' %}" class="sign-in-form">
+                    {% csrf_token %}
+                    <h2 class="title">Sign in</h2>
+                    <div class="input-field">
+                        <i class="fas fa-user"></i>
+                        <input type="email" name="email" placeholder="Email" />
+                    </div>
+                    <div class="input-field">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" placeholder="Password" />
+                    </div>
+                    <!-- Add reCAPTCHA widget here -->
+                    <div class="g-recaptcha" data-sitekey="6Le2Qn4pAAAAAEdR17TBrFFUmfJjvSW6TQ1p316s"></div>
+                    <input class="btn solid" type="submit" value="Login"/>
+                </form>
             </div>
-  
-            <div class="col-right">
-                <div class="login-form">
-                    <h2>Login</h2>
-                    <form method="post" action="{% url 'login' %}">
-                        {% csrf_token %}
-                        {{ form.non_field_errors }}
-
-                        <div class="inputContainer">
-                            <label for="{{ form.email.id_for_label }}">Email:</label>
-                            {{ form.email }}
-                            {{ form.email.errors }}
-                        </div>
-
-                        <div class="inputContainer">
-                            <label for="{{ form.password.id_for_label }}">Password:</label>
-                            {{ form.password }}
-                            {{ form.password.errors }}
-                        </div>
-
-                        <div class="g-recaptcha" data-sitekey="6Le2Qn4pAAAAAEdR17TBrFFUmfJjvSW6TQ1p316s"></div>
-                        {% if messages %}
-                            <ul class="messages">
-                                {% for message in messages %}
-                                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                        <button type="submit">Login</button>
-                    </form>
-                </div>
-            </div>
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
     </div>
-</body>
+   <div class="panels-container">
+    <div class="panel left-panel">
+     <div class="content">
+      <h3>New here ?</h3>
+      <p>
+        Online tutor Finder provides students the best way to reach out the best tutor for them. 
+        Know more about us <a href="file:///G:/AGILE%20workshop/Website/Home%20Page/index.html">here</a>.
+      </p>
+      <button class="btn transparent"><a href="{% url 'register' %}">Sign up</a></button>
+     </div>
+     <img src="pictures/log.svg" class="image" alt="" />
+    </div>
+   </div>
+  </div>
+ </body>
 </html>
