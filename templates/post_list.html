@@ -1,27 +1,331 @@
-<!-- post_list.html -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post List</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Your Luxurious HTML</title>
+    <style>
+        * {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-decoration: none;
+            outline: none;
+            border: none;
+            text-transform: capitalize;
+            transition: all .2s linear;
+        }
+
+        html {
+            font-size: 62.5%;
+            overflow-x: hidden;
+            scroll-padding-top: 5.5rem;
+            scroll-behavior: smooth;
+        }
+
+        .heading {
+            text-align: center;
+            color: black;
+            font-size: 3rem;
+            padding-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        header {
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 1rem 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo {
+            color: black;
+            font-size: 2.5rem;
+            font-weight: bolder;
+        }
+
+        header .logo i {
+            color: green;
+        }
+
+        header .navbar a {
+            font-size: 1.7rem;
+            border-radius: .5rem;
+            padding: .5rem 1.5rem;
+            color: black;
+        }
+
+        .more {
+            font-size: 1.7rem;
+            color: black;
+        }
+
+        .more:hover {
+            cursor: pointer;
+        }
+
+        header .navbar a.active,
+        header .navbar a:hover {
+            color: #fff;
+            background: green;
+        }
+
+        header .icons i,
+        header .icons a {
+            cursor: pointer;
+            margin-left: .5rem;
+            height: 4.5rem;
+            line-height: 4.5rem;
+            width: 4.5rem;
+            text-align: center;
+            font-size: 1.7rem;
+            color: black;
+            border-radius: 50%;
+            background: #eee;
+        }
+
+        header .icons i:hover,
+        header .icons a:hover {
+            color: #fff;
+            background: green;
+            transform: rotate(360deg);
+        }
+
+        header .icons #menu-bars {
+            display: none;
+        }
+
+        .left-bar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            height: 100%;
+            width: 200px;
+            background-color: #333;
+            color: white;
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .left-bar-expanded {
+            left: 0;
+        }
+
+        .content-page {
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-page-extended {
+            margin-left: 200px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+
+        .links a {
+            font-size: 24px;
+            padding: 15px 20px;
+            color: #FFD700;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: poppins, Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #3f3e3e;
+            background: #eaeff4;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .upper {
+            background: #d4af37;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .upper h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+        }
+
+        .upper p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        @media screen and (max-width: 600px) {
+            .upper {
+                padding: 20px;
+            }
+
+            .upper h2 {
+                font-size: 2em;
+            }
+
+            .upper p {
+                font-size: 1em;
+            }
+
+        }
+
+        .card {
+            background-color: #1a1a1a;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            padding: 20px;
+            height: 200px;
+            margin-left:10px;
+            margin-right:10px;
+            transition: transform 0.3s;
+            background-size: cover;
+            border: 2px solid #d4af37;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            color: #d4af37;
+        }
+
+        .card p {
+            color: #ecf0f1;
+            display: none;
+        }
+
+        .card:hover p {
+            display: block;
+        }
+
+        .card:hover h2 a {
+            color: #ffd700;
+        }
+
+        @media screen and (max-width: 800px) {
+            .leftcolumn {
+                flex: 100%;
+                margin-right: 0;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@400;700&display=swap">
 </head>
+
 <body>
-    <h1>Posts</h1>
-    <ul>
-        {% for post in posts %}
-        <li>
-            {% if post.product_type == 'Product' %}
-                <p>Product Link: <a href="{% url 'product_detail' post.object_id 'database' %}">{{ post.product_name }}</a></p>
-            {% elif post.product_type == 'ApiProduct' %}
-                <p>API Product Link: <a href="{% url 'product_detail' post.object_id 'api' %}">{{ post.product_name }}</a></p>
-            {% else %}
+    <div class="left-bar">
+        <button class="close-button" onclick="closeBar()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <div class="links">
+            <a href="{% url 'create' %}">Create Product</a>
+            <a href="{% url 'my_products' %}">My Products</a>
+            <a href="{% url 'create_post' %}">Create Post</a>
+            <a href="{% url 'post_list' %}">Posts</a>
+        </div>
+    </div>
+    <header>
+        <div class="more">
+            <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+        </div>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+
+        <nav class="navbar">
+            <a href="{% url 'index' %}">Home</a>
+            <a href="#about">about</a>
+            <a href="#menu">menu</a>
+            <a href="#review">review</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon"></i>
+            <a href="#" class="fas fa-heart"></a>
+            <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+        </div>
+
+    </header>
+    <div class="content-page">
+        <div class="upper">
+            <h2>Explore Product Insights</h2>
+            <p>Discover insights, reviews, and information about the products featured here. Gain valuable knowledge to make informed decisions about your purchases!</p>
+        </div>
+        <div class="container">
+            {% for post in posts %}
+            <div class="card">
+                <h2><a href="{% url 'post' post.id %}">{{ post.title }}</a></h2>
+                <p class="author">Written by {{ post.user.name }}</p>
+                {% if post.product_type == 'Product' %}
+                <p>Product: <a href="{% url 'product_detail' post.object_id 'database' %}" style="color: gold;">{{ post.product_name }}</a></p>
+                {% elif post.product_type == 'ApiProduct' %}
+                <p>Product: <a href="{% url 'product_detail' post.object_id 'api' %}" style="color: gold;">{{ post.product_name }}</a></p>
+                {% else %}
                 <p>No Product Data Available</p>
-            {% endif %}
-        </li>
-        <li>{{ post.content|truncatewords:50 }}</li>
-        <!-- Add other fields as needed -->
-        {% endfor %}
-    </ul>
+                {% endif %}
+                <p>{{ post.content|truncatewords:50 }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <script>
+        function toggleBar() {
+            document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+            document.querySelector(".content-page").classList.toggle("content-page-extended");
+        }
+
+        function closeBar() {
+            document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+            document.querySelector(".content-page").classList.remove("content-page-extended");
+        }
+    </script>
+    <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </body>
+
 </html>

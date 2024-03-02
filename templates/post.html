@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Lato', sans-serif;
+        background: #2c3e50;
+        color: #ecf0f1;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .header {
+        background: #d4af37;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        text-align: center;
+        color: #fff;
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 20px;
+    }
+
+    .header h2 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+        color: #1a1a1a;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 20px;
+    }
+
+    .card {
+            background-color: #1a1a1a;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px; /* Increased padding to make the card larger */
+            height: auto; /* Adjusted height to auto for variable content */
+            transition: transform 0.3s;
+            background-size: cover;
+            border: 2px solid #d4af37;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 1.5em;
+            margin: 100px; /* Adjust as needed for separation from the margins */
+        }
+
+        .card h1,
+        .card h5,
+        .card p {
+            margin-bottom: 20px; /* Increased margin for better spacing */
+        }
+
+        .card img {
+            max-width: 100%; /* Ensure images don't overflow the card */
+            margin-top: 20px; /* Add margin to separate image from text */
+        }
+
+        /* Adjusted styles to fit more content */
+        .card p {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        @media screen and (min-width: 768px) {
+            /* Adjust styles for larger screens */
+            .card p {
+                white-space: initial;
+                overflow: visible;
+                text-overflow: initial;
+            }
+        }
+</style>
+</head>
+
+</head>
+<body>
+<div class="row-container">
+  <div class="leftcolumn">
+      <div class="card">
+          <h1>{{ post.title }}</h1>
+          <h5>{{ post.user.name }}</h5>
+          <p>{{ post.content }}</p>
+      </div>
+  </div>
+</div>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -22,7 +22,10 @@ urlpatterns = [
     path('my-products/<int:pk>/delete/', views.delete_product, name='delete_product'),
     path('create-post/', views.create_post, name='create_post'),
     path('posts/', views.post_list, name='post_list'),
+    path('post/<int:post_id>/', views.post, name='post'),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+

@@ -8,7 +8,7 @@
     <title>Wellnesscorner</title>
 
     <!-- custom css file link  -->
-    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'index1.css' %}">
 </head>
 <body>
 <div class="left-bar">
@@ -22,7 +22,6 @@
         <a href="{% url 'post_list' %}">Posts</a>
     </div>
 </div>
-<div class="eu">
 <header>
     <div class="more">
         <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
@@ -39,13 +38,13 @@
 
     <div class="icons">
         <i class="fas fa-bars" id="menu-bars"></i>
-        <i class="fas fa-search" id="search-icon"></i>
+        <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
         <a href="#" class="fas fa-heart"></a>
         <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
     </div>
 
 </header>
-<div class="search-container">
+<div class="search-container" id="search-container">
     <form action="{% url 'index' %}" method="post" class="search-form">
         {% csrf_token %}
         <input type="text" class="search-input" name="product_name" placeholder="Introduceți numele produsului">
@@ -55,138 +54,143 @@
     </form>
 </div>
 
-    {% if search_query %}
-    <div class="products-container">
-        {% if search_results %}
-            {% for product in search_results %}
-                <div class="product">
-                    <!-- Display smaller image -->
-                    <div class="top">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
-                    {% endif %}
-                    </div>
-                    <div class="middle">
-                    <h1>{{ product.product_name }}</h1>
-                    </div>
-                    <div class="bottom">
-                    <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
-                    <h3>Quantity: {{ product.quantity }}</h3>
-                    {% if product.user_rating %}
-                        <h3>Product Rating: {{ product.user_rating }}</h3>
-                    {% else %}
-                        <h3>No rating available for this product.</h3>
-                    {% endif %}
-                    <h3>Price: {{ product.price }}</h3>
-                    <div class="product-button">
-                    {% if product.source == 'database' %}
-                            <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
-                    {% elif product.source == 'api' %}
-                            <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
-                    {% endif %}
-                    </div>
-                    </div>
+{% if search_query %}
+<div class="products-container">
+    {% if search_results %}
+        {% for product in search_results %}
+            <div class="product">
+                <!-- Display smaller image -->
+                <div class="top">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                {% endif %}
                 </div>
-            {% endfor %}
-        {% else %}
-            <div class="no-products">
-                <h2>No products found for your search</h2>
+                <div class="middle">
+                <h1>{{ product.product_name }}</h1>
+                </div>
+                <div class="bottom">
+                <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                <h3>Quantity: {{ product.quantity }}</h3>
+                {% if product.user_rating %}
+                    <h3>Product Rating: {{ product.user_rating }}</h3>
+                {% else %}
+                    <h3>No rating available for this product.</h3>
+                {% endif %}
+                <h3>Price: {{ product.price }}</h3>
+                <div class="product-button">
+                {% if product.source == 'database' %}
+                        <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
+                {% elif product.source == 'api' %}
+                        <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
+                {% endif %}
+                </div>
+                </div>
             </div>
-        {% endif %}
-    </div>
+        {% endfor %}
     {% else %}
-        {% if best_rated_products %}
-        <div class="heading">Best rated products</div>
-        <div class="products-container">
-            {% for product in best_rated_products %}
-                <div class="product">
-                    <!-- Display smaller image -->
-                    <div class="top">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
-                    {% endif %}
-                    </div>
-                    <div class="middle">
-                    <h1>{{ product.product_name }}</h1>
-                    </div>
-                    <div class="bottom">
-                    <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
-                    <h3>Quantity: {{ product.quantity }}</h3>
-                    {% if product.user_rating %}
-                        <h3>Product Rating: {{ product.user_rating }}</h3>
-                    {% else %}
-                        <h3>No rating available for this product.</h3>
-                    {% endif %}
-                    <h3>Price: {{ product.price }}</h3>
-                    <div class="product-button">
-                    {% if product.source == 'database' %}
-                            <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
-                    {% elif product.source == 'api' %}
-                            <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
-                    {% endif %}
-                    </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="no-products">
-                <h2>No best rated products found</h2>
-            </div>
-        {% endif %}
+        <div class="no-products">
+            <h2>No products found for your search</h2>
         </div>
-        
-        {% if cheapest_products %}
-        <div class="heading">Cheapest Products</div>
-        <div class="products-container">
-            {% for product in cheapest_products %}
-                <div class="product">
-                    <!-- Display smaller image -->
-                    <div class="top">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
-                    {% endif %}
-                    </div>
-                    <div class="middle">
-                    <h1>{{ product.product_name }}</h1>
-                    </div>
-                    <div class="bottom">
-                    <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
-                    <h3>Quantity: {{ product.quantity }}</h3>
-                    {% if product.user_rating %}
-                        <h3>Product Rating: {{ product.user_rating }}</h3>
-                    {% else %}
-                        <h3>No rating available for this product.</h3>
-                    {% endif %}
-                    <h3>Price: {{ product.price }}</h3>
-                    <div class="product-button">
-                    {% if product.source == 'database' %}
-                            <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
-                    {% elif product.source == 'api' %}
-                            <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
-                    {% endif %}
-                    </div>
-                    </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="no-products">
-                <h2>No products found</h2>
-            </div>
-        {% endif %}
     {% endif %}
 </div>
+{% else %}
+    {% if best_rated_products %}
+    <div style="padding-top:30px" class="heading">Best rated products</div>
+    <div class="products-container">
+        {% for product in best_rated_products %}
+            <div class="product">
+                <!-- Display smaller image -->
+                <div class="top">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                {% endif %}
+                </div>
+                <div class="middle">
+                <h1>{{ product.product_name }}</h1>
+                </div>
+                <div class="bottom">
+                <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                <h3>Quantity: {{ product.quantity }}</h3>
+                {% if product.user_rating %}
+                    <h3>Product Rating: {{ product.user_rating }}</h3>
+                {% else %}
+                    <h3>No rating available for this product.</h3>
+                {% endif %}
+                <h3>Price: {{ product.price }}</h3>
+                <div class="product-button">
+                {% if product.source == 'database' %}
+                        <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
+                {% elif product.source == 'api' %}
+                        <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
+                {% endif %}
+                </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-products">
+            <h2>No best rated products found</h2>
+        </div>
+    {% endif %}
+    </div>
+    
+    {% if cheapest_products %}
+    <div style="padding-top:30px" class="heading">Cheapest Products</div>
+    <div class="products-container">
+        {% for product in cheapest_products %}
+            <div class="product">
+                <!-- Display smaller image -->
+                <div class="top">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                {% endif %}
+                </div>
+                <div class="middle">
+                <h1>{{ product.product_name }}</h1>
+                </div>
+                <div class="bottom">
+                <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                <h3>Quantity: {{ product.quantity }}</h3>
+                {% if product.user_rating %}
+                    <h3>Product Rating: {{ product.user_rating }}</h3>
+                {% else %}
+                    <h3>No rating available for this product.</h3>
+                {% endif %}
+                <h3>Price: {{ product.price }}</h3>
+                <div class="product-button">
+                {% if product.source == 'database' %}
+                        <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
+                {% elif product.source == 'api' %}
+                        <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
+                {% endif %}
+                </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-products">
+            <h2>No products found</h2>
+        </div>
+    {% endif %}
+{% endif %}
+</div>
 
-             
 <script>
     function toggleBar() {
 document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
 document.querySelector(".content-page").classList.toggle("content-page-extended");
 }
+
 function closeBar() {
  document.querySelector(".left-bar").classList.remove("left-bar-expanded");
  document.querySelector(".content-page").classList.remove("content-page-extended");
 }
- </script>
- <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+
+function toggleSearch() {
+    var searchContainer = document.getElementById("search-container");
+    searchContainer.classList.toggle("show-search-container");
+}
+</script>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </body>
 </html>

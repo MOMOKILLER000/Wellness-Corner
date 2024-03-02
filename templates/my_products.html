@@ -1,22 +1,85 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Pending Products</title>
+    <link rel="stylesheet" href="{% static 'my-products.css' %}">
 </head>
 <body>
-    <h1>My Pending Products</h1>
-    <ul>
-        {% for product in pending_products %}
-            <li>{{ product.product_name }} 
-                <a href="{% url 'edit_product' product.pk %}">Edit</a> 
-                <a href="{% url 'delete_product' product.pk %}">Delete</a>
-            </li>
-            <!-- Display other product details as needed -->
-        {% empty %}
-            <li>No pending products found.</li>
-        {% endfor %}
-    </ul>
+    <div class="left-bar">
+        <button class="close-button" onclick="closeBar()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <div class="links">
+            <a href="{% url 'create' %}">Create Product</a>
+            <a href="{% url 'my_products' %}">My Products</a>
+            <a href="{% url 'create_post' %}">Create Post</a>
+            <a href="{% url 'post_list' %}">Posts</a>
+        </div>
+    </div>
+    <header>
+        <div class="more">
+            <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+        </div>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+    
+        <nav class="navbar">    
+            <a href="{% url 'index' %}">Home</a>
+            <a href="#about">about</a>
+            <a href="#menu">menu</a>
+            <a href="#review">review</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+    
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon"></i>
+            <a href="#" class="fas fa-heart"></a>
+            <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+        </div>
+    
+    </header>
+    {% if pending_products %}
+        <div style="padding-top:30px" class="heading">My Pending Products</div>
+        <div class="products-container">
+            {% for product in pending_products %}
+                <div class="product">
+                    <!-- Display smaller image -->
+                    <div class="top">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                    {% endif %}
+                    </div>
+                    <div class="middle">
+                        <h1>{{ product.product_name }}</h1>
+                    </div>
+                    <div class="bottom">
+                        <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                        <h3>Quantity: {{ product.quantity }}</h3>
+                        <h3>Price: {{ product.price }}</h3>
+                        <div class="product-button">
+                            <a class="edit" href="{% url 'edit_product' product.pk %}">Edit</a>
+                            <a class="delete" href="{% url 'delete_product' product.pk %}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="padding-top:30px" class="heading">No Pending Products Found</div>
+    {% endif %}
 </body>
+<script>
+    function toggleBar() {
+        document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+        document.querySelector(".content-page").classList.toggle("content-page-extended");
+    }
+    function closeBar() {
+        document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+        document.querySelector(".content-page").classList.remove("content-page-extended");
+    }
+</script>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </html>
