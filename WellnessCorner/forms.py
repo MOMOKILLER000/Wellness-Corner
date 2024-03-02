@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import User, Allergy
-from .models import PendingProduct, Product, ApiProduct, Post
+from .models import PendingProduct, Product, ApiProduct, Post, Subscriber
 from itertools import chain
 
 class RegistrationForm(UserCreationForm):
@@ -72,3 +72,17 @@ class PostForm(forms.ModelForm):
             products = []
 
         self.fields['object_id'].queryset = products
+
+
+class NewsletterSubscriptionForm(forms.Form):
+    def save_subscription(self, user):
+        email = user.email
+        Subscriber.objects.get_or_create(email=email)
+
+class EmailSubscriberForm(forms.Form):
+    subject = forms.CharField(max_length=100)
+    message = forms.CharField(widget=forms.Textarea)
+
+class ContactForm(forms.Form):
+    subject = forms.CharField(max_length=100)
+    message = forms.CharField(widget=forms.Textarea)

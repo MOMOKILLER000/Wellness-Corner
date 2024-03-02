@@ -8,7 +8,7 @@
     <title>Wellnesscorner</title>
 
     <!-- custom css file link  -->
-    <link rel="stylesheet" href="{% static 'index1.css' %}">
+    <link rel="stylesheet" href="{% static 'index.css' %}">
 </head>
 <body>
 <div class="left-bar">
@@ -20,6 +20,11 @@
         <a href="{% url 'my_products' %}">My Products</a>
         <a href="{% url 'create_post' %}">Create Post</a>
         <a href="{% url 'post_list' %}">Posts</a>
+        {% if request.user.is_superuser %}
+        <a href="{% url 'approve_products' %}">Approve Products</a>
+        <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+    {% endif %}
+    <a href="{% url 'contact' %}">Contact</a>
     </div>
 </div>
 <header>
@@ -174,7 +179,18 @@
     {% endif %}
 {% endif %}
 </div>
-
+<div id="welcome">
+    <div class="scris-sus">
+        <h2>Subscribe for Exclusive Offers</h2>
+        <p>
+            Get access to special discounts and promotions. Sign up now!
+        </p>
+        <form action="{% url 'newsletter_subscription' %}" method="post">
+            {% csrf_token %}
+            <button class="subscribe" type="submit">Subscribe</button>
+        </form>
+    </div>          
+</div>
 <script>
     function toggleBar() {
 document.querySelector(".left-bar").classList.toggle("left-bar-expanded");

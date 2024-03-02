@@ -1,19 +1,101 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pending Products List</title>
+    <title>My Pending Products</title>
+    <link rel="stylesheet" href="{% static 'my-products.css' %}">
 </head>
 <body>
-    <h1>Pending Products List</h1>
-    <form method="post">
-        {% csrf_token %}
-        {% for product in pending_products %}
-            <input type="checkbox" id="product_{{ product.id }}" name="approved_products" value="{{ product.id }}">
-            <label for="product_{{ product.id }}">{{ product.product_name }}</label><br>
-        {% endfor %}
-        <button type="submit">Approve Selected Products</button>
+    <div class="left-bar">
+        <button class="close-button" onclick="closeBar()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <div class="links">
+            <a href="{% url 'create' %}">Create Product</a>
+            <a href="{% url 'my_products' %}">My Products</a>
+            <a href="{% url 'create_post' %}">Create Post</a>
+            <a href="{% url 'post_list' %}">Posts</a>
+            {% if request.user.is_superuser %}
+            <a href="{% url 'approve_products' %}">Approve Products</a>
+            <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+            {% endif %}
+            <a href="{% url 'contact' %}">Contact</a>
+        </div>
+    </div>
+    <header>
+        <div class="more">
+            <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+        </div>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+    
+        <nav class="navbar">    
+            <a href="{% url 'index' %}">Home</a>
+            <a href="#about">about</a>
+            <a href="#menu">menu</a>
+            <a href="#review">review</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+    
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon"></i>
+            <a href="#" class="fas fa-heart"></a>
+            <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+        </div>
+    
+    </header>
+    {% if pending_products %}
+        <div style="padding-top:30px" class="heading">My Pending Products</div>
+        <form method="post">
+            {% csrf_token %}
+        <div class="products-container">
+            {% for product in pending_products %}
+                <div class="product">
+                    <!-- Display smaller image -->
+                    <div class="top">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                    {% endif %}
+                    </div>
+                    <div class="middle">
+                        <h1>{{ product.product_name }}</h1>
+                    </div>
+                    <div class="bottom">
+                        <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                        <h3>Quantity: {{ product.quantity }}</h3>
+                        <h3>Price: {{ product.price }}</h3>
+                        <h5>Categories: {{ product.categories }}</h5>
+                        <h5>Nutrients</h5>
+                        <ul>
+                            <li>Protein per 100g: {{ product.protein_per_100g }}</li>
+                            <li>Carbs per 100g: {{ product.carbs_per_100g }}</li>
+                            <li>Fats per 100g: {{ product.fats_per_100g }}</li>
+                            <li>Kcal per 100g: {{ product.kcal_per_100g }}</li>
+                        </ul>
+                        <div class="product-button">
+                            <input type="checkbox" id="product_{{ product.id }}" name="approved_products" value="{{ product.id }}">
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button class="approve" type="submit">Approve Selected Products</button>
     </form>
+    {% else %}
+        <div style="padding-top:30px" class="heading">No Pending Products Found</div>
+    {% endif %}
 </body>
+<script>
+    function toggleBar() {
+        document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+        document.querySelector(".content-page").classList.toggle("content-page-extended");
+    }
+    function closeBar() {
+        document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+        document.querySelector(".content-page").classList.remove("content-page-extended");
+    }
+</script>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </html>

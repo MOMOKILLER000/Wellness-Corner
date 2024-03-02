@@ -277,3 +277,25 @@ header .icons #menu-bars{
     color: black;
     background-color: aquamarine;
 }
+
+.approve {
+    display: block;
+    margin: 0 auto; /* Center the button horizontally */
+    padding: 15px 30px; /* Increase padding for a bigger button */
+    font-size: 1.5rem; /* Increase font size */
+    background-color: green; /* Change background color */
+    color: white; /* Change text color */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Add border radius */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Add transition effect */
+}
+
+.approve:hover {
+   cursor:pointer;
+   background-color: darkgreen;
+}
+
+li{
+    font-size:12px;
+}

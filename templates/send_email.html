@@ -96,12 +96,12 @@
     
     </header>
 <div class="container">
-  <h2>Create a product</h2>
-  <form method="post" enctype="multipart/form-data" autocomplete="off">
+  <h2>Send Email to Subscribers</h2>
+  <form method="post" action="{% url 'send_email_to_subscribers' %}">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
+    <button type="submit">Send Email</button>
+  </form>
 </div>
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 <script>

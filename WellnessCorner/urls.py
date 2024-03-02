@@ -23,6 +23,9 @@ urlpatterns = [
     path('create-post/', views.create_post, name='create_post'),
     path('posts/', views.post_list, name='post_list'),
     path('post/<int:post_id>/', views.post, name='post'),
+    path('contact/', views.contact, name='contact'),
+    path('newsletter/', views.newsletter_subscription, name='newsletter_subscription'),
+    path('send_email/', views.send_email_to_subscribers, name='send_email_to_subscribers'),
 ]
 
 if settings.DEBUG:

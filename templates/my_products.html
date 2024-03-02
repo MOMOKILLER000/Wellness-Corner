@@ -17,6 +17,11 @@
             <a href="{% url 'my_products' %}">My Products</a>
             <a href="{% url 'create_post' %}">Create Post</a>
             <a href="{% url 'post_list' %}">Posts</a>
+            {% if request.user.is_superuser %}
+            <a href="{% url 'approve_products' %}">Approve Products</a>
+            <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+            {% endif %}
+            <a href="{% url 'contact' %}">Contact</a>
         </div>
     </div>
     <header>

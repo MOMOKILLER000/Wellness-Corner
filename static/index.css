@@ -1,31 +1,36 @@
-*{
+* {
     font-family: 'Nunito', sans-serif;
-    margin:0; padding:0;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
     text-decoration: none;
-    outline: none; border:none;
+    outline: none;
+    border: none;
     text-transform: capitalize;
     transition: all .2s linear;
 }
 
-html{
+html {
     font-size: 62.5%;
     overflow-x: hidden;
     scroll-padding-top: 5.5rem;
     scroll-behavior: smooth;
 }
 
-.heading{
+.heading {
     text-align: center;
-    color:black;
+    color: black;
     font-size: 3rem;
     padding-bottom: 2rem;
     text-transform: uppercase;
 }
-header{
-    top:0; left: 0; right:0;
+
+header {
+    top: 0;
+    left: 0;
+    right: 0;
     background: #fff;
-    padding:1rem 5%;
+    padding: 1rem 5%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -33,58 +38,60 @@ header{
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
 }
 
-header .logo{
-    color:black;
+header .logo {
+    color: black;
     font-size: 2.5rem;
     font-weight: bolder;
 }
 
-header .logo i{
-    color:green;
+header .logo i {
+    color: green;
 }
 
-header .navbar a{
+header .navbar a {
     font-size: 1.7rem;
     border-radius: .5rem;
-    padding:.5rem 1.5rem;
-    color:black;
+    padding: .5rem 1.5rem;
+    color: black;
 }
-.more{
+
+.more {
     font-size: 1.7rem;
-    color:black;
-    
+    color: black;
 }
-.more:hover{
-    cursor:pointer;
+
+.more:hover {
+    cursor: pointer;
 }
+
 header .navbar a.active,
-header .navbar a:hover{
-    color:#fff;
+header .navbar a:hover {
+    color: #fff;
     background: green;
 }
 
 header .icons i,
-header .icons a{
+header .icons a {
     cursor: pointer;
     margin-left: .5rem;
-    height:4.5rem;
+    height: 4.5rem;
     line-height: 4.5rem;
-    width:4.5rem;
+    width: 4.5rem;
     text-align: center;
     font-size: 1.7rem;
-    color:black;
+    color: black;
     border-radius: 50%;
     background: #eee;
 }
 
 header .icons i:hover,
-header .icons a:hover{
-    color:#fff;
+header .icons a:hover {
+    color: #fff;
     background: green;
     transform: rotate(360deg);
 }
 
-header .icons #menu-bars{
+header .icons #menu-bars {
     display: none;
 }
 
@@ -92,38 +99,47 @@ header .icons #menu-bars{
 .left-bar {
     position: fixed;
     top: 0;
-    left: -200px; /* Initially hide the sidebar off-screen */
+    left: -200px;
+    /* Initially hide the sidebar off-screen */
     height: 100%;
     width: 200px;
     background-color: #333;
     color: white;
-    transition: left 0.3s ease; /* Add a transition effect for smooth appearance/disappearance */
-    z-index: 1000; /* Set a higher z-index to make sure it appears above other elements */
+    transition: left 0.3s ease;
+    /* Add a transition effect for smooth appearance/disappearance */
+    z-index: 1000;
+    /* Set a higher z-index to make sure it appears above other elements */
 }
 
 .left-bar-expanded {
-    left: 0;/* Display the sidebar when the class is applied */
-    z-index:10;
+    left: 0;
+    /* Display the sidebar when the class is applied */
+    z-index: 10;
 }
 
 .content-page {
-    transition: margin-left 0.3s ease; /* Add a transition effect for the content page when the sidebar appears/disappears */
+    transition: margin-left 0.3s ease;
+    /* Add a transition effect for the content page when the sidebar appears/disappears */
 }
 
 .content-page-extended {
-    margin-left: 200px; /* Adjust the margin to make room for the sidebar */
+    margin-left: 200px;
+    /* Adjust the margin to make room for the sidebar */
 }
 
 .close-button {
     position: absolute;
     top: 10px;
-    right: 10px; /* Position the button on the right side */
+    right: 10px;
+    /* Position the button on the right side */
     background: none;
     border: none;
     color: white;
-    font-size: 24px; /* Increase the font size for a bigger button */
+    font-size: 24px;
+    /* Increase the font size for a bigger button */
     cursor: pointer;
 }
+
 .links {
     display: flex;
     flex-direction: column;
@@ -132,21 +148,31 @@ header .icons #menu-bars{
 }
 
 .links a {
-    font-size: 24px; /* Adjust the font size */
-    padding: 15px 20px; /* Add padding for better spacing */
+    font-size: 24px;
+    /* Adjust the font size */
+    padding: 15px 20px;
+    /* Add padding for better spacing */
     color: #FFD700;
     text-decoration: none;
-    transition: color 0.3s ease; /* Add transition for smooth color change on hover */
+    transition: color 0.3s ease;
+    /* Add transition for smooth color change on hover */
 }
 
 .links a:hover {
-    color: #ffffff; /* Change color on hover */
+    color: #ffffff;
+    /* Change color on hover */
 }
 
 /*Search */
 .search-container {
-    margin-top: 20px;
-    margin-bottom:50px;
+    margin-top: 40px;
+    display: none;
+    /* Initially hide the search container */
+}
+
+.show-search-container {
+    display: block;
+    /* Show the search container */
 }
 
 .search-form {
@@ -160,7 +186,8 @@ header .icons #menu-bars{
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-right: 10px;
-    width: 250px; /* Adjust as needed */
+    width: 250px;
+    /* Adjust as needed */
 }
 
 .search-button {
@@ -190,17 +217,21 @@ header .icons #menu-bars{
 }
 
 .product {
-    width: calc(25% - 20px); /* Adjust width for 4 products per line */
+    width: calc(25% - 20px);
+    /* Adjust width for 4 products per line */
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex; /* Use flexbox */
+    display: flex;
+    /* Use flexbox */
     flex-direction: column;
-    justify-content: space-between; /* Add space between top, middle, and bottom */
+    justify-content: space-between;
+    /* Add space between top, middle, and bottom */
     align-items: center;
     text-align: center;
-    border-radius: 30px; /* Add border radius */
+    border-radius: 30px;
+    /* Add border radius */
 }
 
 .product h1 {
@@ -213,12 +244,14 @@ header .icons #menu-bars{
     text-decoration: none;
     color: black;
     font-size: 1.2rem;
-    padding: 10px 15px; /* Adjust padding */
+    padding: 10px 15px;
+    /* Adjust padding */
 }
 
 .product-image {
     height: 130px;
-    width: auto; /* Set a fixed width for all images */
+    width: auto;
+    /* Set a fixed width for all images */
     margin-bottom: 10px;
 }
 
@@ -227,8 +260,9 @@ header .icons #menu-bars{
     color: white;
     text-decoration: none;
     font-size: 1.2rem;
-    padding: 10px 20px; /* Adjust button padding */
-    border-radius: 5px; /* Add border radius */
+    padding: 10px 20px;
+    /* Adjust button padding */
+    border-radius: 5px;
 }
 
 .product-button:hover {
@@ -246,19 +280,96 @@ header .icons #menu-bars{
 
 .top {
     display: flex;
-    justify-content: center; /* Center the image horizontally */
-    align-items: center; /* Center the image vertically */
+    justify-content: center;
+    /* Center the image horizontally */
+    align-items: center;
+    /* Center the image vertically */
 }
 
 .middle {
-    text-align: center; /* Center text horizontally */
+    text-align: center;
+    /* Center text horizontally */
 }
 
 .bottom {
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center child elements vertically */
-    align-items: center; /* Center child elements horizontally */
-    margin-top: 10px; /* Add space between middle and bottom */
+    justify-content: center;
+    /* Center child elements vertically */
+    align-items: center;
+    /* Center child elements horizontally */
+    margin-top: 10px;
+    /* Add space between middle and bottom */
 }
 
+/* Subscribe */
+
+.scris-sus h2{
+    position: relative;
+    font-size:40px;
+    padding-top:40px;
+    padding-left:200px;
+    padding-right:200px;   
+    background: #f2f2f2;
+    text-align: center;
+}
+.scris-sus p{
+    position: relative; 
+    padding-left:200px;
+    padding-right:200px;
+    padding-bottom:20px;
+    padding-top:15px;
+    background: #f2f2f2;
+    text-align: center;
+}
+#welcome a {
+    display: inline-block;
+    padding: 7px 30px;
+    color: #FFD700;
+    background: #222222;
+}
+#welcome p{
+    font-size:18px;
+}
+.subscribe{
+    width: 180px; /* Set width */
+    height: 50px; /* Set height */
+    display: block; /* Change display to block */
+    margin: 0 auto; /* Center horizontally */
+    padding: 10px 30px; /* Adjust padding */
+    font-size: 24px; /* Increase font size */
+    color: #FFD700;
+    background: #222222;
+    border: none;
+    border-radius: 5px;
+}
+.subscribe:hover{
+    color: #222222;
+    background: #FFD700;
+    cursor: pointer;
+}
+#welcome a:hover {
+    color: #222222;
+    background-image: linear-gradient(to top right, #6B097A, #274BDB, #00FF00, #FFA500, #FF0000);
+    background-size: 400% 400%;
+    animation: gradient-animation 4s infinite;
+    animation-timing-function: linear;
+}
+
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 100%;
+    }
+    100% {
+        background-position: 100% 0%;
+    }
+}
+
+#welcome {
+    position: relative;
+   padding-left:200px;
+   padding-right:200px;
+   padding-bottom:60px;
+    background: #f2f2f2;
+    text-align: center;
+}

@@ -12,14 +12,16 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .forms import ProductForm
-from .models import PendingProduct
+from .models import PendingProduct, Subscriber
 from django.core.files.base import ContentFile
 from django.http import HttpResponseForbidden
 from django.conf import settings
-from .forms import PostForm
+from .forms import PostForm, EmailSubscriberForm, ContactForm, NewsletterSubscriptionForm
 from .models import Post
 from django.db.models import F
 from itertools import chain
+from django.core.mail import send_mail
+from django.core.exceptions import PermissionDenied
 
 @login_required
 def index(request):
@@ -573,3 +575,68 @@ def post_list(request):
 def post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     return render(request, 'post.html', {'post': post})
+
+
+@login_required
+def send_email_to_subscribers(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied("You do not have permission to access this page.")
+
+    if request.method == 'POST':
+        form = EmailSubscriberForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+
+            subscribers = Subscriber.objects.all()
+
+            recipient_list = [subscriber.email for subscriber in subscribers]
+
+            send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list, fail_silently=False)
+            
+            messages.success(request, 'Email sent to subscribers successfully.')
+            return redirect('index')
+    else:
+        form = EmailSubscriberForm()
+
+    return render(request, 'send_email.html', {'form': form})
+
+
+@login_required
+def contact(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            user_email = request.user.email
+
+            # Send email to exploresphereapp@gmail.com
+            send_mail(
+                subject,
+                f"From: {user_email}\n\n{message}",
+                user_email,
+                ['exploresphereapp@gmail.com'],
+                fail_silently=False,
+            )
+
+            messages.success(request, 'Your message has been sent successfully.')
+            return redirect('contact')  # Redirect to the contact page or another page as needed
+    else:
+        form = ContactForm()
+
+    return render(request, 'contact.html', {'form': form})
+
+
+@login_required
+def newsletter_subscription(request):
+    if request.method == 'POST':
+        form = NewsletterSubscriptionForm(request.POST)
+        if form.is_valid():
+            form.save_subscription(request.user)
+            messages.success(request, 'Subscription successful.')
+            return redirect('index')
+    else:
+        form = NewsletterSubscriptionForm()
+
+    return render(request, 'index.html', {'form': form})

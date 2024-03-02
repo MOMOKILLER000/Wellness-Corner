@@ -249,3 +249,12 @@ class Post(models.Model):
         if self.product:
             self.product_name = self.product.product_name  # Assuming the product model has a 'product_name' attribute
         super().save(*args, **kwargs)
+
+
+class Subscriber(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    email = models.EmailField(unique=True)
+    subscription_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email
