@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, ApiProduct, Allergy, Basket, BasketItem, PendingProduct, Post, Subscriber
+from .models import Product, ApiProduct, Allergy, Basket, BasketItem, PendingProduct, Post, Subscriber, ApiProductRating, ProductRating
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
 
@@ -24,3 +24,5 @@ admin.site.register(BasketItem)
 admin.site.register(PendingProduct)
 admin.site.register(Post)
 admin.site.register(Subscriber)
+admin.site.register(ApiProductRating)
+admin.site.register(ProductRating)

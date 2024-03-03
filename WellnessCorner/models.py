@@ -5,6 +5,7 @@ from django.utils import timezone
 from django.db.models import Count
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+from django.db.models import Avg
 
 class CustomUserManager(UserManager):
     def create_user(self, email=None, password=None, **extra_fields):
@@ -79,6 +80,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add price field
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    total_ratings = models.IntegerField(default=0)
+    rated_by = models.ManyToManyField(User, through='ProductRating')
     allergies = models.TextField(null=True, blank=True) 
 
     # Field for approval status
@@ -86,6 +89,13 @@ class Product(models.Model):
 
     def __str__(self):
         return self.product_name
+    
+    def calculate_average_rating(self):
+        # Get the average rating from related ratings
+        average_rating = self.productrating_set.aggregate(avg_rating=Avg('rating'))['avg_rating']
+        if average_rating is not None:
+            self.user_rating = average_rating
+            self.save()
 
 class PendingProduct(models.Model):
     PRODUCT_TYPES = (
@@ -108,7 +118,6 @@ class PendingProduct(models.Model):
     kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
-    user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     allergies = models.TextField(null=True, blank=True)
     approved = models.BooleanField(default=False)
 
@@ -198,10 +207,19 @@ class ApiProduct(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add price field
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    total_ratings = models.IntegerField(default=0)
+    rated_by = models.ManyToManyField(User, through='ApiProductRating')
     allergies = models.TextField(null=True, blank=True)  # Field to store allergies as JSON string
 
     def __str__(self):
         return self.product_name
+    
+    def calculate_average_rating(self):
+        # Get the average rating from related ratings
+        average_rating = self.apiproductrating_set.aggregate(avg_rating=Avg('rating'))['avg_rating']
+        if average_rating is not None:
+            self.user_rating = average_rating
+            self.save()
 
 class Basket(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -258,3 +276,13 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.email
+
+class ProductRating(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.DecimalField(max_digits=3, decimal_places=1, default=0)  # Provide a default value
+
+class ApiProductRating(models.Model):
+    product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.DecimalField(max_digits=3, decimal_places=1, default=0)

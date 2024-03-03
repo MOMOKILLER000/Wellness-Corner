@@ -1,0 +1,226 @@
+*{
+    font-family: 'Nunito', sans-serif;
+    box-sizing: border-box;
+    text-decoration: none;
+    outline: none; border:none;
+    text-transform: capitalize;
+    transition: all .2s linear;
+}
+
+html{
+    font-size: 62.5%;
+    overflow-x: hidden;
+    scroll-padding-top: 5.5rem;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #fceabb, #f8b500); 
+}
+
+main {
+    max-width: 800px;
+    margin: 20px auto;
+}
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.product-container {
+    background: linear-gradient(to right, #ffffff, #f0f0f0); 
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    border-radius: 15px;
+    font-size:1.7rem;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 10px; 
+    width: 150px; 
+}
+
+.product-container h2 {
+    color: #333;
+}
+
+.product-container p {
+    line-height: 1.6;
+    color: #555;
+}
+
+.product-details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.product-details div {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-right: 15px;
+    border-radius: 10px; 
+}
+
+.add-now-btn {
+    display: inline-block;
+    padding: 15px;
+    background: #333;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background 0.3s ease; 
+}
+
+.add-now-btn:hover {
+    background: #555;
+    cursor:pointer;
+}
+
+
+.heading{
+    text-align: center;
+    color:black;
+    font-size: 3rem;
+    padding-bottom: 2rem;
+    text-transform: uppercase;
+}
+header{
+    top:0; left: 0; right:0;
+    background: #fff;
+    padding:1rem 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+}
+
+header .logo{
+    color:black;
+    font-size: 2.5rem;
+    font-weight: bolder;
+}
+
+header .logo i{
+    color:green;
+}
+
+header .navbar a{
+    font-size: 1.7rem;
+    border-radius: .5rem;
+    padding:.5rem 1.5rem;
+    color:black;
+}
+.more{
+    font-size: 1.7rem;
+    color:black;
+    
+}
+.more:hover{
+    cursor:pointer;
+}
+header .navbar a.active,
+header .navbar a:hover{
+    color:#fff;
+    background: green;
+}
+
+header .icons i,
+header .icons a{
+    cursor: pointer;
+    margin-left: .5rem;
+    height:4.5rem;
+    line-height: 4.5rem;
+    width:4.5rem;
+    text-align: center;
+    font-size: 1.7rem;
+    color:black;
+    border-radius: 50%;
+    background: #eee;
+}
+
+header .icons i:hover,
+header .icons a:hover{
+    color:#fff;
+    background: green;
+    transform: rotate(360deg);
+}
+
+header .icons #menu-bars{
+    display: none;
+}
+
+/*Left bar */
+.left-bar {
+    position: fixed;
+    top: 0;
+    left: -200px; /* Initially hide the sidebar off-screen */
+    height: 100%;
+    width: 200px;
+    background-color: #333;
+    color: white;
+    transition: left 0.3s ease; /* Add a transition effect for smooth appearance/disappearance */
+    z-index: 1000; /* Set a higher z-index to make sure it appears above other elements */
+}
+
+.left-bar-expanded {
+    left: 0;/* Display the sidebar when the class is applied */
+    z-index:10;
+}
+
+.content-page {
+    transition: margin-left 0.3s ease; /* Add a transition effect for the content page when the sidebar appears/disappears */
+}
+
+.content-page-extended {
+    margin-left: 200px; /* Adjust the margin to make room for the sidebar */
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px; /* Position the button on the right side */
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px; /* Increase the font size for a bigger button */
+    cursor: pointer;
+}
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 50px;
+}
+
+.links a {
+    font-size: 24px; /* Adjust the font size */
+    padding: 15px 20px; /* Add padding for better spacing */
+    color: #FFD700;
+    text-decoration: none;
+    transition: color 0.3s ease; /* Add transition for smooth color change on hover */
+}
+
+.links a:hover {
+    color: #ffffff; /* Change color on hover */
+}

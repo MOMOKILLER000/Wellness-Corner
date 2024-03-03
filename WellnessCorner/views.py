@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.contrib.auth import authenticate, login, logout
-from .models import Product, ApiProduct, Allergy, Basket, BasketItem
+from .models import Product, ApiProduct, Allergy, Basket, BasketItem, ProductRating, ApiProductRating
 from .forms import RegistrationForm, LoginForm
 import requests
 from decimal import Decimal
@@ -80,6 +80,7 @@ def registration_view(request):
                 user = form.save(commit=False)
                 user.save()
                 form.save_m2m()  # Save many-to-many relationships (allergies)
+                login(request, user)
                 return redirect('index')
             else:
                 messages.error(request, 'reCAPTCHA verification failed. Please try again.')
@@ -203,47 +204,47 @@ def search_product(product_name, user=None):
 def rate_product(request, product_id, source):
     if request.method == 'POST':
         try:
-            rating = Decimal(request.POST.get('rating'))  # Convert rating to Decimal
+            rating_value = Decimal(request.POST.get('rating'))  # Convert rating to Decimal
         except ValueError:
             return HttpResponseBadRequest("Invalid rating")
+
+        if rating_value < 0 or rating_value > 10:  # Ensure rating value is within valid range
+            return HttpResponseBadRequest("Rating value must be between 0 and 10")
 
         try:
             if source == 'database':
                 product_model = Product
+                rating_model = ProductRating
             elif source == 'api':
                 product_model = ApiProduct
+                rating_model = ApiProductRating
             else:
                 return HttpResponseBadRequest("Invalid source")
 
-            product = product_model.objects.get(pk=product_id)
+            product = get_object_or_404(product_model, pk=product_id)
 
-            if product.user_rating is None:
-                product.user_rating = rating
-            else:
-                product.user_rating = (product.user_rating + rating) / Decimal(2)
-            product.save()
+            # Check if the user has already rated the product
+            rating, created = rating_model.objects.get_or_create(user=request.user, product=product)
 
-            # Get the common allergies for rendering in the template
-            common_allergies = None
+            # Set the rating value
+            rating.rating = rating_value
+            rating.save()
 
-            if source == 'database':
-                product_allergies = product.allergies.split(',') if product.allergies else []
-            elif source == 'api':
-                product_allergies = json.loads(product.allergies) if product.allergies else []
+            # Recalculate the average rating for the product
+            product.calculate_average_rating()
 
-            user_allergies = request.user.allergies.all()
+            # Get common allergies
+            product_allergies = json.loads(product.allergies) if product.allergies else []
+            user_allergies = request.user.allergies.all() if request.user.is_authenticated else []
             common_allergies = set(product_allergies) & set(allergy.name for allergy in user_allergies)
 
-            # Render the same product detail template with the updated rating
+            # Render the product detail template with the updated rating and common allergies
             return render(request, 'product_detail.html', {'product': product, 'common_allergies': common_allergies, 'product_rating': product.user_rating, 'source': source})
 
         except (Product.DoesNotExist, ApiProduct.DoesNotExist):
             return HttpResponseBadRequest("Product not found")
-        except ValidationError:
-            return HttpResponseBadRequest("Invalid rating")
 
     return HttpResponseBadRequest("Invalid request method")
-
 
 def product_detail(request, product_id, source):
     try:
