@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+</head>
+<body>
+    <h1>Order Confirmation</h1>
+    <p>Dear {{ first_name }} {{ last_name }},</p>
+    <p>Your order has been successfully placed with the following details:</p>
+    <ul>
+        <li>Address: {{ address }}</li>
+        {% for item in basket_items %}
+        {% if item.product %}
+        <li>{{ item.product.product_name }} - Quantity: {{ item.quantity }} - Price: ${{ item.price }}</li>
+        {% endif %}
+        {% if item.api_product %}
+        <li>{{ item.api_product.product_name }} - Quantity: {{ item.quantity }} - Price: ${{ item.price }}</li>
+        {% endif %}
+        {% endfor %}
+        <li>Total Price: ${{ total_price }}</li>
+        <!-- Add more order details here -->
+    </ul>
+    <p>Thank you for shopping with us!</p>
+</body>
+</html>

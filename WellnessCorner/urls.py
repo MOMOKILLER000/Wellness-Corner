@@ -26,6 +26,9 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
     path('newsletter/', views.newsletter_subscription, name='newsletter_subscription'),
     path('send_email/', views.send_email_to_subscribers, name='send_email_to_subscribers'),
+    path('increment_quantity/<int:product_id>/<str:source>/', views.increment_quantity, name='increment_quantity'),
+    path('decrement_quantity/<int:product_id>/<str:source>/', views.decrement_quantity, name='decrement_quantity'),
+    path('checkout/', views.checkout, name='checkout'),
 ]
 
 if settings.DEBUG:

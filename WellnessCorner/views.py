@@ -22,6 +22,9 @@ from django.db.models import F
 from itertools import chain
 from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.db.models import Sum
 
 @login_required
 def index(request):
@@ -282,6 +285,7 @@ def product_detail(request, product_id, source):
     except product_model.DoesNotExist:
         return HttpResponseBadRequest("Product not found")
 
+@login_required
 def add_to_basket(request, product_id, source):
     if request.method == 'POST':
         # Check if source is either 'database' or 'api'
@@ -297,19 +301,66 @@ def add_to_basket(request, product_id, source):
         # Get the product based on the model and product_id
         product = get_object_or_404(product_model, pk=product_id)
 
-        # Get or create the basket for the current user
+        # Get the basket for the current user
         basket, created = Basket.objects.get_or_create(user=request.user)
 
-        # Add the product to the basket
+        # Check if the product is already in the basket
         if source == 'database':
-            BasketItem.objects.create(basket=basket, product=product, source=source)
+            existing_item = basket.items.filter(product=product, api_product=None)
         elif source == 'api':
-            BasketItem.objects.create(basket=basket, api_product=product, source=source)
+            existing_item = basket.items.filter(api_product=product, product=None)
+
+        if existing_item.exists():
+            # Update the quantity of the existing basket item
+            existing_item.update(quantity=F('quantity') + 1)
+        else:
+            # Add the product to the basket with quantity=1
+            if source == 'database':
+                BasketItem.objects.create(basket=basket, product=product, source=source)
+            elif source == 'api':
+                BasketItem.objects.create(basket=basket, api_product=product, source=source, quantity=1)
 
         return redirect('basket_page')  # Redirect to the basket page
 
     # Handle other request methods if needed
     return HttpResponseBadRequest("Invalid request method")
+
+@login_required
+def increment_quantity(request, product_id, source):
+    try:
+        # Get the basket item for the given product_id and source
+        if source == 'database':
+            basket_item = BasketItem.objects.get(product_id=product_id, source=source)
+        elif source == 'api':
+            basket_item = BasketItem.objects.get(api_product_id=product_id, source=source)
+
+        if basket_item.quantity < 20:  # Check if quantity is less than 20
+            basket_item.quantity += 1
+            basket_item.save()
+        else:
+            messages.warning(request, "Maximum quantity reached (20).")
+    except BasketItem.DoesNotExist:
+        messages.error(request, "Basket item not found.")
+    return redirect('basket_page')  # Redirect to the basket page
+
+@login_required
+def decrement_quantity(request, product_id, source):
+    try:
+        # Get the basket item for the given product_id and source
+        if source == 'database':
+            basket_item = BasketItem.objects.get(product_id=product_id, source=source)
+        elif source == 'api':
+            basket_item = BasketItem.objects.get(api_product_id=product_id, source=source)
+
+        if basket_item.quantity > 1:
+            basket_item.quantity -= 1
+            basket_item.save()
+        else:
+            messages.warning(request, "Quantity cannot be less than 1.")
+    except BasketItem.DoesNotExist:
+        messages.error(request, "Basket item not found.")
+    return redirect('basket_page')  # Redirect to the basket page
+
 @login_required
 def basket_page(request):
     # Get the basket for the current user
@@ -325,17 +376,19 @@ def basket_page(request):
         if item.product:
             product = item.product
             source = 'database'
+            quantity = item.quantity
         elif item.api_product:
             product = item.api_product
             source = 'api'
+            quantity = item.quantity
         else:
             continue
 
         # Check if product has a valid price before adding it to total_price
         if product.price is not None:
-            total_price += product.price
+            total_price += product.price * quantity
 
-        products_in_basket.append({'product': product, 'source': source})
+        products_in_basket.append({'product': product, 'source': source, 'quantity': quantity})
 
     return render(request, 'basket.html', {'products_in_basket': products_in_basket, 'total_price': total_price})
 
@@ -641,3 +694,57 @@ def newsletter_subscription(request):
         form = NewsletterSubscriptionForm()
 
     return render(request, 'index.html', {'form': form})
+
+
+@login_required
+def checkout(request):
+    if request.method == 'POST':
+        # Get form data
+        address = request.POST.get('address')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        age_confirmation = request.POST.get('age_confirmation')
+        email = request.user.email  # Assuming user is logged in
+
+        # Perform validation
+        if not address or not first_name or not last_name or not age_confirmation:
+            messages.error(request, "Please fill in all the required fields.")
+            return redirect('checkout')
+
+        # Perform age verification
+        if age_confirmation != 'on':
+            messages.error(request, "You must confirm that you are over 18 years old.")
+            return redirect('checkout')
+
+        # Get the basket for the current user
+        basket, created = Basket.objects.get_or_create(user=request.user)
+
+        # Check if the basket is empty
+        if not basket.items.exists():
+            messages.error(request, "Your basket is empty.")
+            return redirect('checkout')
+
+        # Calculate the total price of the order
+        total_price = basket.items.aggregate(total_price=Sum('price'))['total_price'] or Decimal('0.00')
+
+        # Send confirmation email
+        subject = 'Order Confirmation'
+        html_message = render_to_string('confirmation_email.html', {
+            'address': address,
+            'first_name': first_name,
+            'last_name': last_name,
+            'total_price': total_price,  # Include total price in email
+            'basket_items': basket.items.all(),  # Include basket items in email
+        })
+        plain_message = strip_tags(html_message)
+        from_email = 'exploresphereapp@gmail.com'  # Update with your email
+        to_email = [email]
+        send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
+
+        # Clear the basket after successful checkout
+        basket.items.all().delete()
+
+        messages.success(request, "Order successfully placed! You will receive a confirmation email.")
+        return redirect('index')  # Redirect to home page after successful checkout
+
+    return render(request, 'checkout.html')

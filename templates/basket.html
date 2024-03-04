@@ -10,9 +10,9 @@
         {% for product in products_in_basket %}
             <li>
                 {% if product.source == 'database' %}
-                    {{ product.product.product_name }} - {{ product.product.price }}
+                    {{ product.product.product_name }} - {{ product.product.price }} - Quantity: {{ product.quantity }}
                 {% elif product.source == 'api' %}
-                    {{ product.product.product_name }} - {{ product.product.price }}
+                    {{ product.product.product_name }} - {{ product.product.price }} - Quantity: {{ product.quantity }}
                 {% endif %}
                 <form method="post" action="{% url 'delete_from_basket' product_id=product.product.id source=product.source %}">
                     {% csrf_token %}
@@ -20,9 +20,22 @@
                     <input type="hidden" name="product_id" value="{{ product.product.id }}">
                     <button type="submit">Delete</button>
                 </form>
+                <form method="post" action="{% url 'increment_quantity' product_id=product.product.id source=product.source %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="source" value="{{ product.source }}">
+                    <input type="hidden" name="product_id" value="{{ product.product.id }}">
+                    <button type="submit">Increment</button>
+                </form>
+                <form method="post" action="{% url 'decrement_quantity' product_id=product.product.id source=product.source %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="source" value="{{ product.source }}">
+                    <input type="hidden" name="product_id" value="{{ product.product.id }}">
+                    <button type="submit">Decrement</button>
+                </form>
             </li>
         {% endfor %}
     </ul>
     <p>Total Price: {{ total_price }}</p>
+    <a href="{% url 'checkout' %}">Finish Order</a>
 </body>
 </html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+</head>
+<body>
+    <h1>Checkout</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="address">Address:</label><br>
+        <input type="text" id="address" name="address" required><br><br>
+        <label for="first_name">First Name:</label><br>
+        <input type="text" id="first_name" name="first_name" required><br><br>
+        <label for="last_name">Last Name:</label><br>
+        <input type="text" id="last_name" name="last_name" required><br><br>
+        <input type="checkbox" id="age_confirmation" name="age_confirmation" required>
+        <label for="age_confirmation">I confirm that I am over 18 years old</label><br><br>
+        <button type="submit">Place Order</button>
+    </form>
+</body>
+</html>

@@ -6,6 +6,7 @@ from django.db.models import Count
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg
+from decimal import Decimal
 
 class CustomUserManager(UserManager):
     def create_user(self, email=None, password=None, **extra_fields):
@@ -222,9 +223,14 @@ class ApiProduct(models.Model):
             self.save()
 
 class Basket(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    address = models.CharField(max_length=100,null=True, blank=True)
+    first_name = models.CharField(max_length=50,null=True, blank=True)
+    last_name = models.CharField(max_length=50,null=True, blank=True)
+    age_confirmation = models.BooleanField(default=False)
+
 
 class BasketItem(models.Model):
     BASKET_SOURCES = (
@@ -236,6 +242,17 @@ class BasketItem(models.Model):
     product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
     api_product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE)
     source = models.CharField(max_length=20, choices=BASKET_SOURCES)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Add this line
+
+    def save(self, *args, **kwargs):
+        if self.product:
+            self.price = self.product.price * self.quantity
+        elif self.api_product and self.api_product.price is not None:  # Check if price exists
+            self.price = self.api_product.price * self.quantity
+        else:
+            self.price = Decimal('0.00')  # Set default price to 0 if price is None
+        super().save(*args, **kwargs)
 
     def __str__(self):
         if self.product:
@@ -244,7 +261,7 @@ class BasketItem(models.Model):
             return f"API Product: {self.api_product.product_name}"
         else:
             return "Unknown Product"
-            
+        
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     PRODUCT_CHOICES = (
