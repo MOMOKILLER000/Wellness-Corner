@@ -4,9 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Summary</title>
+    <style>
+        .bad{
+            color: red;
+        }
+        .good {
+            color: green;
+        }
+    </style>
 </head>
 <body>
     <h1>Product Summary</h1>
+
+    <!-- Display Daily Calories -->
+    <h2>Daily Calories</h2>
+    <p class="{{ calories_class }}">
+        Daily Calories: {{ daily_calories|floatformat:"0" }}
+    </p>
 
     <h2>Breakfast</h2>
     <ul>

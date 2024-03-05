@@ -42,8 +42,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     date_joined = models.DateTimeField(default=timezone.now)
     last_login = models.DateTimeField(blank=True, null=True)
-    allergies = models.ManyToManyField(Allergy, blank=True)  # ManyToManyField to store allergies
-
+    allergies = models.ManyToManyField(Allergy, blank=True)
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -59,6 +58,33 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     def get_short_name(self):
         return self.name or self.email.split('@')[0]
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    age = models.PositiveIntegerField()
+    height = models.PositiveIntegerField()  # in cm
+    weight = models.DecimalField(max_digits=5, decimal_places=2)
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES,  default='male')
+    ACTIVITY_LEVEL_CHOICES = [
+        ('sedentary', 'Sedentary'),
+        ('lightly_active', 'Lightly Active'),
+        ('moderately_active', 'Moderately Active'),
+        ('very_active', 'Very Active'),
+        ('extra_active', 'Extra Active'),
+    ]
+    activity_level = models.CharField(max_length=20, choices=ACTIVITY_LEVEL_CHOICES, default='sedentary')
+    
+    GOAL_CHOICES = [
+        ('cut', 'Cut'),
+        ('bulk', 'Bulk'),
+        ('maintain', 'Maintain'),
+    ]
+    goal = models.CharField(max_length=10, choices=GOAL_CHOICES, default='maintain')
+    daily_calories = models.DecimalField(max_digits=8, decimal_places=2, blank=True, null=True)
 
 class Product(models.Model):
     PRODUCT_TYPES = (

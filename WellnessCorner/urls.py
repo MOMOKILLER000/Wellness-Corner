@@ -36,6 +36,7 @@ urlpatterns = [
     path('delete-meal-product/<int:meal_product_id>/', views.delete_meal_product, name='delete_meal_product'),
     path('update-meal-api-product/<int:meal_api_product_id>/', views.update_meal_api_product, name='update_meal_api_product'),
     path('delete-meal-api-product/<int:meal_api_product_id>/', views.delete_meal_api_product, name='delete_meal_api_product'),
+    path('create-profile/', views.create_profile, name='create_profile'),
 ]
 
 if settings.DEBUG:

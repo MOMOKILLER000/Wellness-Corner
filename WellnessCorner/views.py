@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.contrib.auth import authenticate, login, logout
-from .models import Product, ApiProduct, Allergy, Basket, BasketItem, ProductRating, ApiProductRating
-from .forms import RegistrationForm, LoginForm
+from .models import Product, ApiProduct, Allergy, Basket, BasketItem, ProductRating, ApiProductRating, UserProfile
+from .forms import RegistrationForm, LoginForm, UserProfileForm
 import requests
 from decimal import Decimal
 import json
@@ -869,8 +869,40 @@ def meal_detail(request, meal_id):
 @login_required
 def calculator(request):
     user = request.user
-    
-    # Fetch meal objects for each meal type
+    try:
+        user_profile = user.userprofile
+    except UserProfile.DoesNotExist:
+        # If user doesn't have a profile, redirect them to create one
+        return redirect('create_profile')
+
+    # Calculate Basal Metabolic Rate (BMR) based on gender
+    if user_profile.gender == 'male':
+        bmr = 88.362 + (13.397 * float(user_profile.weight)) + (4.799 * float(user_profile.height)) - (5.677 * float(user_profile.age))
+    else:  # Female
+        bmr = 447.593 + (9.247 * float(user_profile.weight)) + (3.098 * float(user_profile.height)) - (4.330 * float(user_profile.age))
+
+    # Adjust BMR based on activity level
+    activity_levels = {
+        'sedentary': 1.2,
+        'lightly_active': 1.375,
+        'moderately_active': 1.55,
+        'very_active': 1.725,
+        'extra_active': 1.9
+    }
+    adjusted_bmr = bmr * activity_levels[user_profile.activity_level]
+
+    # Adjust BMR based on goal
+    if user_profile.goal == 'cut':
+        daily_calories = adjusted_bmr - 500  # Deficit of 500 calories per day for cutting
+    elif user_profile.goal == 'bulk':
+        daily_calories = adjusted_bmr + 500  # Surplus of 500 calories per day for bulking
+    else:  # Maintain
+        daily_calories = adjusted_bmr  # Maintain current weight
+
+    user_profile.daily_calories = daily_calories
+    user_profile.save()
+
+    # Fetch meal objects for each meal type and calculate total nutritional data
     breakfast = Meal.objects.filter(meal_type='Breakfast', user=user).first()
     lunch = Meal.objects.filter(meal_type='Lunch', user=user).first()
     dinner = Meal.objects.filter(meal_type='Dinner', user=user).first()
@@ -904,7 +936,17 @@ def calculator(request):
         'total_fats': breakfast_total['total_fats'] + lunch_total['total_fats'] +
                       dinner_total['total_fats'] + snacks_total['total_fats']
     }
-
+    calories_class = 'neutral'
+    if user_profile.goal == 'cut':
+     if total_all_meals['total_calories'] < user_profile.daily_calories:
+        calories_class = 'good'
+     else:
+        calories_class = 'bad'
+    elif user_profile.goal == 'bulk':
+     if total_all_meals['total_calories'] > user_profile.daily_calories:
+        calories_class = 'good'
+     else:
+        calories_class = 'bad'
     context = {
         'breakfast': breakfast,
         'lunch': lunch,
@@ -923,8 +965,27 @@ def calculator(request):
         'dinner_total': dinner_total,
         'snacks_total': snacks_total,
         'total_all_meals': total_all_meals,
+        'daily_calories': daily_calories,
+        'calories_class': calories_class,
     }
+    print("Calories class:", calories_class)
     return render(request, 'calculator.html', context)
+
+
+@login_required
+def create_profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            user_profile = form.save(commit=False)
+            user_profile.user = request.user
+            user_profile.save()
+            messages.success(request, 'User profile created successfully.')
+            return redirect('calculator')
+    else:
+        form = UserProfileForm()
+    
+    return render(request, 'create_profile.html', {'form': form})
 
 def calculate_total_nutritional_data(meal, meal_products, meal_api_products):
     total_calories = sum((product.product.kcal_per_100g * product.quantity_grams / 100) for product in meal_products)

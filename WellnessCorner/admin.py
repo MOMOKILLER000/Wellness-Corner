@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Product, ApiProduct, Allergy, Basket, BasketItem, PendingProduct, Post, Subscriber, ApiProductRating, ProductRating
-from .models import Meal, MealApiProduct, MealProduct
+from .models import Meal, MealApiProduct, MealProduct, UserProfile
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
 
@@ -30,3 +30,4 @@ admin.site.register(ProductRating)
 admin.site.register(MealProduct)
 admin.site.register(Meal)
 admin.site.register(MealApiProduct)
+admin.site.register(UserProfile)

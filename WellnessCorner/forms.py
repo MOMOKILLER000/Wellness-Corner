@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User, Allergy
 from .models import PendingProduct, Product, ApiProduct, Post, Subscriber
 from itertools import chain
-from .models import MealProduct, MealApiProduct
+from .models import MealProduct, MealApiProduct, UserProfile
 
 
 class RegistrationForm(UserCreationForm):
@@ -98,3 +98,8 @@ class MealApiProductForm(forms.ModelForm):
     class Meta:
         model = MealApiProduct
         fields = ['api_product', 'quantity_grams']
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['age', 'height', 'weight','gender', 'activity_level', 'goal']
