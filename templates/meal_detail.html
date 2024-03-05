@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meal Detail</title>
+</head>
+<body>
+    <h1>Meal Detail</h1>
+
+    <h2>Products</h2>
+    <ul>
+        {% for meal_product in meal.mealproduct_set.all %}
+            <li>
+                {{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams
+                <form action="{% url 'update_meal_product' meal_product.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="number" name="quantity_grams" value="{{ meal_product.quantity_grams }}">
+                    <button type="submit">Update</button>
+                </form>
+                <form action="{% url 'delete_meal_product' meal_product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+        {% for meal_api_product in meal.mealapiproduct_set.all %}
+            <li>
+                {{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams
+                <form action="{% url 'update_meal_api_product' meal_api_product.id %}" method="post">
+                    {% csrf_token %}
+                    <input type="number" name="quantity_grams" value="{{ meal_api_product.quantity_grams }}">
+                    <button type="submit">Update</button>
+                </form>
+                <form action="{% url 'delete_meal_api_product' meal_api_product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    <h2>Total</h2>
+    <p>
+        Total Calories: {{ total_calories }} Protein: {{ total_proteins }}g Carbs: {{ total_carbs }}g Fats: {{ total_fats }}g
+    </p>
+    <a href="{% url 'calculator' %}">Back to Product Summary</a>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Summary</title>
+</head>
+<body>
+    <h1>Product Summary</h1>
+
+    <h2>Breakfast</h2>
+    <ul>
+        {% for meal_product in breakfast_products %}
+            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
+        {% endfor %}
+        {% for meal_api_product in breakfast_api_products %}
+            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'add_to_meal' meal_type='Breakfast' %}" method="get">
+        <button type="submit">Add to Breakfast</button>
+    </form>
+    <a href="{% if breakfast %}{% url 'meal_detail' meal_id=breakfast.id %}{% endif %}">
+        <button{% if not breakfast %} disabled{% endif %}>View Breakfast Details</button>
+    </a>
+
+    <h2>Lunch</h2>
+    <ul>
+        {% for meal_product in lunch_products %}
+            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
+        {% endfor %}
+        {% for meal_api_product in lunch_api_products %}
+            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'add_to_meal' meal_type='Lunch' %}" method="get">
+        <button type="submit">Add to Lunch</button>
+    </form>
+    <a href="{% if lunch %}{% url 'meal_detail' meal_id=lunch.id %}{% endif %}">
+        <button{% if not lunch %} disabled{% endif %}>View Lunch Details</button>
+    </a>
+
+    <h2>Dinner</h2>
+    <ul>
+        {% for meal_product in dinner_products %}
+            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
+        {% endfor %}
+        {% for meal_api_product in dinner_api_products %}
+            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'add_to_meal' meal_type='Dinner' %}" method="get">
+        <button type="submit">Add to Dinner</button>
+    </form>
+    <a href="{% if dinner %}{% url 'meal_detail' meal_id=dinner.id %}{% endif %}">
+        <button{% if not dinner %} disabled{% endif %}>View Dinner Details</button>
+    </a>
+
+    <h2>Snacks</h2>
+    <ul>
+        {% for meal_product in snacks_products %}
+            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
+        {% endfor %}
+        {% for meal_api_product in snacks_api_products %}
+            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
+        {% endfor %}
+    </ul>
+    <form action="{% url 'add_to_meal' meal_type='Snacks' %}" method="get">
+        <button type="submit">Add to Snacks</button>
+    </form>
+    <a href="{% if snacks %}{% url 'meal_detail' meal_id=snacks.id %}{% endif %}">
+        <button{% if not snacks %} disabled{% endif %}>View Snacks Details</button>
+    </a>
+
+</body>
+</html>

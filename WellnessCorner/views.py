@@ -25,6 +25,10 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.db.models import Sum
+from .models import Meal, MealProduct, MealApiProduct
+from .forms import MealProductForm, MealApiProductForm
+from django.http import HttpResponse
+from django.db.models import FloatField
 
 @login_required
 def index(request):
@@ -748,3 +752,173 @@ def checkout(request):
         return redirect('index')  # Redirect to home page after successful checkout
 
     return render(request, 'checkout.html')
+
+def update_meal_product(request, meal_product_id):
+    meal_product = get_object_or_404(MealProduct, id=meal_product_id)
+    if request.method == 'POST':
+        new_quantity = request.POST.get('quantity_grams')
+        meal_product.quantity_grams = new_quantity
+        meal_product.save()
+        return redirect('meal_detail', meal_id=meal_product.meal.id)
+    return render(request, 'update_meal_product.html', {'meal_product': meal_product})
+
+def delete_meal_product(request, meal_product_id):
+    meal_product = get_object_or_404(MealProduct, id=meal_product_id)
+    if request.method == 'POST':
+        meal_id = meal_product.meal.id
+        meal_product.delete()
+        return redirect('meal_detail', meal_id=meal_id)
+    return render(request, 'delete_meal_product.html', {'meal_product': meal_product})
+
+def update_meal_api_product(request, meal_api_product_id):
+    meal_api_product = get_object_or_404(MealApiProduct, id=meal_api_product_id)
+    if request.method == 'POST':
+        new_quantity = request.POST.get('quantity_grams')
+        meal_api_product.quantity_grams = new_quantity
+        meal_api_product.save()
+        return redirect('meal_detail', meal_id=meal_api_product.meal.id)
+    return render(request, 'update_meal_api_product.html', {'meal_api_product': meal_api_product})
+
+def delete_meal_api_product(request, meal_api_product_id):
+    meal_api_product = get_object_or_404(MealApiProduct, id=meal_api_product_id)
+    if request.method == 'POST':
+        meal_id = meal_api_product.meal.id
+        meal_api_product.delete()
+        return redirect('meal_detail', meal_id=meal_id)
+    return render(request, 'delete_meal_api_product.html', {'meal_api_product': meal_api_product})
+
+def meal_detail(request, meal_id):
+    meal = Meal.objects.get(pk=meal_id)
+    meal_products = meal.mealproduct_set.all()
+    meal_api_products = meal.mealapiproduct_set.all()
+
+    # Calculate total calories, proteins, carbs, and fats for meal products
+    total_calories_meal = meal_products.aggregate(
+        total_calories=Sum((F('product__kcal_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+    )['total_calories'] or 0
+    
+    total_proteins_meal = meal_products.aggregate(
+        total_proteins=Sum((F('product__protein_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+    )['total_proteins'] or 0
+    
+    total_carbs_meal = meal_products.aggregate(
+        total_carbs=Sum((F('product__carbs_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+    )['total_carbs'] or 0
+    
+    total_fats_meal = meal_products.aggregate(
+        total_fats=Sum((F('product__fats_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+    )['total_fats'] or 0
+
+    # Calculate total calories, proteins, carbs, and fats for API meal products
+    total_calories_api = meal_api_products.aggregate(
+        total_calories=Sum((F('kcal_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+    )['total_calories'] or 0
+    
+    total_proteins_api = meal_api_products.aggregate(
+        total_proteins=Sum((F('protein_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+    )['total_proteins'] or 0
+    
+    total_carbs_api = meal_api_products.aggregate(
+        total_carbs=Sum((F('carbs_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+    )['total_carbs'] or 0
+    
+    total_fats_api = meal_api_products.aggregate(
+        total_fats=Sum((F('fats_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+    )['total_fats'] or 0
+
+    # Combine the totals for both meal products and API meal products
+    total_calories = total_calories_meal + total_calories_api
+    total_proteins = total_proteins_meal + total_proteins_api
+    total_carbs = total_carbs_meal + total_carbs_api
+    total_fats = total_fats_meal + total_fats_api
+
+    context = {
+        'meal': meal,
+        'total_calories': total_calories,
+        'total_proteins': total_proteins,
+        'total_carbs': total_carbs,
+        'total_fats': total_fats,
+    }
+    return render(request, 'meal_detail.html', context)
+
+@login_required
+def calculator(request):
+    user = request.user
+    
+    # Fetch meal objects for each meal type
+    breakfast = Meal.objects.filter(meal_type='Breakfast', user=user).first()
+    lunch = Meal.objects.filter(meal_type='Lunch', user=user).first()
+    dinner = Meal.objects.filter(meal_type='Dinner', user=user).first()
+    snacks = Meal.objects.filter(meal_type='Snacks', user=user).first()
+
+    # Query for each type of meal separately based on the user's products
+    breakfast_products = MealProduct.objects.filter(meal__meal_type='Breakfast', meal__user=user)
+    lunch_products = MealProduct.objects.filter(meal__meal_type='Lunch', meal__user=user)
+    dinner_products = MealProduct.objects.filter(meal__meal_type='Dinner', meal__user=user)
+    snacks_products = MealProduct.objects.filter(meal__meal_type='Snacks', meal__user=user)
+
+    breakfast_api_products = MealApiProduct.objects.filter(meal__meal_type='Breakfast', meal__user=user)
+    lunch_api_products = MealApiProduct.objects.filter(meal__meal_type='Lunch', meal__user=user)
+    dinner_api_products = MealApiProduct.objects.filter(meal__meal_type='Dinner', meal__user=user)
+    snacks_api_products = MealApiProduct.objects.filter(meal__meal_type='Snacks', meal__user=user)
+
+    context = {
+    'breakfast': breakfast,
+    'lunch': lunch,
+    'dinner': dinner,
+    'snacks': snacks,
+    'breakfast_products': breakfast_products,
+    'lunch_products': lunch_products,
+    'dinner_products': dinner_products,
+    'snacks_products': snacks_products,
+    'breakfast_api_products': breakfast_api_products,
+    'lunch_api_products': lunch_api_products,
+    'dinner_api_products': dinner_api_products,
+    'snacks_api_products': snacks_api_products,
+    }
+    return render(request, 'calculator.html', context)
+
+@login_required
+def add_to_meal(request, meal_type):
+    user = request.user
+    search_query = request.POST.get('product_name', '')
+    search_results = []
+
+    if search_query.strip():
+        # Perform the search
+        search_results = search_product(search_query, user=user)
+
+    if 'add_to_meal' in request.POST:
+        product_id = request.POST.get('add_to_meal')
+        quantity = request.POST.get(f'quantity_{product_id}')
+
+        if product_id and quantity:
+            try:
+                product = Product.objects.get(pk=product_id)
+                meal, created = Meal.objects.get_or_create(meal_type=meal_type, user=user)
+                meal_product = meal.add_product(product, quantity)  # Modify this line
+                if meal_product:
+                    messages.success(request, "Product added to meal successfully.")
+                else:
+                    messages.info(request, "Product already exists in the meal.")
+                return redirect('add_to_meal', meal_type=meal_type)
+            except Product.DoesNotExist:
+                try:
+                    api_product = ApiProduct.objects.get(pk=product_id)
+                    meal, created = Meal.objects.get_or_create(meal_type=meal_type, user=user)
+                    meal_api_product = meal.add_product(api_product, quantity)  # Modify this line
+                    if meal_api_product:
+                        messages.success(request, "API Product added to meal successfully.")
+                    else:
+                        messages.info(request, "API Product already exists in the meal.")
+                    return redirect('add_to_meal', meal_type=meal_type)
+                except ApiProduct.DoesNotExist:
+                    messages.error(request, "Product not found.")
+                    return redirect('add_to_meal', meal_type=meal_type)
+        else:
+            messages.error(request, "Please provide both a product and a quantity.")
+            return redirect('add_to_meal', meal_type=meal_type)
+
+    context = {'meal_type': meal_type, 'search_results': search_results, 'search_query': search_query}
+    return render(request, 'add_to_meal.html', context)
+

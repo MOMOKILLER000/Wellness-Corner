@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User, Allergy
 from .models import PendingProduct, Product, ApiProduct, Post, Subscriber
 from itertools import chain
+from .models import MealProduct, MealApiProduct
+
 
 class RegistrationForm(UserCreationForm):
 
@@ -86,3 +88,13 @@ class EmailSubscriberForm(forms.Form):
 class ContactForm(forms.Form):
     subject = forms.CharField(max_length=100)
     message = forms.CharField(widget=forms.Textarea)
+
+class MealProductForm(forms.ModelForm):
+    class Meta:
+        model = MealProduct
+        fields = ['product', 'quantity_grams']
+
+class MealApiProductForm(forms.ModelForm):
+    class Meta:
+        model = MealApiProduct
+        fields = ['api_product', 'quantity_grams']

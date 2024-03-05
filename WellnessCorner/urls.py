@@ -29,6 +29,13 @@ urlpatterns = [
     path('increment_quantity/<int:product_id>/<str:source>/', views.increment_quantity, name='increment_quantity'),
     path('decrement_quantity/<int:product_id>/<str:source>/', views.decrement_quantity, name='decrement_quantity'),
     path('checkout/', views.checkout, name='checkout'),
+    path('meal-detail/<int:meal_id>/', views.meal_detail, name='meal_detail'),
+    path('calculator/', views.calculator, name='calculator'),  # Add this line
+    path('add_to_meal/<str:meal_type>/', views.add_to_meal, name='add_to_meal'),
+    path('update-meal-product/<int:meal_product_id>/', views.update_meal_product, name='update_meal_product'),
+    path('delete-meal-product/<int:meal_product_id>/', views.delete_meal_product, name='delete_meal_product'),
+    path('update-meal-api-product/<int:meal_api_product_id>/', views.update_meal_api_product, name='update_meal_api_product'),
+    path('delete-meal-api-product/<int:meal_api_product_id>/', views.delete_meal_api_product, name='delete_meal_api_product'),
 ]
 
 if settings.DEBUG:

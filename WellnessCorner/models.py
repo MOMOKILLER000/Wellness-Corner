@@ -303,3 +303,64 @@ class ApiProductRating(models.Model):
     product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rating = models.DecimalField(max_digits=3, decimal_places=1, default=0)
+
+
+class Meal(models.Model):
+    MEAL_CHOICES = (
+        ('Breakfast', 'Breakfast'),
+        ('Lunch', 'Lunch'),
+        ('Dinner', 'Dinner'),
+        ('Snacks', 'Snacks'),
+    )
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    meal_type = models.CharField(max_length=20, choices=MEAL_CHOICES)
+    products = models.ManyToManyField(Product, through='MealProduct')
+    api_products = models.ManyToManyField(ApiProduct, through='MealApiProduct')
+
+    def add_product(self, product, quantity_grams, user=None):
+        if isinstance(product, Product):
+            meal_product = MealProduct.objects.create(
+                meal=self,
+                product=product,
+                quantity_grams=quantity_grams,
+                user=user,
+                kcal_per_100g=product.kcal_per_100g,
+                protein_per_100g=product.protein_per_100g,
+                carbs_per_100g=product.carbs_per_100g,
+                fats_per_100g=product.fats_per_100g
+            )
+            return meal_product
+        elif isinstance(product, ApiProduct):
+            meal_api_product = MealApiProduct.objects.create(
+                meal=self,
+                api_product=product,
+                quantity_grams=quantity_grams,
+                user=user,
+                kcal_per_100g=product.kcal_per_100g,
+                protein_per_100g=product.protein_per_100g,
+                carbs_per_100g=product.carbs_per_100g,
+                fats_per_100g=product.fats_per_100g
+            )
+            return meal_api_product
+        else:
+            raise ValueError("Invalid product type")
+
+class MealProduct(models.Model):
+    meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity_grams = models.DecimalField(max_digits=10, decimal_places=2)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
+    protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
+    carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
+    fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
+
+class MealApiProduct(models.Model):
+    meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
+    api_product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE)
+    quantity_grams = models.DecimalField(max_digits=10, decimal_places=2)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
+    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
+    protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
+    carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
+    fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
