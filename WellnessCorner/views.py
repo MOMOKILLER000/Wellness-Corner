@@ -18,17 +18,17 @@ from django.http import HttpResponseForbidden
 from django.conf import settings
 from .forms import PostForm, EmailSubscriberForm, ContactForm, NewsletterSubscriptionForm
 from .models import Post
-from django.db.models import F
 from itertools import chain
 from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from django.db.models import Sum
 from .models import Meal, MealProduct, MealApiProduct
 from .forms import MealProductForm, MealApiProductForm
 from django.http import HttpResponse
 from django.db.models import FloatField
+from django.db.models import Sum, F, FloatField
+from django.http import Http404
 
 @login_required
 def index(request):
@@ -756,26 +756,78 @@ def checkout(request):
 def update_meal_product(request, meal_product_id):
     meal_product = get_object_or_404(MealProduct, id=meal_product_id)
     if request.method == 'POST':
-        new_quantity = request.POST.get('quantity_grams')
+        new_quantity = Decimal(request.POST.get('quantity_grams'))
+        old_quantity = meal_product.quantity_grams  # Store the old quantity for calculation
         meal_product.quantity_grams = new_quantity
         meal_product.save()
+
+        # Update meal totals
+        meal = meal_product.meal
+        meal.total_calories -= (meal_product.product.kcal_per_100g * old_quantity / 100)
+        meal.total_proteins -= (meal_product.product.protein_per_100g * old_quantity / 100)
+        meal.total_carbs -= (meal_product.product.carbs_per_100g * old_quantity / 100)
+        meal.total_fats -= (meal_product.product.fats_per_100g * old_quantity / 100)
+        meal.total_calories += (meal_product.product.kcal_per_100g * new_quantity / 100)
+        meal.total_proteins += (meal_product.product.protein_per_100g * new_quantity / 100)
+        meal.total_carbs += (meal_product.product.carbs_per_100g * new_quantity / 100)
+        meal.total_fats += (meal_product.product.fats_per_100g * new_quantity / 100)
+        meal.save()
+
         return redirect('meal_detail', meal_id=meal_product.meal.id)
     return render(request, 'update_meal_product.html', {'meal_product': meal_product})
+
 
 def delete_meal_product(request, meal_product_id):
     meal_product = get_object_or_404(MealProduct, id=meal_product_id)
     if request.method == 'POST':
         meal_id = meal_product.meal.id
+        old_quantity = meal_product.quantity_grams  # Store the old quantity for calculation
         meal_product.delete()
+
+        # Update meal totals
+        meal = Meal.objects.get(pk=meal_id)
+        meal.total_calories -= (meal_product.product.kcal_per_100g * old_quantity / 100)
+        meal.total_proteins -= (meal_product.product.protein_per_100g * old_quantity / 100)
+        meal.total_carbs -= (meal_product.product.carbs_per_100g * old_quantity / 100)
+        meal.total_fats -= (meal_product.product.fats_per_100g * old_quantity / 100)
+
+        # Ensure meal total nutritional data doesn't go negative
+        meal.total_calories = max(meal.total_calories, 0)
+        meal.total_proteins = max(meal.total_proteins, 0)
+        meal.total_carbs = max(meal.total_carbs, 0)
+        meal.total_fats = max(meal.total_fats, 0)
+
+        meal.save()
+
+        # Delete the meal if it becomes empty
+        if meal.mealproduct_set.count() == 0 and meal.mealapiproduct_set.count() == 0:
+            meal.delete()
+            return redirect('calculator')
+
         return redirect('meal_detail', meal_id=meal_id)
-    return render(request, 'delete_meal_product.html', {'meal_product': meal_product})
+
+    raise Http404("Invalid request method")
 
 def update_meal_api_product(request, meal_api_product_id):
     meal_api_product = get_object_or_404(MealApiProduct, id=meal_api_product_id)
     if request.method == 'POST':
-        new_quantity = request.POST.get('quantity_grams')
+        new_quantity = Decimal(request.POST.get('quantity_grams'))
+        old_quantity = meal_api_product.quantity_grams  # Store the old quantity for calculation
         meal_api_product.quantity_grams = new_quantity
         meal_api_product.save()
+
+        # Update meal totals
+        meal = meal_api_product.meal
+        meal.total_calories -= (meal_api_product.kcal_per_100g * old_quantity / 100)
+        meal.total_proteins -= (meal_api_product.protein_per_100g * old_quantity / 100)
+        meal.total_carbs -= (meal_api_product.carbs_per_100g * old_quantity / 100)
+        meal.total_fats -= (meal_api_product.fats_per_100g * old_quantity / 100)
+        meal.total_calories += (meal_api_product.kcal_per_100g * new_quantity / 100)
+        meal.total_proteins += (meal_api_product.protein_per_100g * new_quantity / 100)
+        meal.total_carbs += (meal_api_product.carbs_per_100g * new_quantity / 100)
+        meal.total_fats += (meal_api_product.fats_per_100g * new_quantity / 100)
+        meal.save()
+
         return redirect('meal_detail', meal_id=meal_api_product.meal.id)
     return render(request, 'update_meal_api_product.html', {'meal_api_product': meal_api_product})
 
@@ -783,62 +835,35 @@ def delete_meal_api_product(request, meal_api_product_id):
     meal_api_product = get_object_or_404(MealApiProduct, id=meal_api_product_id)
     if request.method == 'POST':
         meal_id = meal_api_product.meal.id
+        old_quantity = meal_api_product.quantity_grams  # Store the old quantity for calculation
         meal_api_product.delete()
+
+        # Update meal totals
+        meal = Meal.objects.get(pk=meal_id)
+        meal.total_calories -= (meal_api_product.kcal_per_100g * old_quantity / 100)
+        meal.total_proteins -= (meal_api_product.protein_per_100g * old_quantity / 100)
+        meal.total_carbs -= (meal_api_product.carbs_per_100g * old_quantity / 100)
+        meal.total_fats -= (meal_api_product.fats_per_100g * old_quantity / 100)
+
+        # Ensure meal total nutritional data doesn't go negative
+        meal.total_calories = max(meal.total_calories, 0)
+        meal.total_proteins = max(meal.total_proteins, 0)
+        meal.total_carbs = max(meal.total_carbs, 0)
+        meal.total_fats = max(meal.total_fats, 0)
+
+        meal.save()
+
+        # Delete the meal if it becomes empty
+        if meal.mealproduct_set.count() == 0 and meal.mealapiproduct_set.count() == 0:
+            meal.delete()
+            return redirect('calculator')
+
         return redirect('meal_detail', meal_id=meal_id)
-    return render(request, 'delete_meal_api_product.html', {'meal_api_product': meal_api_product})
+    raise Http404("Invalid request method")
 
 def meal_detail(request, meal_id):
-    meal = Meal.objects.get(pk=meal_id)
-    meal_products = meal.mealproduct_set.all()
-    meal_api_products = meal.mealapiproduct_set.all()
-
-    # Calculate total calories, proteins, carbs, and fats for meal products
-    total_calories_meal = meal_products.aggregate(
-        total_calories=Sum((F('product__kcal_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
-    )['total_calories'] or 0
-    
-    total_proteins_meal = meal_products.aggregate(
-        total_proteins=Sum((F('product__protein_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
-    )['total_proteins'] or 0
-    
-    total_carbs_meal = meal_products.aggregate(
-        total_carbs=Sum((F('product__carbs_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
-    )['total_carbs'] or 0
-    
-    total_fats_meal = meal_products.aggregate(
-        total_fats=Sum((F('product__fats_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
-    )['total_fats'] or 0
-
-    # Calculate total calories, proteins, carbs, and fats for API meal products
-    total_calories_api = meal_api_products.aggregate(
-        total_calories=Sum((F('kcal_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
-    )['total_calories'] or 0
-    
-    total_proteins_api = meal_api_products.aggregate(
-        total_proteins=Sum((F('protein_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
-    )['total_proteins'] or 0
-    
-    total_carbs_api = meal_api_products.aggregate(
-        total_carbs=Sum((F('carbs_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
-    )['total_carbs'] or 0
-    
-    total_fats_api = meal_api_products.aggregate(
-        total_fats=Sum((F('fats_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
-    )['total_fats'] or 0
-
-    # Combine the totals for both meal products and API meal products
-    total_calories = total_calories_meal + total_calories_api
-    total_proteins = total_proteins_meal + total_proteins_api
-    total_carbs = total_carbs_meal + total_carbs_api
-    total_fats = total_fats_meal + total_fats_api
-
-    context = {
-        'meal': meal,
-        'total_calories': total_calories,
-        'total_proteins': total_proteins,
-        'total_carbs': total_carbs,
-        'total_fats': total_fats,
-    }
+    meal = get_object_or_404(Meal, pk=meal_id)
+    context = {'meal': meal}
     return render(request, 'meal_detail.html', context)
 
 @login_required
@@ -862,21 +887,62 @@ def calculator(request):
     dinner_api_products = MealApiProduct.objects.filter(meal__meal_type='Dinner', meal__user=user)
     snacks_api_products = MealApiProduct.objects.filter(meal__meal_type='Snacks', meal__user=user)
 
+    # Calculate total nutritional data for each meal
+    breakfast_total = calculate_total_nutritional_data(breakfast, breakfast_products, breakfast_api_products)
+    lunch_total = calculate_total_nutritional_data(lunch, lunch_products, lunch_api_products)
+    dinner_total = calculate_total_nutritional_data(dinner, dinner_products, dinner_api_products)
+    snacks_total = calculate_total_nutritional_data(snacks, snacks_products, snacks_api_products)
+
+    # Calculate total nutritional data for all meals
+    total_all_meals = {
+        'total_calories': breakfast_total['total_calories'] + lunch_total['total_calories'] +
+                          dinner_total['total_calories'] + snacks_total['total_calories'],
+        'total_proteins': breakfast_total['total_proteins'] + lunch_total['total_proteins'] +
+                          dinner_total['total_proteins'] + snacks_total['total_proteins'],
+        'total_carbs': breakfast_total['total_carbs'] + lunch_total['total_carbs'] +
+                       dinner_total['total_carbs'] + snacks_total['total_carbs'],
+        'total_fats': breakfast_total['total_fats'] + lunch_total['total_fats'] +
+                      dinner_total['total_fats'] + snacks_total['total_fats']
+    }
+
     context = {
-    'breakfast': breakfast,
-    'lunch': lunch,
-    'dinner': dinner,
-    'snacks': snacks,
-    'breakfast_products': breakfast_products,
-    'lunch_products': lunch_products,
-    'dinner_products': dinner_products,
-    'snacks_products': snacks_products,
-    'breakfast_api_products': breakfast_api_products,
-    'lunch_api_products': lunch_api_products,
-    'dinner_api_products': dinner_api_products,
-    'snacks_api_products': snacks_api_products,
+        'breakfast': breakfast,
+        'lunch': lunch,
+        'dinner': dinner,
+        'snacks': snacks,
+        'breakfast_products': breakfast_products,
+        'lunch_products': lunch_products,
+        'dinner_products': dinner_products,
+        'snacks_products': snacks_products,
+        'breakfast_api_products': breakfast_api_products,
+        'lunch_api_products': lunch_api_products,
+        'dinner_api_products': dinner_api_products,
+        'snacks_api_products': snacks_api_products,
+        'breakfast_total': breakfast_total,
+        'lunch_total': lunch_total,
+        'dinner_total': dinner_total,
+        'snacks_total': snacks_total,
+        'total_all_meals': total_all_meals,
     }
     return render(request, 'calculator.html', context)
+
+def calculate_total_nutritional_data(meal, meal_products, meal_api_products):
+    total_calories = sum((product.product.kcal_per_100g * product.quantity_grams / 100) for product in meal_products)
+    total_proteins = sum((product.product.protein_per_100g * product.quantity_grams / 100) for product in meal_products)
+    total_carbs = sum((product.product.carbs_per_100g * product.quantity_grams / 100) for product in meal_products)
+    total_fats = sum((product.product.fats_per_100g * product.quantity_grams / 100) for product in meal_products)
+
+    total_calories += sum((api_product.kcal_per_100g * api_product.quantity_grams / 100) for api_product in meal_api_products)
+    total_proteins += sum((api_product.protein_per_100g * api_product.quantity_grams / 100) for api_product in meal_api_products)
+    total_carbs += sum((api_product.carbs_per_100g * api_product.quantity_grams / 100) for api_product in meal_api_products)
+    total_fats += sum((api_product.fats_per_100g * api_product.quantity_grams / 100) for api_product in meal_api_products)
+
+    return {
+        'total_calories': total_calories,
+        'total_proteins': total_proteins,
+        'total_carbs': total_carbs,
+        'total_fats': total_fats,
+    }
 
 @login_required
 def add_to_meal(request, meal_type):

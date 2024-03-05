@@ -17,6 +17,11 @@
             <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
         {% endfor %}
     </ul>
+    <h3>Total Nutritional Data:</h3>
+    <p>Total Calories: {{ breakfast_total.total_calories|floatformat:"1" }}</p>
+    <p>Total Proteins: {{ breakfast_total.total_proteins|floatformat:"1" }}</p>
+    <p>Total Carbs: {{ breakfast_total.total_carbs|floatformat:"1" }}</p>
+    <p>Total Fats: {{ breakfast_total.total_fats|floatformat:"1" }}</p>
     <form action="{% url 'add_to_meal' meal_type='Breakfast' %}" method="get">
         <button type="submit">Add to Breakfast</button>
     </form>
@@ -24,6 +29,9 @@
         <button{% if not breakfast %} disabled{% endif %}>View Breakfast Details</button>
     </a>
 
+    <!-- Repeat the above structure for lunch, dinner, and snacks -->
+
+    <!-- Lunch -->
     <h2>Lunch</h2>
     <ul>
         {% for meal_product in lunch_products %}
@@ -33,6 +41,11 @@
             <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
         {% endfor %}
     </ul>
+    <h3>Total Nutritional Data:</h3>
+    <p>Total Calories: {{ lunch_total.total_calories|floatformat:"1" }}</p>
+    <p>Total Proteins: {{ lunch_total.total_proteins|floatformat:"1" }}</p>
+    <p>Total Carbs: {{ lunch_total.total_carbs|floatformat:"1" }}</p>
+    <p>Total Fats: {{ lunch_total.total_fats|floatformat:"1" }}</p>
     <form action="{% url 'add_to_meal' meal_type='Lunch' %}" method="get">
         <button type="submit">Add to Lunch</button>
     </form>
@@ -40,6 +53,7 @@
         <button{% if not lunch %} disabled{% endif %}>View Lunch Details</button>
     </a>
 
+    <!-- Dinner -->
     <h2>Dinner</h2>
     <ul>
         {% for meal_product in dinner_products %}
@@ -49,6 +63,11 @@
             <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
         {% endfor %}
     </ul>
+    <h3>Total Nutritional Data:</h3>
+    <p>Total Calories: {{ dinner_total.total_calories|floatformat:"1" }}</p>
+    <p>Total Proteins: {{ dinner_total.total_proteins|floatformat:"1" }}</p>
+    <p>Total Carbs: {{ dinner_total.total_carbs|floatformat:"1" }}</p>
+    <p>Total Fats: {{ dinner_total.total_fats|floatformat:"1" }}</p>
     <form action="{% url 'add_to_meal' meal_type='Dinner' %}" method="get">
         <button type="submit">Add to Dinner</button>
     </form>
@@ -56,6 +75,7 @@
         <button{% if not dinner %} disabled{% endif %}>View Dinner Details</button>
     </a>
 
+    <!-- Snacks -->
     <h2>Snacks</h2>
     <ul>
         {% for meal_product in snacks_products %}
@@ -65,12 +85,24 @@
             <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
         {% endfor %}
     </ul>
+    <h3>Total Nutritional Data:</h3>
+    <p>Total Calories: {{ snacks_total.total_calories|floatformat:"1" }}</p>
+    <p>Total Proteins: {{ snacks_total.total_proteins|floatformat:"1" }}</p>
+    <p>Total Carbs: {{ snacks_total.total_carbs|floatformat:"1" }}</p>
+    <p>Total Fats: {{ snacks_total.total_fats|floatformat:"1" }}</p>
     <form action="{% url 'add_to_meal' meal_type='Snacks' %}" method="get">
         <button type="submit">Add to Snacks</button>
     </form>
     <a href="{% if snacks %}{% url 'meal_detail' meal_id=snacks.id %}{% endif %}">
         <button{% if not snacks %} disabled{% endif %}>View Snacks Details</button>
     </a>
+
+    <!-- Total for all meals -->
+    <h3>Total Nutritional Data for all Meals:</h3>
+    <p>Total Calories: {{ total_all_meals.total_calories|floatformat:"1" }}</p>
+    <p>Total Proteins: {{ total_all_meals.total_proteins|floatformat:"1" }}</p>
+    <p>Total Carbs: {{ total_all_meals.total_carbs|floatformat:"1" }}</p>
+    <p>Total Fats: {{ total_all_meals.total_fats|floatformat:"1" }}</p>
 
 </body>
 </html>

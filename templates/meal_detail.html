@@ -39,10 +39,13 @@
             </li>
         {% endfor %}
     </ul>
+    
     <h2>Total</h2>
-    <p>
-        Total Calories: {{ total_calories }} Protein: {{ total_proteins }}g Carbs: {{ total_carbs }}g Fats: {{ total_fats }}g
-    </p>
+    <p>Total Calories: {{ meal.total_calories }}</p>
+    <p>Total Proteins: {{ meal.total_proteins }}</p>
+    <p>Total Carbs: {{ meal.total_carbs }}</p>
+    <p>Total Fats: {{ meal.total_fats }}</p>
+
     <a href="{% url 'calculator' %}">Back to Product Summary</a>
 </body>
 </html>

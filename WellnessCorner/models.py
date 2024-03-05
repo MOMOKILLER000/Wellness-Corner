@@ -7,6 +7,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg
 from decimal import Decimal
+from django.db.models import Sum, F, FloatField
 
 class CustomUserManager(UserManager):
     def create_user(self, email=None, password=None, **extra_fields):
@@ -316,6 +317,48 @@ class Meal(models.Model):
     meal_type = models.CharField(max_length=20, choices=MEAL_CHOICES)
     products = models.ManyToManyField(Product, through='MealProduct')
     api_products = models.ManyToManyField(ApiProduct, through='MealApiProduct')
+    total_calories = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_proteins = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_carbs = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    total_fats = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def update_totals(self):
+        # Calculate total nutritional data for meal products
+        meal_products = self.mealproduct_set.all()
+        total_calories_meal = meal_products.aggregate(
+            total_calories=Sum((F('product__kcal_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+        )['total_calories'] or 0
+        total_proteins_meal = meal_products.aggregate(
+            total_proteins=Sum((F('product__protein_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+        )['total_proteins'] or 0
+        total_carbs_meal = meal_products.aggregate(
+            total_carbs=Sum((F('product__carbs_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+        )['total_carbs'] or 0
+        total_fats_meal = meal_products.aggregate(
+            total_fats=Sum((F('product__fats_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+        )['total_fats'] or 0
+
+        # Calculate total nutritional data for API meal products
+        meal_api_products = self.mealapiproduct_set.all()
+        total_calories_api = meal_api_products.aggregate(
+            total_calories=Sum((F('kcal_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+        )['total_calories'] or 0
+        total_proteins_api = meal_api_products.aggregate(
+            total_proteins=Sum((F('protein_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+        )['total_proteins'] or 0
+        total_carbs_api = meal_api_products.aggregate(
+            total_carbs=Sum((F('carbs_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+        )['total_carbs'] or 0
+        total_fats_api = meal_api_products.aggregate(
+            total_fats=Sum((F('fats_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
+        )['total_fats'] or 0
+
+        # Update the fields
+        self.total_calories = total_calories_meal + total_calories_api
+        self.total_proteins = total_proteins_meal + total_proteins_api
+        self.total_carbs = total_carbs_meal + total_carbs_api
+        self.total_fats = total_fats_meal + total_fats_api
+        self.save()
 
     def add_product(self, product, quantity_grams, user=None):
         if isinstance(product, Product):
@@ -329,6 +372,7 @@ class Meal(models.Model):
                 carbs_per_100g=product.carbs_per_100g,
                 fats_per_100g=product.fats_per_100g
             )
+            self.update_totals()  # Update totals after adding a product
             return meal_product
         elif isinstance(product, ApiProduct):
             meal_api_product = MealApiProduct.objects.create(
@@ -341,7 +385,19 @@ class Meal(models.Model):
                 carbs_per_100g=product.carbs_per_100g,
                 fats_per_100g=product.fats_per_100g
             )
+            self.update_totals()  # Update totals after adding an API product
             return meal_api_product
+        else:
+            raise ValueError("Invalid product type")
+
+    def remove_product(self, product):
+        # Remove the product and update totals
+        if isinstance(product, MealProduct):
+            product.delete()
+            self.update_totals()
+        elif isinstance(product, MealApiProduct):
+            product.delete()
+            self.update_totals()
         else:
             raise ValueError("Invalid product type")
 
