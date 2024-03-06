@@ -45,7 +45,7 @@ header .logo {
 }
 
 header .logo i {
-    color: green;
+    color: #0F52BA;
 }
 
 header .navbar a {
@@ -67,7 +67,7 @@ header .navbar a {
 header .navbar a.active,
 header .navbar a:hover {
     color: #fff;
-    background: green;
+    background: 	#4169E1;
 }
 
 header .icons i,
@@ -87,7 +87,7 @@ header .icons a {
 header .icons i:hover,
 header .icons a:hover {
     color: #fff;
-    background: green;
+    background: 		#4169E1;
     transform: rotate(360deg);
 }
 
@@ -103,7 +103,7 @@ header .icons #menu-bars {
     /* Initially hide the sidebar off-screen */
     height: 100%;
     width: 200px;
-    background-color: #333;
+    background-color: #1434A4;
     color: white;
     transition: left 0.3s ease;
     /* Add a transition effect for smooth appearance/disappearance */
@@ -152,7 +152,7 @@ header .icons #menu-bars {
     /* Adjust the font size */
     padding: 15px 20px;
     /* Add padding for better spacing */
-    color: #FFD700;
+    color: #89CFF0;
     text-decoration: none;
     transition: color 0.3s ease;
     /* Add transition for smooth color change on hover */
@@ -256,7 +256,7 @@ header .icons #menu-bars {
 }
 
 .product-button {
-    background-color: aqua;
+    background-color:	#4169E1;
     color: white;
     text-decoration: none;
     font-size: 1.2rem;

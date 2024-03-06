@@ -1017,7 +1017,14 @@ def add_to_meal(request, meal_type):
     if search_query.strip():
         # Perform the search
         search_results = search_product(search_query, user=user)
-
+        for product in search_results:
+                if isinstance(product, Product):
+                    product.source = 'database'
+                elif isinstance(product, ApiProduct):
+                    product.source = 'api'
+                else:
+                    # Handle other cases if needed
+                   pass
     if 'add_to_meal' in request.POST:
         product_id = request.POST.get('add_to_meal')
         quantity = request.POST.get(f'quantity_{product_id}')

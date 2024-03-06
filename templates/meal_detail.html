@@ -1,18 +1,35 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meal Detail</title>
+    <link rel="stylesheet" href="{% static 'index.css' %}">
 </head>
 <body>
-    <h1>Meal Detail</h1>
-
-    <h2>Products</h2>
-    <ul>
+    <h1 class="heading">Meal Detail</h1>
+    <h2 class="heading">Products</h2>
+    <div class="products-container">
         {% for meal_product in meal.mealproduct_set.all %}
-            <li>
-                {{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams
+        <div class="product">
+            <!-- Display smaller image -->
+            <div class="top">
+            {% if meal_product.product.image %}
+                <img src="{{ meal_product.product.image.url }}" alt="{{ meal_product.product.product_name }}" class="product-image">
+            {% endif %}
+            </div>
+            <div class="middle">
+                <h1>{{ meal_product.product.product_name }}</h1>
+            </div>
+            <div class="bottom">
+                <h3 style="font-size:18px;">Nutritional Data:</h3>
+                <ul>
+                    <li>Calories: {{ meal_product.kcal_per_100g }}</li>
+                    <li>Proteins: {{ meal_product.protein_per_100g }}</li>
+                    <li>Carbs: {{ meal_product.carbs_per_100g }}</li>
+                    <li>Fats: {{ meal_product.fats_per_100g }}</li>
+                </ul>
                 <form action="{% url 'update_meal_product' meal_product.id %}" method="post">
                     {% csrf_token %}
                     <input type="number" name="quantity_grams" value="{{ meal_product.quantity_grams }}">
@@ -22,11 +39,28 @@
                     {% csrf_token %}
                     <button type="submit">Delete</button>
                 </form>
-            </li>
+            </div>
+        </div>
         {% endfor %}
         {% for meal_api_product in meal.mealapiproduct_set.all %}
-            <li>
-                {{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams
+        <div class="product">
+            <!-- Display smaller image -->
+            <div class="top">
+            {% if meal_api_product.api_product.image %}
+                <img src="{{ meal_api_product.api_product.image.url }}" alt="{{ meal_api_product.api_product.product_name }}" class="product-image">
+            {% endif %}
+            </div>
+            <div class="middle">
+                <h1>{{ meal_api_product.api_product.product_name }}</h1>
+            </div>
+            <div class="bottom">
+                <h3 style="font-size:18px;">Nutritional Data:</h3>
+                <ul>
+                    <li>Calories: {{ meal_api_product.kcal_per_100g }}</li>
+                    <li>Proteins: {{ meal_api_product.protein_per_100g }}</li>
+                    <li>Carbs: {{ meal_api_product.carbs_per_100g }}</li>
+                    <li>Fats: {{ meal_api_product.fats_per_100g }}</li>
+                </ul>
                 <form action="{% url 'update_meal_api_product' meal_api_product.id %}" method="post">
                     {% csrf_token %}
                     <input type="number" name="quantity_grams" value="{{ meal_api_product.quantity_grams }}">
@@ -36,16 +70,15 @@
                     {% csrf_token %}
                     <button type="submit">Delete</button>
                 </form>
-            </li>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-    
-    <h2>Total</h2>
-    <p>Total Calories: {{ meal.total_calories }}</p>
-    <p>Total Proteins: {{ meal.total_proteins }}</p>
-    <p>Total Carbs: {{ meal.total_carbs }}</p>
-    <p>Total Fats: {{ meal.total_fats }}</p>
-
-    <a href="{% url 'calculator' %}">Back to Product Summary</a>
+    </div>
+    <h2 class="heading">Total</h2>
+    <p class="heading">Total Calories: {{ meal.total_calories }}</p>
+    <p class="heading">Total Proteins: {{ meal.total_proteins }}</p>
+    <p class="heading">Total Carbs: {{ meal.total_carbs }}</p>
+    <p class="heading">Total Fats: {{ meal.total_fats }}</p>
+    <a class="heading" href="{% url 'calculator' %}">Back to Product Summary</a>
 </body>
 </html>

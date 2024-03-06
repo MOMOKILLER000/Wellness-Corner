@@ -1,13 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add to Meal</title>
+    <link rel="stylesheet" href="{% static 'index.css' %}">
 </head>
 <body>
-    <h1>Add to {{ meal_type }}</h1>
-    <div class="search-container" id="search-container">
+    <div class="search-container-meal" id="search-container">
         <form action="{% url 'add_to_meal' meal_type=meal_type %}" method="post" class="search-form">
             {% csrf_token %}
             <input type="text" class="search-input" name="product_name" placeholder="Enter the product name" value="{{ search_query }}">
@@ -16,29 +17,35 @@
             </button>
         </form>
     </div>
-    {% if search_results %}
+    <div style="padding-top:30px" class="heading">Add to {{ meal_type }}</div>
     <form method="post">
         {% csrf_token %}
+<div class="products-container">
+    {% if search_results %}
         {% for product in search_results %}
             <div class="product">
+                <!-- Display smaller image -->
                 <div class="top">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                {% endif %}
                 </div>
                 <div class="middle">
-                    <h1>{{ product.product_name }}</h1>
+                {% if product.source == 'database' %}
+                        <a href="{% url 'product_detail' product.id 'database' %}">{{ product.product_name }}</a>
+                {% elif product.source == 'api' %}
+                        <a href="{% url 'product_detail' product.id 'api' %}">{{ product.product_name }}</a>
+                {% endif %}
                 </div>
                 <div class="bottom">
-                    <!-- Display product details here -->
-                    <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
-                    <h3>Quantity: {{ product.quantity }}</h3>
-                    <h3>Price: {{ product.price }}</h3>
-                    <h3>Nutritional Data:</h3>
+                    <h3 style="font-size:18px;">Nutritional Data:</h3>
                     <ul>
                         <li>Calories: {{ product.kcal_per_100g }}</li>
                         <li>Proteins: {{ product.protein_per_100g }}</li>
                         <li>Carbs: {{ product.carbs_per_100g }}</li>
                         <li>Fats: {{ product.fats_per_100g }}</li>
                     </ul>
-                    <div class="product-button">
+                    <div class="button-meal">
                         <input type="hidden" name="product_name" value="{{ product.product_name }}">
                         <input type="number" name="quantity_{{ product.id }}" value="1" min="1" max="1000">
                         <button type="submit" name="add_to_meal" value="{{ product.id }}">Add to Meal</button>
@@ -49,8 +56,11 @@
     </form>
     {% else %}
         <div class="no-products">
-            <h2>No products found for your search</h2>
+           <div style="padding-top:30px" class="heading">No products found</div>
         </div>
     {% endif %}
+</div>
 </body>
 </html>
+
+

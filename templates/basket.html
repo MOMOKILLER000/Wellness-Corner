@@ -1,41 +1,63 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Basket</title>
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="{% static 'basket.css' %}">
 </head>
 <body>
-    <h1>Basket</h1>
-    <ul>
-        {% for product in products_in_basket %}
-            <li>
-                {% if product.source == 'database' %}
-                    {{ product.product.product_name }} - {{ product.product.price }} - Quantity: {{ product.quantity }}
-                {% elif product.source == 'api' %}
-                    {{ product.product.product_name }} - {{ product.product.price }} - Quantity: {{ product.quantity }}
-                {% endif %}
-                <form method="post" action="{% url 'delete_from_basket' product_id=product.product.id source=product.source %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="source" value="{{ product.source }}">
-                    <input type="hidden" name="product_id" value="{{ product.product.id }}">
-                    <button type="submit">Delete</button>
-                </form>
-                <form method="post" action="{% url 'increment_quantity' product_id=product.product.id source=product.source %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="source" value="{{ product.source }}">
-                    <input type="hidden" name="product_id" value="{{ product.product.id }}">
-                    <button type="submit">Increment</button>
-                </form>
-                <form method="post" action="{% url 'decrement_quantity' product_id=product.product.id source=product.source %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="source" value="{{ product.source }}">
-                    <input type="hidden" name="product_id" value="{{ product.product.id }}">
-                    <button type="submit">Decrement</button>
-                </form>
-            </li>
-        {% endfor %}
-    </ul>
-    <p>Total Price: {{ total_price }}</p>
-    <a href="{% url 'checkout' %}">Finish Order</a>
+    <div class="container">
+        <h1>Shopping Cart</h1>
+        <div class="cart">
+            <div class="products">
+                {% for product in products_in_basket %}
+                <div class="product">
+                    <img src="{{ product.product.image.url }}">
+                    <div class="product-info">
+                        <h3 class="product-name">{{ product.product.product_name }}</h3>
+                        <h4 class="product-price">$ {{ product.product.price }}</h4>
+                        <div class="quantity-container">
+                            <form method="post" action="{% url 'decrement_quantity' product_id=product.product.id source=product.source %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="source" value="{{ product.source }}">
+                                <input type="hidden" name="product_id" value="{{ product.product.id }}">
+                                <button type="submit" class="quantity-btn"><i class="fa-solid fa-minus"></i></button>
+                            </form>
+                            <input type="text" class="product-quantity" value="{{ product.quantity }}" readonly>
+                            <form method="post" action="{% url 'increment_quantity' product_id=product.product.id source=product.source %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="source" value="{{ product.source }}">
+                                <input type="hidden" name="product_id" value="{{ product.product.id }}">
+                                <button type="submit" class="quantity-btn"><i class="fa-solid fa-plus"></i></button>
+                            </form>
+                        </div>
+                        <form method="post" action="{% url 'delete_from_basket' product_id=product.product.id source=product.source %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="source" value="{{ product.source }}">
+                            <input type="hidden" name="product_id" value="{{ product.product.id }}">
+                            <button type="submit" class="remove-btn">Remove</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="cart-total">
+                <p>
+                    <span>Total Price</span>
+                    <span>{{ total_price }}$</span>
+                </p>
+                <p>
+                    <span>Number of Items</span>
+                    <span>{{ products_in_basket|length }}</span>
+                </p>
+                <p>
+                    <span>You Save</span>
+                    <span>$ 0</span> <!-- Assuming there's no discount applied -->
+                </p>
+                <a href="{% url 'checkout' %}">Finish Order</a>
+            </div>
+        </div>
+    </div>
 </body>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </html>

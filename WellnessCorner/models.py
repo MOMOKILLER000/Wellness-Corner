@@ -388,28 +388,40 @@ class Meal(models.Model):
 
     def add_product(self, product, quantity_grams, user=None):
         if isinstance(product, Product):
+            # Assign default values for nutritional fields if they are empty
+            kcal_per_100g = product.kcal_per_100g or 0
+            protein_per_100g = product.protein_per_100g or 0
+            carbs_per_100g = product.carbs_per_100g or 0
+            fats_per_100g = product.fats_per_100g or 0
+
             meal_product = MealProduct.objects.create(
                 meal=self,
                 product=product,
                 quantity_grams=quantity_grams,
                 user=user,
-                kcal_per_100g=product.kcal_per_100g,
-                protein_per_100g=product.protein_per_100g,
-                carbs_per_100g=product.carbs_per_100g,
-                fats_per_100g=product.fats_per_100g
+                kcal_per_100g=kcal_per_100g,
+                protein_per_100g=protein_per_100g,
+                carbs_per_100g=carbs_per_100g,
+                fats_per_100g=fats_per_100g
             )
             self.update_totals()  # Update totals after adding a product
             return meal_product
         elif isinstance(product, ApiProduct):
+            # Assign default values for nutritional fields if they are empty
+            kcal_per_100g = product.kcal_per_100g or 0
+            protein_per_100g = product.protein_per_100g or 0
+            carbs_per_100g = product.carbs_per_100g or 0
+            fats_per_100g = product.fats_per_100g or 0
+
             meal_api_product = MealApiProduct.objects.create(
                 meal=self,
                 api_product=product,
                 quantity_grams=quantity_grams,
                 user=user,
-                kcal_per_100g=product.kcal_per_100g,
-                protein_per_100g=product.protein_per_100g,
-                carbs_per_100g=product.carbs_per_100g,
-                fats_per_100g=product.fats_per_100g
+                kcal_per_100g=kcal_per_100g,
+                protein_per_100g=protein_per_100g,
+                carbs_per_100g=carbs_per_100g,
+                fats_per_100g=fats_per_100g
             )
             self.update_totals()  # Update totals after adding an API product
             return meal_api_product
