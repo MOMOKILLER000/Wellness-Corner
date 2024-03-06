@@ -10,6 +10,9 @@
     <p>Your order has been successfully placed with the following details:</p>
     <ul>
         <li>Address: {{ address }}</li>
+        <li>City: {{ city }}</li>
+        <li>Country: {{ country }}</li>
+        <li>Zip Code: {{ zip_code }}</li>
         {% for item in basket_items %}
         {% if item.product %}
         <li>{{ item.product.product_name }} - Quantity: {{ item.quantity }} - Price: ${{ item.price }}</li>

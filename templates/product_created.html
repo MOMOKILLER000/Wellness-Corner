@@ -4,10 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Created</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            padding: 3rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 95%; /* Adjusted width */
+            max-width: 800px; /* Increased max-width */
+            text-align: center;
+        }
+
+        h1 {
+            color: #000000;
+            font-weight: bold;
+            font-size: 3.5rem; /* Increased font size */
+            margin-bottom: 2rem; /* Increased margin */
+        }
+
+        p {
+            color: #000000;
+            font-size: 1.5rem; /* Increased font size */
+            margin-bottom: 2rem; /* Increased margin */
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 1.5rem; /* Increased font size */
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Product Created</h1>
-    <p>Your product has been successfully created.</p>
-    <p><a href="{% url 'create' %}">Create Another Product</a></p>
+    <div class="container">
+        <h1>Product Created</h1>
+        <p>Your product has been successfully created.</p>
+        <p><a href="{% url 'create' %}">Create Another Product</a></p>
+    </div>
 </body>
 </html>

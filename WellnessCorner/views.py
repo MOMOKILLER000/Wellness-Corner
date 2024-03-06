@@ -394,6 +394,9 @@ def basket_page(request):
 
         products_in_basket.append({'product': product, 'source': source, 'quantity': quantity})
 
+    if not products_in_basket:  # If the basket is empty, redirect to the empty basket page
+        return render(request, 'basket_empty.html')
+
     return render(request, 'basket.html', {'products_in_basket': products_in_basket, 'total_price': total_price})
 
 def delete_from_basket(request, product_id, source):
@@ -700,24 +703,21 @@ def newsletter_subscription(request):
     return render(request, 'index.html', {'form': form})
 
 
-@login_required
 def checkout(request):
     if request.method == 'POST':
         # Get form data
         address = request.POST.get('address')
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
-        age_confirmation = request.POST.get('age_confirmation')
-        email = request.user.email  # Assuming user is logged in
+        city = request.POST.get('city')
+        country = request.POST.get('country')
+        zip_code = request.POST.get('zip_code')
+        # No need for age_confirmation here as it's not present in the form
 
         # Perform validation
-        if not address or not first_name or not last_name or not age_confirmation:
+        required_fields = [address, first_name, last_name, city, country, zip_code]
+        if not all(required_fields):
             messages.error(request, "Please fill in all the required fields.")
-            return redirect('checkout')
-
-        # Perform age verification
-        if age_confirmation != 'on':
-            messages.error(request, "You must confirm that you are over 18 years old.")
             return redirect('checkout')
 
         # Get the basket for the current user
@@ -737,12 +737,15 @@ def checkout(request):
             'address': address,
             'first_name': first_name,
             'last_name': last_name,
+            'city': city,
+            'country': country,
+            'zip_code': zip_code,
             'total_price': total_price,  # Include total price in email
             'basket_items': basket.items.all(),  # Include basket items in email
         })
         plain_message = strip_tags(html_message)
-        from_email = 'exploresphereapp@gmail.com'  # Update with your email
-        to_email = [email]
+        from_email = settings.DEFAULT_FROM_EMAIL  # Use the default from email defined in settings
+        to_email = [request.user.email]
         send_mail(subject, plain_message, from_email, to_email, html_message=html_message)
 
         # Clear the basket after successful checkout

@@ -6,54 +6,73 @@
     <link rel="stylesheet" href="{% static 'index.css' %}">
 </head>
 <style>
-    .container {
-        width: 50%;
-        margin: auto;
-        overflow: hidden;
-        text-align: center; /* Center align the content */
-        margin-top:40px;
-    }
-    
-    h2 {
-        font-size: 24px; /* Increase font size */
-    }
-    p {
-        font-size: 18px; /* Increase font size */
+    .main {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh;
+        background-color: #f3f4f6;
     }
 
-    form {
-        background: #fff;
-        padding: 20px;
-        margin-top: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    .container {
+        background-color: #ffffff;
+        border-radius: 0.5rem;
+        padding: 2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 95%; /* Adjusted width */
+        max-width: 800px; /* Increased max-width */
+    }
+
+    h2 {
+        color: #000000;
+        font-weight: bold;
+        font-size: 2.5rem; /* Increased font size */
+        margin: 0;
+        margin-bottom: 1rem;
     }
 
     label {
+        color: #000000;
+        font-size: 1.5rem; /* Increased font size */
+        margin-bottom: 0.5rem;
         display: block;
-        margin: 10px 0 5px;
+        margin-right: 1rem;
     }
 
-    input,
+    input[type="text"],
     textarea {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
+        width: calc(100% - 2rem);
+        font-size: 1.2rem;
+        background-color: #ffffff;
+        border-radius: 0.5rem;
+        border: 1px solid #d1d5db;
+        color: #000000;
+        padding: 1rem;
+        margin-top: 0.5rem;
+        margin-bottom: 1rem;
+        margin-right: 1rem;
     }
 
-    button {
-        background-color: #4caf50;
-        color: #fff;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 4px;
+    button[type="submit"] {
+        background-color: black;
+        color: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem 2rem; /* Increased padding */
+        font-size: 1.5rem; /* Increased font size */
+        transition: all 0.2s ease-in-out;
         cursor: pointer;
+        border: none;
+        outline: none;
+        display: block;
+        margin: 0 auto;
     }
 
-    button:hover {
-        background-color: #45a049;
+    button[type="submit"]:hover {
+        background-color: #edf2f7;
+        color: black;
     }
 </style>
 <body>
@@ -90,19 +109,21 @@
         <div class="icons">
             <i class="fas fa-bars" id="menu-bars"></i>
             <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
-            <a href="#" class="fas fa-heart"></a>
+            <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
             <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
         </div>
     
     </header>
-<div class="container">
-    <h2>Contact Us</h2>
-    <form method="post" action="{% url 'contact' %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Send Message</button>
-    </form>
-</div>
+    <div class="main">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <form method="post" action="{% url 'contact' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Send Message</button>
+            </form>
+        </div>
+    </div>
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 <script>
    function toggleBar() {
