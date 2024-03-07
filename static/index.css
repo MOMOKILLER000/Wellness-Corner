@@ -233,6 +233,11 @@ header .icons #menu-bars {
     border-radius: 30px;
     /* Add border radius */
 }
+.product:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-7px);
+    transition: box-shadow 0.3s, transform 0.3s;
+}
 
 .product h1 {
     font-size: 2rem;

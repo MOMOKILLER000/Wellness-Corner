@@ -37,6 +37,12 @@ urlpatterns = [
     path('update-meal-api-product/<int:meal_api_product_id>/', views.update_meal_api_product, name='update_meal_api_product'),
     path('delete-meal-api-product/<int:meal_api_product_id>/', views.delete_meal_api_product, name='delete_meal_api_product'),
     path('create-profile/', views.create_profile, name='create_profile'),
+    path('myaccount/', views.myaccount, name='myaccount'),
+    path('password_change/', views.CustomPasswordChangeView.as_view(
+        template_name='myaccount.html',
+        success_url='/myaccount/'
+    ), name='password_change'),
+    path('myprofile/', views.myprofile, name='myprofile'),
 ]
 
 if settings.DEBUG:

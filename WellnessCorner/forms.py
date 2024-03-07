@@ -1,10 +1,11 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import User, Allergy
 from .models import PendingProduct, Product, ApiProduct, Post, Subscriber
 from itertools import chain
 from .models import MealProduct, MealApiProduct, UserProfile
-
+from django.contrib.auth.forms import PasswordChangeForm as DjangoPasswordChangeForm
+from django.contrib.auth import authenticate
 
 class RegistrationForm(UserCreationForm):
 
@@ -103,3 +104,26 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['age', 'height', 'weight','gender', 'activity_level', 'goal']
+
+class UserAccountForm(forms.ModelForm):
+    allergies = forms.ModelMultipleChoiceField(
+        queryset=Allergy.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Allergies",
+        help_text="Select your allergies."
+    )
+
+    class Meta:
+        model = User
+        fields = ['name', 'allergies']
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        label='Old Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+    )
+
+    class Meta:
+        model = User
+        fields = ['old_password', 'new_password1', 'new_password2']

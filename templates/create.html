@@ -44,7 +44,7 @@
     }
 
     button {
-        background-color: #4caf50;
+        background-color: #1434A4;;
         color: #fff;
         padding: 10px 15px;
         border: none;
@@ -53,7 +53,7 @@
     }
 
     button:hover {
-        background-color: #45a049;
+        background-color: #1434A4;
     }
 </style>
 <body>
@@ -69,8 +69,9 @@
             {% if request.user.is_superuser %}
             <a href="{% url 'approve_products' %}">Approve Products</a>
             <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
-            {% endif %}
-            <a href="{% url 'contact' %}">Contact</a>
+        {% endif %}
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'calculator' %}">Calculator calorii</a>
         </div>
     </div>
     <header>

@@ -26,136 +26,150 @@
         }
 
         .heading {
-            text-align: center;
-            color: black;
-            font-size: 3rem;
-            padding-bottom: 2rem;
-            text-transform: uppercase;
-        }
+    text-align: center;
+    color: black;
+    font-size: 3rem;
+    padding-bottom: 2rem;
+    text-transform: uppercase;
+}
 
-        header {
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #fff;
-            padding: 1rem 5%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 2;
-            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
-        }
+header {
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 1rem 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+}
 
-        header .logo {
-            color: black;
-            font-size: 2.5rem;
-            font-weight: bolder;
-        }
+header .logo {
+    color: black;
+    font-size: 2.5rem;
+    font-weight: bolder;
+}
 
-        header .logo i {
-            color: green;
-        }
+header .logo i {
+    color: #0F52BA;
+}
 
-        header .navbar a {
-            font-size: 1.7rem;
-            border-radius: .5rem;
-            padding: .5rem 1.5rem;
-            color: black;
-        }
+header .navbar a {
+    font-size: 1.7rem;
+    border-radius: .5rem;
+    padding: .5rem 1.5rem;
+    color: black;
+}
 
-        .more {
-            font-size: 1.7rem;
-            color: black;
-        }
+.more {
+    font-size: 1.7rem;
+    color: black;
+}
 
-        .more:hover {
-            cursor: pointer;
-        }
+.more:hover {
+    cursor: pointer;
+}
 
-        header .navbar a.active,
-        header .navbar a:hover {
-            color: #fff;
-            background: green;
-        }
+header .navbar a.active,
+header .navbar a:hover {
+    color: #fff;
+    background: 	#4169E1;
+}
 
-        header .icons i,
-        header .icons a {
-            cursor: pointer;
-            margin-left: .5rem;
-            height: 4.5rem;
-            line-height: 4.5rem;
-            width: 4.5rem;
-            text-align: center;
-            font-size: 1.7rem;
-            color: black;
-            border-radius: 50%;
-            background: #eee;
-        }
+header .icons i,
+header .icons a {
+    cursor: pointer;
+    margin-left: .5rem;
+    height: 4.5rem;
+    line-height: 4.5rem;
+    width: 4.5rem;
+    text-align: center;
+    font-size: 1.7rem;
+    color: black;
+    border-radius: 50%;
+    background: #eee;
+}
 
-        header .icons i:hover,
-        header .icons a:hover {
-            color: #fff;
-            background: green;
-            transform: rotate(360deg);
-        }
+header .icons i:hover,
+header .icons a:hover {
+    color: #fff;
+    background: 		#4169E1;
+    transform: rotate(360deg);
+}
 
-        header .icons #menu-bars {
-            display: none;
-        }
+header .icons #menu-bars {
+    display: none;
+}
 
-        .left-bar {
-            position: fixed;
-            top: 0;
-            left: -300px;
-            height: 100%;
-            width: 200px;
-            background-color: #333;
-            color: white;
-            transition: left 0.3s ease;
-            z-index: 1000;
-        }
+/*Left bar */
+.left-bar {
+    position: fixed;
+    top: 0;
+    left: -200px;
+    /* Initially hide the sidebar off-screen */
+    height: 100%;
+    width: 200px;
+    background-color: #1434A4;
+    color: white;
+    transition: left 0.3s ease;
+    /* Add a transition effect for smooth appearance/disappearance */
+    z-index: 1000;
+    /* Set a higher z-index to make sure it appears above other elements */
+}
 
-        .left-bar-expanded {
-            left: 0;
-        }
+.left-bar-expanded {
+    left: 0;
+    /* Display the sidebar when the class is applied */
+    z-index: 10;
+}
 
-        .content-page {
-            transition: margin-left 0.3s ease;
-        }
+.content-page {
+    transition: margin-left 0.3s ease;
+    /* Add a transition effect for the content page when the sidebar appears/disappears */
+}
 
-        .content-page-extended {
-            margin-left: 200px;
-        }
+.content-page-extended {
+    margin-left: 200px;
+    /* Adjust the margin to make room for the sidebar */
+}
 
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    /* Position the button on the right side */
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    /* Increase the font size for a bigger button */
+    cursor: pointer;
+}
 
-        .links {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding-top: 50px;
-        }
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 50px;
+}
 
-        .links a {
-            font-size: 24px;
-            padding: 15px 20px;
-            color: #FFD700;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
+.links a {
+    font-size: 24px;
+    /* Adjust the font size */
+    padding: 15px 20px;
+    /* Add padding for better spacing */
+    color: #89CFF0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    /* Add transition for smooth color change on hover */
+}
 
-        .links a:hover {
-            color: #ffffff;
-        }
+.links a:hover {
+    color: #ffffff;
+    /* Change color on hover */
+}
 
         body {
             margin: 0;
@@ -271,8 +285,9 @@
             {% if request.user.is_superuser %}
             <a href="{% url 'approve_products' %}">Approve Products</a>
             <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
-            {% endif %}
-            <a href="{% url 'contact' %}">Contact</a>
+        {% endif %}
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'calculator' %}">Calculator calorii</a>
         </div>
     </div>
     <header>

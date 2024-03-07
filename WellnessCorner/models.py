@@ -147,6 +147,7 @@ class PendingProduct(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     allergies = models.TextField(null=True, blank=True)
+    user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     approved = models.BooleanField(default=False)
 
     def __str__(self):

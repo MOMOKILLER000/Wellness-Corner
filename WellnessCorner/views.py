@@ -16,7 +16,7 @@ from .models import PendingProduct, Subscriber
 from django.core.files.base import ContentFile
 from django.http import HttpResponseForbidden
 from django.conf import settings
-from .forms import PostForm, EmailSubscriberForm, ContactForm, NewsletterSubscriptionForm
+from .forms import PostForm, EmailSubscriberForm, ContactForm, NewsletterSubscriptionForm, CustomPasswordChangeForm
 from .models import Post
 from itertools import chain
 from django.core.mail import send_mail
@@ -24,11 +24,12 @@ from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from .models import Meal, MealProduct, MealApiProduct
-from .forms import MealProductForm, MealApiProductForm
+from .forms import MealProductForm, MealApiProductForm, UserAccountForm
 from django.http import HttpResponse
 from django.db.models import FloatField
 from django.db.models import Sum, F, FloatField
 from django.http import Http404
+from django.contrib.auth.views import PasswordChangeView
 
 @login_required
 def index(request):
@@ -135,6 +136,42 @@ def verify_recaptcha(response_token):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def myaccount(request):
+    user = request.user
+
+    if request.method == 'POST':
+        form = UserAccountForm(request.POST, instance=user)
+        password_change_form = CustomPasswordChangeForm(request.user, request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully.')
+
+            # Check if the password change form is valid before saving
+            if password_change_form.is_valid():
+                password_change_form.save()
+                messages.success(request, 'Password updated successfully.')
+
+            return redirect('myaccount')  # Redirect to the profile page after successful update
+
+    else:
+        form = UserAccountForm(instance=user)
+        password_change_form = CustomPasswordChangeForm(user=request.user)
+
+    return render(request, 'myaccount.html', {'form': form, 'password_change_form': password_change_form})
+
+class CustomPasswordChangeView(PasswordChangeView):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Password changed successfully.')
+        return response
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Invalid credentials')
+        return redirect('myaccount')
+
 def search_product(product_name, user=None):
     # Fetch database products matching the search term
     database_products = Product.objects.filter(product_name__icontains=product_name)
@@ -168,7 +205,7 @@ def search_product(product_name, user=None):
 
                 allergies = [allergy.split(':')[1] for allergy in allergies]
 
-                api_product, created = ApiProduct.objects.update_or_create(
+                api_product, created = ApiProduct.objects.get_or_create(
                     product_name=name,
                     defaults={
                         'brands': brands,
@@ -1059,3 +1096,17 @@ def add_to_meal(request, meal_type):
     context = {'meal_type': meal_type, 'search_results': search_results, 'search_query': search_query}
     return render(request, 'add_to_meal.html', context)
 
+@login_required
+def myprofile(request):
+    user = request.user
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user.userprofile)  # Use the userprofile instance
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('myprofile')  # Redirect to the profile page or any other desired URL
+    else:
+        form = UserProfileForm(instance=user.userprofile)  # Use the userprofile instance
+
+    return render(request, 'myprofile.html', {'form': form})

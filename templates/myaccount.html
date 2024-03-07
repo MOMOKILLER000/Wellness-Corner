@@ -1,0 +1,42 @@
+{% load static %}
+<body>
+    <div class="wrapper profile">
+        <div class="profile-container">
+            <h2>Welcome to your profile, {{ user.get_full_name }}</h2>
+            <div class="col-right">
+                <div class="profile-form">
+                    <h2>My Profile</h2>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.name }}
+                        <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
+                        {{ form.allergies.errors }}
+                        {% for allergy in form.allergies %}
+                            <div class="checkbox">
+                                {{ allergy.tag }} {{ allergy.choice_label }}
+                            </div>
+                        {% endfor %}
+                        <button class="password-change-form button" type="submit">Update Profile</button>
+                    </form>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="message">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <h2>Change Password</h2>
+                    <form method="post" action="{% url 'password_change' %}">
+                        {% csrf_token %}
+                        {{ password_change_form.as_p }}
+                        <button class="password-change-form button" type="submit">Change Password</button>
+                    </form>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="message">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

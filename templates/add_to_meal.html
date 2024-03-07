@@ -5,9 +5,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add to Meal</title>
-    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'calculator.css' %}">
 </head>
 <body>
+    <div class="left-bar">
+        <button class="close-button" onclick="closeBar()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <div class="links">
+            <a href="{% url 'create' %}">Create Product</a>
+            <a href="{% url 'my_products' %}">My Products</a>
+            <a href="{% url 'create_post' %}">Create Post</a>
+            <a href="{% url 'post_list' %}">Posts</a>
+            {% if request.user.is_superuser %}
+            <a href="{% url 'approve_products' %}">Approve Products</a>
+            <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+        {% endif %}
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'calculator' %}">Calculator calorii</a>
+        </div>
+    </div>
+    <header>
+        <div class="more">
+            <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+        </div>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+    
+        <nav class="navbar">    
+            <a href="{% url 'index' %}">Home</a>
+            <a href="#about">about</a>
+            <a href="#menu">menu</a>
+            <a href="{% url 'myaccount' %}">My Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+    
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
+            <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
+            <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+        </div>
+    
+    </header>
     <div class="search-container-meal" id="search-container">
         <form action="{% url 'add_to_meal' meal_type=meal_type %}" method="post" class="search-form">
             {% csrf_token %}
@@ -39,7 +78,7 @@
                 </div>
                 <div class="bottom">
                     <h3 style="font-size:18px;">Nutritional Data:</h3>
-                    <ul>
+                    <ul class="product-details">
                         <li>Calories: {{ product.kcal_per_100g }}</li>
                         <li>Proteins: {{ product.protein_per_100g }}</li>
                         <li>Carbs: {{ product.carbs_per_100g }}</li>
@@ -60,7 +99,21 @@
         </div>
     {% endif %}
 </div>
+<script>
+    function toggleBar() {
+document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+document.querySelector(".content-page").classList.toggle("content-page-extended");
+}
+
+function closeBar() {
+ document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+ document.querySelector(".content-page").classList.remove("content-page-extended");
+}
+
+</script>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </body>
+
 </html>
 
 
