@@ -398,3 +398,49 @@ form button:hover {
 .search-icon {
     margin-right: 5px;
 }
+
+
+.circle-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.calories-circle {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    border: 2px solid #ccc;
+    line-height: 150px;
+    font-size: 24px;
+    position: relative;
+}
+
+.calories-circle span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.calories-circle p {
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+.meals-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.meal {
+    width: 23%; /* Adjust as needed */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    text-align: center;
+}

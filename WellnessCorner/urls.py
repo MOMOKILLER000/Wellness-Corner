@@ -43,8 +43,10 @@ urlpatterns = [
         success_url='/myaccount/'
     ), name='password_change'),
     path('myprofile/', views.myprofile, name='myprofile'),
+    path('apply_discount/', views.apply_discount, name='apply_discount'),
+    path('user_discounts/', views.user_discounts, name='user_discounts'),
+    path('remove_discount/<int:discount_id>/', views.remove_discount, name='remove_discount'),
 ]
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -1,7 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
 
 * {
-    font-family: 'Comfortaa', cursive;
+    font-family: 'Nunito', sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -115,7 +114,7 @@
     flex: 0.25;
     margin-left: 20px;
     padding: 20px;
-    height: 240px;
+    min-height: 100%;
     border: 1px solid silver;
     border-radius: 5px;
 }
@@ -175,4 +174,68 @@
     .container {
         max-width: 95%;
     }
+}
+
+.discounts {
+    margin-bottom: 20px;
+}
+
+.discounts input[type="text"] {
+    font-size: 1rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding:10px;
+    border: 1.2px solid #d1d5db;
+    color: #000000;
+    margin-top: 0.5rem;
+    margin-bottom: 0l6rem; /* Added margin-right */
+    
+}
+
+.discounts button{
+    background-color: black;
+    color: white;
+    border-radius: 0.5rem;
+    padding:10px;
+    font-size: 1rem; /* Increased font size */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    margin: 0 auto; /* Center the button horizontally */
+}
+
+
+.discounts button:hover {
+    background-color: #edf2f7;
+    color: black;
+}
+
+
+.discount-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.discount-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.remove-form {
+    margin-left: 10px; /* Adjust as needed for spacing */
+}
+
+.remove-button {
+    padding: 5px 10px;
+    background-color: #ff0000;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.remove-button:hover {
+    background-color: #cc0000;
 }

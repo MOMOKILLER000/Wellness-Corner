@@ -43,6 +43,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(default=timezone.now)
     last_login = models.DateTimeField(blank=True, null=True)
     allergies = models.ManyToManyField(Allergy, blank=True)
+    is_subscribed = models.BooleanField(default=False)
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -254,11 +255,10 @@ class Basket(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    address = models.CharField(max_length=100,null=True, blank=True)
-    first_name = models.CharField(max_length=50,null=True, blank=True)
-    last_name = models.CharField(max_length=50,null=True, blank=True)
+    address = models.CharField(max_length=100, null=True, blank=True)
+    first_name = models.CharField(max_length=50, null=True, blank=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
     age_confirmation = models.BooleanField(default=False)
-
 
 class BasketItem(models.Model):
     BASKET_SOURCES = (
@@ -459,3 +459,14 @@ class MealApiProduct(models.Model):
     protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2)
+
+
+class Discount(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=20, unique=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.code
+

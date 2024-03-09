@@ -295,22 +295,22 @@ header .icons #menu-bars {
             <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
         </div>
         <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
-
-        <nav class="navbar">
+    
+        <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
             <a href="#about">about</a>
             <a href="#menu">menu</a>
-            <a href="#review">review</a>
+            <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
         </nav>
-
+    
         <div class="icons">
             <i class="fas fa-bars" id="menu-bars"></i>
             <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
             <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
             <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
         </div>
-
+    
     </header>
     <div class="content-page">
         <div class="upper">

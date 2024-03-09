@@ -43,17 +43,42 @@
             </div>
             <div class="cart-total">
                 <p>
-                    <span>Total Price</span>
-                    <span>{{ total_price }}$</span>
+                    <span>Total Price (Before Discount)</span>
+                    <span>${{ total_price }}</span>
+                </p>
+                <p>
+                    <span>Total Price (After Discount)</span>
+                    <span>${{ total_price_after_discount }}</span>
+                </p>
+                <p>
+                    <span>You Save</span>
+                    <span>${{ savings }}</span>
                 </p>
                 <p>
                     <span>Number of Items</span>
                     <span>{{ products_in_basket|length }}</span>
                 </p>
-                <p>
-                    <span>You Save</span>
-                    <span>$ 0</span> <!-- Assuming there's no discount applied -->
-                </p>
+                <!-- Discount Section -->
+                <form method="post" class="discounts" action="{% url 'apply_discount' %}">
+                    {% csrf_token %}
+                    <input type="text" name="discount_code" placeholder="Enter Discount Code">
+                    <button type="submit">Apply</button>
+                </form>
+                <!-- End Discount Section -->
+                {% if used_discounts %}
+    <h3>Applied Discounts:</h3>
+    <ul class="discount-list">
+        {% for discount in used_discounts %}
+            <li class="discount-item">
+                <span>{{ discount.code }} - {{ discount.amount }}% off</span>
+                <form class="remove-form" method="post" action="{% url 'remove_discount' discount.id %}">
+                    {% csrf_token %}
+                    <button class="remove-button" type="submit">Remove</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
                 <a href="{% url 'checkout' %}">Finish Order</a>
             </div>
         </div>

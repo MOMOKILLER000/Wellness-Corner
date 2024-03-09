@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'WellnessCorner.middleware.NoCacheMiddleware',
+    'WellnessCorner.middleware.ResetMessagesMiddleware',
 ]
 
 ROOT_URLCONF = 'fiicode.urls'

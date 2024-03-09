@@ -1,208 +1,67 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Edit Pending Product</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 190vh;
-            background-color: #f3f4f6;
-        }
-
-        .container {
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            padding: 2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-        }
-
-        h2 {
-            color: #000000;
-            font-weight: bold;
-            font-size: 1.5rem;
-            margin: 0;
-            margin-bottom: 1rem;
-        }
-
-        label {
-            color: #000000;
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-            display: block;
-            margin-right: 1rem; /* Added margin-right */
-        }
-
-        input[type="text"],
-        select {
-            width: calc(100% - 2rem); /* Adjusted width to accommodate for padding */
-            font-size: 1.2rem;
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            border: 1px solid #d1d5db;
-            color: #000000;
-            padding: 1rem;
-            margin-top: 0.5rem;
-            margin-bottom: 1rem;
-            margin-right: 1rem; /* Added margin-right */
-        }
-        textarea{
-            width: calc(100% - 2rem); /* Adjusted width to accommodate for padding */
-            font-size: 1.2rem;
-            background-color: #ffffff;
-            border-radius: 0.5rem;
-            border: 1px solid #d1d5db;
-            color: #000000;
-            padding: 1rem;
-            margin-top: 0.5rem;
-            margin-bottom: 1rem;
-            height:50px;
-            margin-right: 1rem; /* Added margin-right */
-        }
-        .button {
-            background-color: black;
-            color: white;
-            border-radius: 0.5rem;
-            padding: 1rem 1.5rem; /* Increased padding to make it bigger */
-            font-size: 1rem; /* Increased font size */
-            transition: all 0.2s ease-in-out;
-            cursor: pointer;
-            border: none;
-            outline: none;
-            display: block; /* Change display to block to center it */
-            margin: 0 auto; /* Center the button horizontally */
-        }
-
-        .button:hover {
-            background-color: #edf2f7;
-            color:black;
-        }
-
-        .half-width {
-            width: calc(50% - 1rem);
-            max-width: calc(50% - 1rem);
-        }
-    </style>
+    <title>Create a Product</title>
+    <link rel="stylesheet" href="{% static 'post-form.css' %}">
 </head>
 <body>
-    <div class="container">
-        <h2>Edit Pending Product</h2>
+    <div class="wrapper profile">
+        <div class="profile-container">
+            <div class="col-right">
+  <h2>Create a product</h2>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.product_name.errors }}
+    <label for="{{ form.product_name.id_for_label }}">Product Name:</label>
+    {{ form.product_name }}
 
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div style="margin-bottom: 1rem;">
-                <label for="id_product_name">Product Name:</label>
-                {{ form.product_name }}
-                {% if form.product_name.errors %}
-                    <span>{{ form.product_name.errors }}</span>
-                {% endif %}
-            </div>
-        
-            <div style="margin-bottom: 1rem;">
-                <label for="id_brands">Brands:</label>
-                {{ form.brands }}
-                {% if form.brands.errors %}
-                    <span>{{ form.brands.errors }}</span>
-                {% endif %}
-            </div>
-        
-            <div style="margin-bottom: 1rem;">
-                <label for="id_quantity">Quantity:</label>
-                {{ form.quantity }}
-                {% if form.quantity.errors %}
-                    <span>{{ form.quantity.errors }}</span>
-                {% endif %}
-            </div>
-        
-            <div style="margin-bottom: 1rem;">
-                <label for="id_categories">Categories:</label>
-                {{ form.categories }}
-                {% if form.categories.errors %}
-                    <span>{{ form.categories.errors }}</span>
-                {% endif %}
-            </div>
-        
-            <div style="margin-bottom: 1rem;">
-                <label for="id_image">Image:</label>
-                {{ form.image }}
-                {% if form.image.errors %}
-                    <span>{{ form.image.errors }}</span>
-                {% endif %}
-            </div>
-        
-            <div class="flex flex-row" style="margin-bottom: 1rem;">
-                <div class="half-width">
-                    <label for="id_protein_per_100g">Protein per 100g:</label>
-                    {{ form.protein_per_100g }}
-                    {% if form.protein_per_100g.errors %}
-                        <span>{{ form.protein_per_100g.errors }}</span>
-                    {% endif %}
-                </div>
-            </div>
+    {{ form.brands.errors }}
+    <label for="{{ form.brands.id_for_label }}">Brands:</label>
+    {{ form.brands }}
 
-            <div class="flex flex-row" style="margin-bottom: 1rem;">
-                <div class="half-width">
-                    <label for="id_carbs_per_100g">Carbs per 100g:</label>
-                    {{ form.carbs_per_100g }}
-                    {% if form.carbs_per_100g.errors %}
-                        <span>{{ form.carbs_per_100g.errors }}</span>
-                    {% endif %}
-                </div>
-            </div>
+    {{ form.quantity.errors }}
+    <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
+    {{ form.quantity }}
 
-            <div class="flex flex-row" style="margin-bottom: 1rem;">
-                <div class="half-width">
-                    <label for="id_fats_per_100g">Fats per 100g:</label>
-                    {{ form.fats_per_100g }}
-                    {% if form.fats_per_100g.errors %}
-                        <span>{{ form.fats_per_100g.errors }}</span>
-                    {% endif %}
-                </div>
-            </div>
+    {{ form.categories.errors }}
+    <label for="{{ form.categories.id_for_label }}">Categories:</label>
+    {{ form.categories }}
 
-            <div class="flex flex-row" style="margin-bottom: 1rem;">
-                <div class="half-width">
-                    <label for="id_kcal_per_100g">Kcal per 100g:</label>
-                    {{ form.kcal_per_100g }}
-                    {% if form.kcal_per_100g.errors %}
-                        <span>{{ form.kcal_per_100g.errors }}</span>
-                    {% endif %}
-                </div>
-            </div>
-        
-            <div style="margin-bottom: 1rem;">
-                <label for="id_price">Price:</label>
-                {{ form.price }}
-                {% if form.price.errors %}
-                    <span>{{ form.price.errors }}</span>
-                {% endif %}
-            </div>
-        
-            <div style="margin-bottom: 1rem;">
-                <label for="id_product_type">Product Type:</label>
-                {{ form.product_type }}
-                {% if form.product_type.errors %}
-                    <span>{{ form.product_type.errors }}</span>
-                {% endif %}
-            </div>
-        
-            <div style="margin-bottom: 1rem;">
-                <label for="id_allergies">Allergies:</label>
-                {{ form.allergies }}
-                {% if form.allergies.errors %}
-                    <span>{{ form.allergies.errors }}</span>
-                {% endif %}
-            </div>
-        
-            <button class="button" type="submit">Save Changes</button>
-        </form>
-    </div>
-</body>
-</html>
+    {{ form.image.errors }}
+    <label for="{{ form.image.id_for_label }}">Image:</label>
+    {{ form.image }}
+
+    {{ form.protein_per_100g.errors }}
+    <label for="{{ form.protein_per_100g.id_for_label }}">Protein per 100g:</label>
+    {{ form.protein_per_100g }}
+
+    {{ form.carbs_per_100g.errors }}
+    <label for="{{ form.carbs_per_100g.id_for_label }}">Carbs per 100g:</label>
+    {{ form.carbs_per_100g }}
+
+    {{ form.fats_per_100g.errors }}
+    <label for="{{ form.fats_per_100g.id_for_label }}">Fats per 100g:</label>
+    {{ form.fats_per_100g }}
+
+    {{ form.kcal_per_100g.errors }}
+    <label for="{{ form.kcal_per_100g.id_for_label }}">Kcal per 100g:</label>
+    {{ form.kcal_per_100g }}
+
+    {{ form.price.errors }}
+    <label for="{{ form.price.id_for_label }}">Price:</label>
+    {{ form.price }}
+
+    {{ form.product_type.errors }}
+    <label for="{{ form.product_type.id_for_label }}">Product Type:</label>
+    {{ form.product_type }}
+
+    {{ form.allergies.errors }}
+    <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
+    {{ form.allergies }}
+
+    <button type="submit">Submit</button>
+</form>
+</div>
+</div>
+</div>

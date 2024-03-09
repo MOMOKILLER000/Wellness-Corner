@@ -1,42 +1,115 @@
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Account</title>
+    <link rel="stylesheet" href="{% static 'post-form.css' %}">
+    <style>
+        /* Your custom styles here */
+    </style>
+</head>
 <body>
-    <div class="wrapper profile">
-        <div class="profile-container">
-            <h2>Welcome to your profile, {{ user.get_full_name }}</h2>
-            <div class="col-right">
-                <div class="profile-form">
-                    <h2>My Profile</h2>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ form.name }}
-                        <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
-                        {{ form.allergies.errors }}
-                        {% for allergy in form.allergies %}
-                            <div class="checkbox">
-                                {{ allergy.tag }} {{ allergy.choice_label }}
-                            </div>
-                        {% endfor %}
-                        <button class="password-change-form button" type="submit">Update Profile</button>
-                    </form>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="message">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
+<div class="left-bar">
+    <button class="close-button" onclick="closeBar()">
+        <i class="fa-solid fa-times"></i>
+    </button>
+    <div class="links">
+        <a href="{% url 'create' %}">Create Product</a>
+        <a href="{% url 'my_products' %}">My Products</a>
+        <a href="{% url 'create_post' %}">Create Post</a>
+        <a href="{% url 'post_list' %}">Posts</a>
+        {% if request.user.is_superuser %}
+            <a href="{% url 'approve_products' %}">Approve Products</a>
+            <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+        {% endif %}
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'calculator' %}">Calculator calorii</a>
+    </div>
+</div>
+<header>
+    <div class="more">
+        <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+    </div>
+    <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
 
-                    <h2>Change Password</h2>
-                    <form method="post" action="{% url 'password_change' %}">
-                        {% csrf_token %}
-                        {{ password_change_form.as_p }}
-                        <button class="password-change-form button" type="submit">Change Password</button>
-                    </form>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="message">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
+    <nav class="navbar">
+        <a href="{% url 'index' %}">Home</a>
+        <a href="#about">about</a>
+        <a href="#menu">menu</a>
+        <a href="{% url 'myaccount' %}">My Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
+        <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
+        <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+    </div>
+</header>
+<div class="wrapper profile">
+    <div class="profile-container">
+        <h2>Welcome to your profile, {{ user.get_full_name }}</h2>
+        <div class="col-right">
+            <div class="profile-form">
+                <h2>My Profile</h2>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <label for="{{ form.name.id_for_label }}">Name:</label>
+                    {{ form.name }}
+
+                    <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
+                    {{ form.allergies.errors }}
+                    {% for allergy in form.allergies %}
+                        <div class="checkbox">
+                            {{ allergy.tag }} {{ allergy.choice_label }}
+                        </div>
+                    {% endfor %}
+
+                    <button class="password-change-form button" type="submit">Update Profile</button>
+                </form>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <h2>Change Password</h2>
+                <form method="post" action="{% url 'password_change' %}">
+                    {% csrf_token %}
+                    <label for="{{ password_change_form.old_password.id_for_label }}">Old Password:</label>
+                    {{ password_change_form.old_password }}
+
+                    <label for="{{ password_change_form.new_password1.id_for_label }}">New Password:</label>
+                    {{ password_change_form.new_password1 }}
+
+                    <label for="{{ password_change_form.new_password2.id_for_label }}">Confirm New Password:</label>
+                    {{ password_change_form.new_password2 }}
+
+                    <button class="password-change-form button" type="submit">Change Password</button>
+                </form>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="message">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
+</div>
 </body>
+<script>
+    function toggleBar() {
+        document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+        document.querySelector(".content-page").classList.toggle("content-page-extended");
+    }
+
+    function closeBar() {
+        document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+        document.querySelector(".content-page").classList.remove("content-page-extended");
+    }
+</script>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+</html>

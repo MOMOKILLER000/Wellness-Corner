@@ -22,7 +22,16 @@
         {% endif %}
         {% endfor %}
         <li>Total Price: ${{ total_price }}</li>
-        <!-- Add more order details here -->
+        <!-- Display used discounts -->
+        {% if used_discounts %}
+        <li>Discounts Used:
+            <ul>
+                {% for discount in used_discounts %}
+                <li>{{ discount.code }} - {{ discount.amount }}% off</li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endif %}
     </ul>
     <p>Thank you for shopping with us!</p>
 </body>

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.contrib.auth import authenticate, login, logout
-from .models import Product, ApiProduct, Allergy, Basket, BasketItem, ProductRating, ApiProductRating, UserProfile
+from .models import Product, ApiProduct, Allergy, Basket, BasketItem, ProductRating, ApiProductRating, UserProfile, Discount
 from .forms import RegistrationForm, LoginForm, UserProfileForm
 import requests
 from decimal import Decimal
@@ -30,6 +30,9 @@ from django.db.models import FloatField
 from django.db.models import Sum, F, FloatField
 from django.http import Http404
 from django.contrib.auth.views import PasswordChangeView
+import uuid
+import string
+import random
 
 @login_required
 def index(request):
@@ -371,9 +374,9 @@ def increment_quantity(request, product_id, source):
     try:
         # Get the basket item for the given product_id and source
         if source == 'database':
-            basket_item = BasketItem.objects.get(product_id=product_id, source=source)
+            basket_item = BasketItem.objects.get(product_id=product_id, source=source, basket__user=request.user)
         elif source == 'api':
-            basket_item = BasketItem.objects.get(api_product_id=product_id, source=source)
+            basket_item = BasketItem.objects.get(api_product_id=product_id, source=source, basket__user=request.user)
 
         if basket_item.quantity < 20:  # Check if quantity is less than 20
             basket_item.quantity += 1
@@ -382,16 +385,16 @@ def increment_quantity(request, product_id, source):
             messages.warning(request, "Maximum quantity reached (20).")
     except BasketItem.DoesNotExist:
         messages.error(request, "Basket item not found.")
-    return redirect('basket_page')  # Redirect to the basket page
+    return redirect('basket_page')
 
 @login_required
 def decrement_quantity(request, product_id, source):
     try:
         # Get the basket item for the given product_id and source
         if source == 'database':
-            basket_item = BasketItem.objects.get(product_id=product_id, source=source)
+            basket_item = BasketItem.objects.get(product_id=product_id, source=source, basket__user=request.user)
         elif source == 'api':
-            basket_item = BasketItem.objects.get(api_product_id=product_id, source=source)
+            basket_item = BasketItem.objects.get(api_product_id=product_id, source=source, basket__user=request.user)
 
         if basket_item.quantity > 1:
             basket_item.quantity -= 1
@@ -400,7 +403,7 @@ def decrement_quantity(request, product_id, source):
             messages.warning(request, "Quantity cannot be less than 1.")
     except BasketItem.DoesNotExist:
         messages.error(request, "Basket item not found.")
-    return redirect('basket_page')  # Redirect to the basket page
+    return redirect('basket_page')
 
 @login_required
 def basket_page(request):
@@ -427,15 +430,30 @@ def basket_page(request):
 
         # Check if product has a valid price before adding it to total_price
         if product.price is not None:
-            total_price += product.price * quantity
+            total_price += Decimal(product.price) * quantity
 
         products_in_basket.append({'product': product, 'source': source, 'quantity': quantity})
+
+    # Fetch used discounts for the user
+    used_discounts = Discount.objects.filter(user=request.user, used=True)
+
+    # Calculate the total discount amount
+    total_discount_amount = Decimal('0.00')
+    for discount in used_discounts:
+        total_discount_amount += total_price * (discount.amount / Decimal(100))
+
+    total_price_after_discount = total_price - total_discount_amount
+    savings = total_price - total_price_after_discount
 
     if not products_in_basket:  # If the basket is empty, redirect to the empty basket page
         return render(request, 'basket_empty.html')
 
-    return render(request, 'basket.html', {'products_in_basket': products_in_basket, 'total_price': total_price})
+    # Pass the total_price, total_price_after_discount, and used discounts to the template
+    return render(request, 'basket.html', {'products_in_basket': products_in_basket, 'total_price': total_price,
+                                            'total_price_after_discount': total_price_after_discount, 'savings': savings,
+                                            'used_discounts': used_discounts})
 
+@login_required
 def delete_from_basket(request, product_id, source):
     if request.method == 'POST':
         # Check if source is either 'database' or 'api'
@@ -731,15 +749,48 @@ def newsletter_subscription(request):
     if request.method == 'POST':
         form = NewsletterSubscriptionForm(request.POST)
         if form.is_valid():
+            # Save the subscription
             form.save_subscription(request.user)
-            messages.success(request, 'Subscription successful.')
+            
+            # Set the user's is_subscribed field to True
+            request.user.is_subscribed = True
+            request.user.save()
+            
+            # Generate the discount code
+            discount_code = generate_discount_code()
+            
+            # Create a discount for the user with the generated code
+            Discount.objects.create(
+                user=request.user,
+                code=discount_code,
+                amount=10,  # Set the discount amount to 10
+                used=False  # Mark the discount as unused initially
+            )
+            
+            messages.success(request, 'Subscription successful. A discount has been generated for you.')
             return redirect('index')
     else:
         form = NewsletterSubscriptionForm()
 
     return render(request, 'index.html', {'form': form})
 
+def generate_discount_code():
+    # Generate 4 random upper case characters
+    first_part = ''.join(random.choices(string.ascii_uppercase, k=4))
+    
+    # Generate 4 random upper case characters
+    second_part = ''.join(random.choices(string.ascii_uppercase, k=4))
+    
+    # Generate 4 random upper case characters
+    third_part = ''.join(random.choices(string.ascii_uppercase, k=4))
+    
+    # Concatenate the parts with hyphens
+    discount_code = f"{first_part}-{second_part}-{third_part}"
+    
+    return discount_code
 
+
+@login_required
 def checkout(request):
     if request.method == 'POST':
         # Get form data
@@ -749,7 +800,6 @@ def checkout(request):
         city = request.POST.get('city')
         country = request.POST.get('country')
         zip_code = request.POST.get('zip_code')
-        # No need for age_confirmation here as it's not present in the form
 
         # Perform validation
         required_fields = [address, first_name, last_name, city, country, zip_code]
@@ -768,6 +818,17 @@ def checkout(request):
         # Calculate the total price of the order
         total_price = basket.items.aggregate(total_price=Sum('price'))['total_price'] or Decimal('0.00')
 
+        # Fetch used discounts for the user
+        used_discounts = Discount.objects.filter(user=request.user, used=True)
+
+        # Calculate the total discount amount
+        total_discount_amount = Decimal('0.00')
+        for discount in used_discounts:
+            total_discount_amount += total_price * (discount.amount / Decimal(100))
+
+        # Calculate the total price after discounts
+        total_price_after_discount = total_price - total_discount_amount
+
         # Send confirmation email
         subject = 'Order Confirmation'
         html_message = render_to_string('confirmation_email.html', {
@@ -777,8 +838,9 @@ def checkout(request):
             'city': city,
             'country': country,
             'zip_code': zip_code,
-            'total_price': total_price,  # Include total price in email
+            'total_price': total_price_after_discount,  # Use total price after discounts
             'basket_items': basket.items.all(),  # Include basket items in email
+            'used_discounts': used_discounts,
         })
         plain_message = strip_tags(html_message)
         from_email = settings.DEFAULT_FROM_EMAIL  # Use the default from email defined in settings
@@ -787,6 +849,9 @@ def checkout(request):
 
         # Clear the basket after successful checkout
         basket.items.all().delete()
+
+        # Delete all used discounts
+        used_discounts.delete()
 
         messages.success(request, "Order successfully placed! You will receive a confirmation email.")
         return redirect('index')  # Redirect to home page after successful checkout
@@ -1110,3 +1175,36 @@ def myprofile(request):
         form = UserProfileForm(instance=user.userprofile)  # Use the userprofile instance
 
     return render(request, 'myprofile.html', {'form': form})
+
+
+@login_required
+def user_discounts(request):
+    user_discounts = Discount.objects.filter(user=request.user)
+    return render(request, 'user_discounts.html', {'user_discounts': user_discounts})
+
+@login_required
+def apply_discount(request):
+    if request.method == 'POST':
+        discount_code = request.POST.get('discount_code')
+        try:
+            discount = Discount.objects.get(code=discount_code, user=request.user, used=False)
+
+            # Apply the discount
+            if not discount.used:
+
+                discount.used = True
+                discount.save()
+                messages.success(request, 'Discount applied successfully.')
+            else:
+                messages.error(request, 'Discount already used.')
+        except Discount.DoesNotExist:
+            messages.error(request, 'Invalid discount code.')
+
+    return redirect('basket_page')
+
+@login_required
+def remove_discount(request, discount_id):
+    discount = get_object_or_404(Discount, id=discount_id, user=request.user, used=True)
+    discount.used = False
+    discount.save()
+    return redirect('basket_page')

@@ -2,60 +2,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Contact Us</title>
-    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <title>Create a Product</title>
+    <link rel="stylesheet" href="{% static 'post-form.css' %}">
 </head>
-<style>
-    .container {
-        width: 50%;
-        margin: auto;
-        overflow: hidden;
-        text-align: center; /* Center align the content */
-        margin-top:40px;
-    }
-    
-    h2 {
-        font-size: 24px; /* Increase font size */
-    }
-    p {
-        font-size: 18px; /* Increase font size */
-    }
-
-    form {
-        background: #fff;
-        padding: 20px;
-        margin-top: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    label {
-        display: block;
-        margin: 10px 0 5px;
-    }
-
-    input,
-    textarea {
-        width: 100%;
-        padding: 8px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-
-    button {
-        background-color: #1434A4;;
-        color: #fff;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: #1434A4;
-    }
-</style>
 <body>
     <div class="left-bar">
         <button class="close-button" onclick="closeBar()">
@@ -84,7 +33,7 @@
             <a href="{% url 'index' %}">Home</a>
             <a href="#about">about</a>
             <a href="#menu">menu</a>
-            <a href="#review">review</a>
+            <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
         </nav>
     
@@ -96,13 +45,64 @@
         </div>
     
     </header>
-<div class="container">
+    <div class="wrapper profile">
+        <div class="profile-container">
+            <div class="col-right">
   <h2>Create a product</h2>
   <form method="post" enctype="multipart/form-data" autocomplete="off">
     {% csrf_token %}
-    {{ form.as_p }}
+    {{ form.product_name.errors }}
+    <label for="{{ form.product_name.id_for_label }}">Product Name:</label>
+    {{ form.product_name }}
+
+    {{ form.brands.errors }}
+    <label for="{{ form.brands.id_for_label }}">Brands:</label>
+    {{ form.brands }}
+
+    {{ form.quantity.errors }}
+    <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
+    {{ form.quantity }}
+
+    {{ form.categories.errors }}
+    <label for="{{ form.categories.id_for_label }}">Categories:</label>
+    {{ form.categories }}
+
+    {{ form.image.errors }}
+    <label for="{{ form.image.id_for_label }}">Image:</label>
+    {{ form.image }}
+
+    {{ form.protein_per_100g.errors }}
+    <label for="{{ form.protein_per_100g.id_for_label }}">Protein per 100g:</label>
+    {{ form.protein_per_100g }}
+
+    {{ form.carbs_per_100g.errors }}
+    <label for="{{ form.carbs_per_100g.id_for_label }}">Carbs per 100g:</label>
+    {{ form.carbs_per_100g }}
+
+    {{ form.fats_per_100g.errors }}
+    <label for="{{ form.fats_per_100g.id_for_label }}">Fats per 100g:</label>
+    {{ form.fats_per_100g }}
+
+    {{ form.kcal_per_100g.errors }}
+    <label for="{{ form.kcal_per_100g.id_for_label }}">Kcal per 100g:</label>
+    {{ form.kcal_per_100g }}
+
+    {{ form.price.errors }}
+    <label for="{{ form.price.id_for_label }}">Price:</label>
+    {{ form.price }}
+
+    {{ form.product_type.errors }}
+    <label for="{{ form.product_type.id_for_label }}">Product Type:</label>
+    {{ form.product_type }}
+
+    {{ form.allergies.errors }}
+    <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
+    {{ form.allergies }}
+
     <button type="submit">Submit</button>
 </form>
+</div>
+</div>
 </div>
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 <script>

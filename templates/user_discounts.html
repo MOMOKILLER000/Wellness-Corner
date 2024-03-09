@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Discounts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .discount-box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .discount-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .discount-code-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .discount-code {
+            font-size: 24px;
+            color: #333;
+            display: none;
+        }
+
+        .discount-code.revealed {
+            display: inline-block;
+        }
+
+        .reveal-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .reveal-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Discounts</h1>
+        <div id="discounts">
+            {% for discount in user_discounts %}
+                <div class="discount-box">
+                    <span class="discount-value">{{ discount.amount }}{% if discount.is_percentage %}%{% endif %} off</span>
+                    <div class="discount-code-wrapper">
+                        <span class="discount-code">{{ discount.code }}</span>
+                    </div>
+                    <button class="reveal-button">Reveal</button>
+                </div>
+            {% empty %}
+                <p>No discounts available</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.reveal-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var discountBox = this.closest('.discount-box');
+                    var discountCode = discountBox.querySelector('.discount-code');
+
+                    // Toggle the 'revealed' class on the discount code element
+                    discountCode.classList.toggle('revealed');
+
+                    // Toggle the button text between 'Reveal' and 'Hide'
+                    if (this.textContent === 'Reveal') {
+                        this.textContent = 'Hide';
+                    } else {
+                        this.textContent = 'Reveal';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

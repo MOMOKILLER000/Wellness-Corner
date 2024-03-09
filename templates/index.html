@@ -180,6 +180,7 @@
     {% endif %}
 {% endif %}
 </div>
+{% if not request.user.is_subscribed %}
 <div id="welcome">
     <div class="scris-sus">
         <h2>Subscribe for Exclusive Offers</h2>
@@ -192,6 +193,7 @@
         </form>
     </div>          
 </div>
+{% endif %}
 <script>
     function toggleBar() {
 document.querySelector(".left-bar").classList.toggle("left-bar-expanded");

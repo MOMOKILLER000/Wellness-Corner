@@ -193,9 +193,10 @@ form.sign-in-form {
   height: 41px;
   font-weight: 600;
   font-size: 0.8rem;
-}
-
-.btn.transparent a {
+  padding-left:40px;
+  padding-right:40px;
+  padding-top:8px;
+  padding-bottom:8px;
   text-decoration: none; 
   color: white;
 }
@@ -238,3 +239,4 @@ form.sign-in-form {
 #toggleAllergies:hover {
     color: #555;
   }
+  
