@@ -102,18 +102,20 @@ class Product(models.Model):
     quantity = models.CharField(max_length=50)
     categories = models.CharField(max_length=200)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sugar field
+    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sodium field
+    saturated_fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add saturated fats field
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add price field
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     total_ratings = models.IntegerField(default=0)
     rated_by = models.ManyToManyField(User, through='ProductRating')
     allergies = models.TextField(null=True, blank=True) 
-
-    # Field for approval status
+    nutriscore = models.CharField(max_length=1, null=True, blank=True)
     approved = models.BooleanField(default=False)
 
     def __str__(self):
@@ -125,6 +127,87 @@ class Product(models.Model):
         if average_rating is not None:
             self.user_rating = average_rating
             self.save()
+
+    def calculate_nutriscore(self):
+        thresholds = {
+            'energy': 170,  # kcal per 100g
+            'saturated_fats': 1.5,  # grams per 100g
+            'sugars': 5,  # grams per 100g
+            'sodium': 90,  # milligrams per 100g
+        }
+
+        score = 0
+
+        # Energy score
+        if self.kcal_per_100g <= thresholds['energy']:
+            score += 0
+        elif self.kcal_per_100g <= 335:
+            score += 1
+        elif self.kcal_per_100g <= 670:
+            score += 2
+        elif self.kcal_per_100g <= 1005:
+            score += 3
+        elif self.kcal_per_100g <= 1340:
+            score += 4
+        elif self.kcal_per_100g <= 1675:
+            score += 5
+        else:
+            score += 10
+
+        # Saturated fats score
+        if self.saturated_fats_per_100g is not None:
+            if self.saturated_fats_per_100g <= thresholds['saturated_fats']:
+                score += 0
+            elif self.saturated_fats_per_100g <= 3:
+                score += 1
+            elif self.saturated_fats_per_100g <= 4.5:
+                score += 2
+            elif self.saturated_fats_per_100g <= 6:
+                score += 3
+            else:
+                score += 4
+
+        # Sugars score
+        if self.sugars_per_100g is not None:
+            if self.sugars_per_100g <= thresholds['sugars']:
+                score += 0
+            elif self.sugars_per_100g <= 4.5:
+                score += 1
+            elif self.sugars_per_100g <= 9:
+                score += 2
+            elif self.sugars_per_100g <= 13.5:
+                score += 3
+            else:
+                score += 4
+
+        # Sodium score
+        if self.sodium_per_100g is not None:
+            if self.sodium_per_100g <= thresholds['sodium']:
+                score += 0
+            elif self.sodium_per_100g <= 0.18:
+                score += 1
+            elif self.sodium_per_100g <= 0.36:
+                score += 2
+            elif self.sodium_per_100g <= 0.54:
+                score += 3
+            else:
+                score += 4
+
+        # Map the total score to a NutriScore grade
+        if score <= 1:
+            self.nutriscore = 'A'
+        elif score <= 5:
+            self.nutriscore = 'B'
+        elif score <= 9:
+            self.nutriscore = 'C'
+        elif score <= 13:
+            self.nutriscore = 'D'
+        else:
+            self.nutriscore = 'E'
+
+    def save(self, *args, **kwargs):
+        self.calculate_nutriscore()  # Calculate NutriScore before saving
+        super().save(*args, **kwargs)
 
 class PendingProduct(models.Model):
     PRODUCT_TYPES = (
@@ -141,16 +224,19 @@ class PendingProduct(models.Model):
     quantity = models.CharField(max_length=50)
     categories = models.CharField(max_length=200)
     image = models.ImageField(upload_to='pending_product_images/', null=True, blank=True)
+    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sugar field
+    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sodium field
+    saturated_fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     allergies = models.TextField(null=True, blank=True)
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     approved = models.BooleanField(default=False)
-
+    nutriscore = models.CharField(max_length=1, null=True, blank=True)
     def __str__(self):
         return self.product_name
     
@@ -169,8 +255,12 @@ class PendingProduct(models.Model):
             product_type=self.product_type,
             user_rating=self.user_rating,
             allergies=self.allergies,
+            sugars_per_100g=self.sugars_per_100g,  # Assign sugars_per_100g
+            sodium_per_100g=self.sodium_per_100g,  # Assign sodium_per_100g
+            saturated_fats_per_100g=self.saturated_fats_per_100g,  # Assign saturated_fats_per_100g
             approved=True  # Mark as approved
         )
+
         return product
     
     def handle_similar_products(self):
@@ -202,6 +292,9 @@ class PendingProduct(models.Model):
                 fats_per_100g__lte=self.fats_per_100g + 10,
                 kcal_per_100g__gte=self.kcal_per_100g - 10,
                 kcal_per_100g__lte=self.kcal_per_100g + 10,
+                sugars_per_100g=self.sugars_per_100g,  # Assign sugars_per_100g
+                sodium_per_100g=self.sodium_per_100g,  # Assign sodium_per_100g
+                saturated_fats_per_100g=self.saturated_fats_per_100g,  # Assign saturated_fats_per_100g
                 approved=False
             )
 
@@ -230,17 +323,20 @@ class ApiProduct(models.Model):
     quantity = models.CharField(max_length=50)
     categories = models.CharField(max_length=200)
     image = models.ImageField(upload_to='api_product_images/', null=True, blank=True)  # Field to store image
+    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
     protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
-    kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
+    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sugar field
+    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sodium field
+    saturated_fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add saturated fats field
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add price field
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     total_ratings = models.IntegerField(default=0)
     rated_by = models.ManyToManyField(User, through='ApiProductRating')
     allergies = models.TextField(null=True, blank=True)  # Field to store allergies as JSON string
-
+    nutriscore = models.CharField(max_length=1, null=True, blank=True)
     def __str__(self):
         return self.product_name
     

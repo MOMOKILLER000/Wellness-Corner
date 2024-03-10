@@ -32,7 +32,7 @@
         <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
             <a href="#about">about</a>
-            <a href="#menu">menu</a>
+            <a href="{% url 'user_discounts' %}">My discounts</a>
             <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
         </nav>
@@ -48,72 +48,84 @@
     <div class="wrapper profile">
         <div class="profile-container">
             <div class="col-right">
-  <h2>Create a product</h2>
-  <form method="post" enctype="multipart/form-data" autocomplete="off">
-    {% csrf_token %}
-    {{ form.product_name.errors }}
-    <label for="{{ form.product_name.id_for_label }}">Product Name:</label>
-    {{ form.product_name }}
+                <h2>Create a product</h2>
+                <form method="post" enctype="multipart/form-data" autocomplete="off">
+                    {% csrf_token %}
+                    {{ form.product_name.errors }}
+                    <label for="{{ form.product_name.id_for_label }}">Product Name:</label>
+                    {{ form.product_name }}
 
-    {{ form.brands.errors }}
-    <label for="{{ form.brands.id_for_label }}">Brands:</label>
-    {{ form.brands }}
+                    {{ form.brands.errors }}
+                    <label for="{{ form.brands.id_for_label }}">Brands:</label>
+                    {{ form.brands }}
 
-    {{ form.quantity.errors }}
-    <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
-    {{ form.quantity }}
+                    {{ form.quantity.errors }}
+                    <label for="{{ form.quantity.id_for_label }}">Quantity:</label>
+                    {{ form.quantity }}
 
-    {{ form.categories.errors }}
-    <label for="{{ form.categories.id_for_label }}">Categories:</label>
-    {{ form.categories }}
+                    {{ form.categories.errors }}
+                    <label for="{{ form.categories.id_for_label }}">Categories:</label>
+                    {{ form.categories }}
 
-    {{ form.image.errors }}
-    <label for="{{ form.image.id_for_label }}">Image:</label>
-    {{ form.image }}
+                    {{ form.image.errors }}
+                    <label for="{{ form.image.id_for_label }}">Image:</label>
+                    {{ form.image }}
 
-    {{ form.protein_per_100g.errors }}
-    <label for="{{ form.protein_per_100g.id_for_label }}">Protein per 100g:</label>
-    {{ form.protein_per_100g }}
+                    {{ form.protein_per_100g.errors }}
+                    <label for="{{ form.protein_per_100g.id_for_label }}">Protein per 100g:</label>
+                    {{ form.protein_per_100g }}
 
-    {{ form.carbs_per_100g.errors }}
-    <label for="{{ form.carbs_per_100g.id_for_label }}">Carbs per 100g:</label>
-    {{ form.carbs_per_100g }}
+                    {{ form.carbs_per_100g.errors }}
+                    <label for="{{ form.carbs_per_100g.id_for_label }}">Carbs per 100g:</label>
+                    {{ form.carbs_per_100g }}
 
-    {{ form.fats_per_100g.errors }}
-    <label for="{{ form.fats_per_100g.id_for_label }}">Fats per 100g:</label>
-    {{ form.fats_per_100g }}
+                    {{ form.fats_per_100g.errors }}
+                    <label for="{{ form.fats_per_100g.id_for_label }}">Fats per 100g:</label>
+                    {{ form.fats_per_100g }}
 
-    {{ form.kcal_per_100g.errors }}
-    <label for="{{ form.kcal_per_100g.id_for_label }}">Kcal per 100g:</label>
-    {{ form.kcal_per_100g }}
+                    {{ form.sugars_per_100g.errors }}
+                    <label for="{{ form.sugars_per_100g.id_for_label }}">Sugar per 100g:</label>
+                    {{ form.sugars_per_100g }}
 
-    {{ form.price.errors }}
-    <label for="{{ form.price.id_for_label }}">Price:</label>
-    {{ form.price }}
+                    {{ form.sodium_per_100g.errors }}
+                    <label for="{{ form.sodium_per_100g.id_for_label }}">Sodium per 100g:</label>
+                    {{ form.sodium_per_100g }}
 
-    {{ form.product_type.errors }}
-    <label for="{{ form.product_type.id_for_label }}">Product Type:</label>
-    {{ form.product_type }}
+                    {{ form.saturated_fats_per_100g.errors }}
+                    <label for="{{ form.saturated_fats_per_100g.id_for_label }}">Saturated fats per 100g:</label>
+                    {{ form.saturated_fats_per_100g }}
 
-    {{ form.allergies.errors }}
-    <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
-    {{ form.allergies }}
+                    {{ form.kcal_per_100g.errors }}
+                    <label for="{{ form.kcal_per_100g.id_for_label }}">Kcal per 100g:</label>
+                    {{ form.kcal_per_100g }}
 
-    <button type="submit">Submit</button>
-</form>
-</div>
-</div>
-</div>
-<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
-<script>
-   function toggleBar() {
-document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
-document.querySelector(".content-page").classList.toggle("content-page-extended");
-}
-function closeBar() {
-document.querySelector(".left-bar").classList.remove("left-bar-expanded");
-document.querySelector(".content-page").classList.remove("content-page-extended");
-}
-</script>
+                    {{ form.price.errors }}
+                    <label for="{{ form.price.id_for_label }}">Price:</label>
+                    {{ form.price }}
+
+                    {{ form.product_type.errors }}
+                    <label for="{{ form.product_type.id_for_label }}">Product Type:</label>
+                    {{ form.product_type }}
+
+                    {{ form.allergies.errors }}
+                    <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
+                    {{ form.allergies }}
+
+                    <button type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+    <script>
+       function toggleBar() {
+    document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+    document.querySelector(".content-page").classList.toggle("content-page-extended");
+    }
+    function closeBar() {
+    document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+    document.querySelector(".content-page").classList.remove("content-page-extended");
+    }
+    </script>
 </body>
 </html>

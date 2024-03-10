@@ -33,7 +33,7 @@ class AllergyForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = PendingProduct
-        fields = ['product_name', 'brands', 'quantity', 'categories', 'image', 'protein_per_100g', 'carbs_per_100g', 'fats_per_100g', 'kcal_per_100g', 'price', 'product_type', 'allergies']
+        fields = ['product_name', 'brands', 'quantity', 'categories', 'image', 'protein_per_100g', 'carbs_per_100g', 'fats_per_100g', 'sugars_per_100g', 'sodium_per_100g', 'saturated_fats_per_100g', 'kcal_per_100g', 'price', 'product_type', 'allergies']
         widgets = {
             'image': forms.FileInput(attrs={'accept': 'image/*'}),  # Add an accept attribute to limit file types to images
         }

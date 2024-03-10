@@ -48,11 +48,15 @@
                 </p>
                 <p>
                     <span>Total Price (After Discount)</span>
-                    <span>${{ total_price_after_discount }}</span>
+                    <span>${{ total_price_after_discount|floatformat:2 }}</span>
                 </p>
                 <p>
                     <span>You Save</span>
-                    <span>${{ savings }}</span>
+                    <span>${{ savings|floatformat:2 }}</span>
+                </p>
+                <p>
+                    <span>Health Rating</span>
+                    <span>{{ average_health_rating }}</span>
                 </p>
                 <p>
                     <span>Number of Items</span>

@@ -34,7 +34,7 @@
         <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
             <a href="#about">about</a>
-            <a href="#menu">menu</a>
+            <a href="{% url 'user_discounts' %}">My discounts</a>
             <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
         </nav>
@@ -100,6 +100,11 @@
     <h5>Product Rating: {{ product_rating }}</h5>
     {% else %}
     <p>No rating available for this product.</p>
+    {% endif %}
+    {% if product.nutriscore %}
+    <h5>NutriScore Grade: {{ product.nutriscore }}</h5>
+    {% else %}
+    <p>NutriScore Grade: Not Available</p>
     {% endif %}
     {% if product.id %}
     <form method="post" action="{% url 'rate_product' product.id source %}">

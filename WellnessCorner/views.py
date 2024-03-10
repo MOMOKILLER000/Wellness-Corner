@@ -202,12 +202,19 @@ def search_product(product_name, user=None):
                 carbs_per_100g = Decimal(nutriments.get('carbohydrates_100g', '')) if nutriments.get(
                     'carbohydrates_100g', '') else None
                 fats_per_100g = Decimal(nutriments.get('fat_100g', '')) if nutriments.get('fat_100g', '') else None
+                sugars_per_100g = Decimal(nutriments.get('sugars_100g', '')) if nutriments.get(
+                    'sugars_100g', '') else None
+                sodium_per_100g = Decimal(nutriments.get('sodium_100g', '')) if nutriments.get(
+                    'sodium_100g', '') else None
+                saturated_fats_per_100g = Decimal(nutriments.get('saturated-fat_100g', '')) if nutriments.get(
+                    'saturated-fat_100g', '') else None
                 kcal_per_100g = Decimal(nutriments.get('energy-kcal_100g', '')) if nutriments.get(
                     'energy-kcal_100g', '') else None
+                nutriscore_grade = product.get('nutriscore_grade', None)
                 allergies = product.get('allergens_tags', [])
-
                 allergies = [allergy.split(':')[1] for allergy in allergies]
-
+                if nutriscore_grade is not None:
+                    nutriscore_grade = nutriscore_grade.upper()
                 api_product, created = ApiProduct.objects.get_or_create(
                     product_name=name,
                     defaults={
@@ -217,7 +224,11 @@ def search_product(product_name, user=None):
                         'protein_per_100g': protein_per_100g,
                         'carbs_per_100g': carbs_per_100g,
                         'fats_per_100g': fats_per_100g,
+                        'sugars_per_100g': sugars_per_100g,
+                        'sodium_per_100g': sodium_per_100g,
+                        'saturated_fats_per_100g': saturated_fats_per_100g,
                         'kcal_per_100g': kcal_per_100g,
+                        'nutriscore': nutriscore_grade,
                         'allergies': json.dumps(allergies) if allergies else None
                     }
                 )
@@ -405,7 +416,6 @@ def decrement_quantity(request, product_id, source):
         messages.error(request, "Basket item not found.")
     return redirect('basket_page')
 
-@login_required
 def basket_page(request):
     # Get the basket for the current user
     basket, created = Basket.objects.get_or_create(user=request.user)
@@ -416,23 +426,30 @@ def basket_page(request):
     total_price = Decimal('0.00')  # Initialize total_price as a Decimal
 
     products_in_basket = []
+    total_health_rating = Decimal('0.00')
+    total_quantity = 0
+
     for item in items:
-        if item.product:
-            product = item.product
-            source = 'database'
-            quantity = item.quantity
-        elif item.api_product:
-            product = item.api_product
-            source = 'api'
-            quantity = item.quantity
-        else:
-            continue
+        if item.product or item.api_product:
+            if item.product:
+                product = item.product
+                source = 'database'
+            else:
+                product = item.api_product
+                source = 'api'
 
-        # Check if product has a valid price before adding it to total_price
-        if product.price is not None:
-            total_price += Decimal(product.price) * quantity
+            quantity = item.quantity
+            total_quantity += quantity
 
-        products_in_basket.append({'product': product, 'source': source, 'quantity': quantity})
+            # Check if the product has a valid price before adding it to total_price
+            if product.price is not None:
+                total_price += Decimal(product.price) * quantity
+
+            if product.nutriscore:
+                # Calculate the contribution of this product to the basket health rating
+                health_rating_contribution = calculate_health_rating(product.nutriscore) * quantity
+                total_health_rating += health_rating_contribution
+                products_in_basket.append({'product': product, 'source': source, 'quantity': quantity})
 
     # Fetch used discounts for the user
     used_discounts = Discount.objects.filter(user=request.user, used=True)
@@ -448,10 +465,44 @@ def basket_page(request):
     if not products_in_basket:  # If the basket is empty, redirect to the empty basket page
         return render(request, 'basket_empty.html')
 
+    # Calculate the average health rating per item in the basket
+    if total_quantity > 0:
+        average_health_rating = total_health_rating / total_quantity
+    else:
+        average_health_rating = Decimal('0.00')
+
+    # Map average_health_rating from 0.0 to 1.0 to A to E
+    average_health_rating_mapped = map_health_rating(average_health_rating)
+
     # Pass the total_price, total_price_after_discount, and used discounts to the template
     return render(request, 'basket.html', {'products_in_basket': products_in_basket, 'total_price': total_price,
                                             'total_price_after_discount': total_price_after_discount, 'savings': savings,
-                                            'used_discounts': used_discounts})
+                                            'used_discounts': used_discounts, 'average_health_rating': average_health_rating_mapped})
+
+def calculate_health_rating(nutriscore):
+    # Define the mapping from nutriscore to health rating
+    health_rating_map = {
+        'A': Decimal('0.9'),
+        'B': Decimal('0.7'),
+        'C': Decimal('0.5'),
+        'D': Decimal('0.3'),
+        'E': Decimal('0.1'),
+    }
+
+    return health_rating_map.get(nutriscore, Decimal('0.1'))  # Default to 'E' rating if nutriscore is unknown
+
+def map_health_rating(health_rating):
+    # Map health rating from 0.0 to 1.0 to A to E
+    if health_rating >= Decimal('0.8'):
+        return 'A'
+    elif health_rating >= Decimal('0.6'):
+        return 'B'
+    elif health_rating >= Decimal('0.4'):
+        return 'C'
+    elif health_rating >= Decimal('0.2'):
+        return 'D'
+    else:
+        return 'E'
 
 @login_required
 def delete_from_basket(request, product_id, source):
@@ -544,6 +595,9 @@ def create(request):
                     protein_per_100g=pending_product.protein_per_100g,
                     carbs_per_100g=pending_product.carbs_per_100g,
                     fats_per_100g=pending_product.fats_per_100g,
+                    sugars_per_100g=pending_product.sugars_per_100g,  # Added
+                    sodium_per_100g=pending_product.sodium_per_100g,  # Added
+                    saturated_fats_per_100g=pending_product.saturated_fats_per_100g,  # Added
                     kcal_per_100g=pending_product.kcal_per_100g,
                     price=pending_product.price,
                     product_type=pending_product.product_type,
@@ -559,7 +613,7 @@ def create(request):
                 # Save the pending product
                 product.save()
                 
-            return HttpResponseRedirect(reverse('product_created'))  # Redirect to the success page
+            return redirect('product_created') # Redirect to the success page
     else:
         form = ProductForm()
 

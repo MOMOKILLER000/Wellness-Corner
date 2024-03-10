@@ -11,45 +11,45 @@
     <link rel="stylesheet" href="{% static 'index.css' %}">
 </head>
 <body>
-<div class="left-bar">
-    <button class="close-button" onclick="closeBar()">
-        <i class="fa-solid fa-times"></i>
-    </button>
-    <div class="links">
-        <a href="{% url 'create' %}">Create Product</a>
-        <a href="{% url 'my_products' %}">My Products</a>
-        <a href="{% url 'create_post' %}">Create Post</a>
-        <a href="{% url 'post_list' %}">Posts</a>
-        {% if request.user.is_superuser %}
-        <a href="{% url 'approve_products' %}">Approve Products</a>
-        <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
-    {% endif %}
-    <a href="{% url 'contact' %}">Contact</a>
-    <a href="{% url 'calculator' %}">Calculator calorii</a>
+    <div class="left-bar">
+        <button class="close-button" onclick="closeBar()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <div class="links">
+            <a href="{% url 'create' %}">Create Product</a>
+            <a href="{% url 'my_products' %}">My Products</a>
+            <a href="{% url 'create_post' %}">Create Post</a>
+            <a href="{% url 'post_list' %}">Posts</a>
+            {% if request.user.is_superuser %}
+            <a href="{% url 'approve_products' %}">Approve Products</a>
+            <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+        {% endif %}
+        <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'calculator' %}">Calculator calorii</a>
+        </div>
     </div>
-</div>
-<header>
-    <div class="more">
-        <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
-    </div>
-    <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
-
-    <nav class="navbar">    
-        <a href="{% url 'index' %}">Home</a>
-        <a href="#about">about</a>
-        <a href="#menu">menu</a>
-        <a href="{% url 'myaccount' %}">My Profile</a>
-        <a href="{% url 'logout' %}">Logout</a>
-    </nav>
-
-    <div class="icons">
-        <i class="fas fa-bars" id="menu-bars"></i>
-        <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
-        <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
-        <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
-    </div>
-
-</header>
+    <header>
+        <div class="more">
+            <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+        </div>
+        <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+    
+        <nav class="navbar">    
+            <a href="{% url 'index' %}">Home</a>
+            <a href="#about">about</a>
+            <a href="{% url 'user_discounts' %}">My discounts</a>
+            <a href="{% url 'myaccount' %}">My Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+    
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
+            <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
+            <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+        </div>
+    
+    </header>
 <div class="search-container" id="search-container">
     <form action="{% url 'index' %}" method="post" class="search-form">
         {% csrf_token %}
