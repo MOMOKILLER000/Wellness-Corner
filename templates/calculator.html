@@ -13,6 +13,81 @@
         .good {
             color: green;
         }
+        .myfitnesspal .main {
+            padding: 20px;
+        }
+
+        .myfitnesspal .meal-summary {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 20px;
+            width: 200px; /* Adjust width as needed */
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+
+        .myfitnesspal .meal-title {
+            font-size: 20px;
+            margin-top: 0;
+        }
+
+        .myfitnesspal .meal-calories {
+            font-size: 16px;
+            color: #00a087; /* Adjust color as needed */
+        }
+
+        .myfitnesspal .meal-list {
+            list-style-type: disc;
+            margin-left: 20px;
+            padding: 0;
+        }
+
+        .myfitnesspal .meal-list li {
+            margin-bottom: 5px;
+        }
+
+        .myfitnesspal .nutritional-data {
+            margin-top: 10px;
+        }
+
+        .myfitnesspal .total-summary {
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 20px;
+        }
+
+        .myfitnesspal button {
+            background-color: #00a087;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .myfitnesspal button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* New CSS styles for the layout */
+        .meals-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .meal-summary {
+            flex: 1 1 auto;
+            width: calc(25% - 20px); /* Adjust width as needed */
+        }
+
+        .daily-calories-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -55,124 +130,145 @@
         </div>
     
     </header>
-    <div class="main">
-    <h1>Product Summary</h1>
+    <div class="myfitnesspal">
+        <div class="main">
+            <!-- Daily Calories section moved to the top -->
+            <div class="daily-calories-container">
+                <h2 class="meal-title">Daily Calories</h2>
+                <p class="meal-calories {{ calories_class }}">
+                    Daily Calories: {{ daily_calories|floatformat:"0" }}
+                </p>
+            </div>
+    
+            <!-- Meals container -->
+            <div class="meals-container">
+                <!-- Display meals (Breakfast, Lunch, Dinner, Snacks) -->
+                <!-- Each meal is in a separate div with class "meal-summary" -->
+                <!-- Adjustments have been made to each meal-summary width to fit all meals on a line -->
+                <div class="meal-summary">
+                    <h2 class="meal-title">Breakfast</h2>
+                    <ul class="meal-list">
+                        {% for meal_product in breakfast_products %}
+                            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
+                        {% endfor %}
+                        {% for meal_api_product in breakfast_api_products %}
+                            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="nutritional-data">
+                        <h3>Total Nutritional Data:</h3>
+                        <p>Total Calories: {{ breakfast_total.total_calories|floatformat:"1" }}</p>
+                        <p>Total Proteins: {{ breakfast_total.total_proteins|floatformat:"1" }}</p>
+                        <p>Total Carbs: {{ breakfast_total.total_carbs|floatformat:"1" }}</p>
+                        <p>Total Fats: {{ breakfast_total.total_fats|floatformat:"1" }}</p>
+                    </div>
+                    <form action="{% url 'add_to_meal' meal_type='Breakfast' %}" method="get">
+                        <button type="submit">Add to Breakfast</button>
+                    </form>
+                    <a href="{% if breakfast %}{% url 'meal_detail' meal_id=breakfast.id %}{% endif %}">
+                        <button{% if not breakfast %} disabled{% endif %}>View Breakfast Details</button>
+                    </a>
+                </div>
+    
+                <div class="meal-summary">
+                    <h2 class="meal-title">Lunch</h2>
+                    <ul class="meal-list">
+                        {% for meal_product in lunch_products %}
+                            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
+                        {% endfor %}
+                        {% for meal_api_product in lunch_api_products %}
+                            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="nutritional-data">
+                        <h3>Total Nutritional Data:</h3>
+                        <p>Total Calories: {{ lunch_total.total_calories|floatformat:"1" }}</p>
+                        <p>Total Proteins: {{ lunch_total.total_proteins|floatformat:"1" }}</p>
+                        <p>Total Carbs: {{ lunch_total.total_carbs|floatformat:"1" }}</p>
+                        <p>Total Fats: {{ lunch_total.total_fats|floatformat:"1" }}</p>
+                    </div>
+                    <form action="{% url 'add_to_meal' meal_type='Lunch' %}" method="get">
+                        <button type="submit">Add to Lunch</button>
+                    </form>
+                    <a href="{% if lunch %}{% url 'meal_detail' meal_id=lunch.id %}{% endif %}">
+                        <button{% if not lunch %} disabled{% endif %}>View Lunch Details</button>
+                    </a>
+                </div>
+    
+                <div class="meal-summary">
+                    <h2 class="meal-title">Dinner</h2>
+                    <ul class="meal-list">
+                        {% for meal_product in dinner_products %}
+                            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
+                        {% endfor %}
+                        {% for meal_api_product in dinner_api_products %}
+                            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="nutritional-data">
+                        <h3>Total Nutritional Data:</h3>
+                        <p>Total Calories: {{ dinner_total.total_calories|floatformat:"1" }}</p>
+                        <p>Total Proteins: {{ dinner_total.total_proteins|floatformat:"1" }}</p>
+                        <p>Total Carbs: {{ dinner_total.total_carbs|floatformat:"1" }}</p>
+                        <p>Total Fats: {{ dinner_total.total_fats|floatformat:"1" }}</p>
+                    </div>
+                    <form action="{% url 'add_to_meal' meal_type='Dinner' %}" method="get">
+                        <button type="submit">Add to Dinner</button>
+                    </form>
+                    <a href="{% if dinner %}{% url 'meal_detail' meal_id=dinner.id %}{% endif %}">
+                        <button{% if not dinner %} disabled{% endif %}>View Dinner Details</button>
+                    </a>
+                </div>
+    
+                <div class="meal-summary">
+                    <h2 class="meal-title">Snacks</h2>
+                    <ul class="meal-list">
+                        {% for meal_product in snacks_products %}
+                            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
+                        {% endfor %}
+                        {% for meal_api_product in snacks_api_products %}
+                            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
+                        {% endfor %}
+                    </ul>
+                    <div class="nutritional-data">
+                        <h3>Total Nutritional Data:</h3>
+                        <p>Total Calories: {{ snacks_total.total_calories|floatformat:"1" }}</p>
+                        <p>Total Proteins: {{ snacks_total.total_proteins|floatformat:"1" }}</p>
+                        <p>Total Carbs: {{ snacks_total.total_carbs|floatformat:"1" }}</p>
+                        <p>Total Fats: {{ snacks_total.total_fats|floatformat:"1" }}</p>
+                    </div>
+                    <form action="{% url 'add_to_meal' meal_type='Snacks' %}" method="get">
+                        <button type="submit">Add to Snacks</button>
+                    </form>
+                    <a href="{% if snacks %}{% url 'meal_detail' meal_id=snacks.id %}{% endif %}">
+                        <button{% if not snacks %} disabled{% endif %}>View Snacks Details</button>
+                    </a>
+                </div>
+            </div>
+    
+            <!-- Total for all meals -->
+            <div class="total-summary">
+                <h3>Total Nutritional Data for all Meals:</h3>
+                <p>Total Calories: {{ total_all_meals.total_calories|floatformat:"1" }}</p>
+                <p>Total Proteins: {{ total_all_meals.total_proteins|floatformat:"1" }}</p>
+                <p>Total Carbs: {{ total_all_meals.total_carbs|floatformat:"1" }}</p>
+                <p>Total Fats: {{ total_all_meals.total_fats|floatformat:"1" }}</p>
+                <a href="{% url 'myprofile' %}">Update your profile</a>
+            </div>
+        </div>
+    </div>
 
-    <!-- Display Daily Calories -->
-    <h2>Daily Calories</h2>
-    <p class="{{ calories_class }}">
-        Daily Calories: {{ daily_calories|floatformat:"0" }}
-    </p>
+    <script>
+        function toggleBar() {
+    document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+    document.querySelector(".content-page").classList.toggle("content-page-extended");
+    }
 
-    <h2>Breakfast</h2>
-    <ul>
-        {% for meal_product in breakfast_products %}
-            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
-        {% endfor %}
-        {% for meal_api_product in breakfast_api_products %}
-            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
-        {% endfor %}
-    </ul>
-    <h3>Total Nutritional Data:</h3>
-    <p>Total Calories: {{ breakfast_total.total_calories|floatformat:"1" }}</p>
-    <p>Total Proteins: {{ breakfast_total.total_proteins|floatformat:"1" }}</p>
-    <p>Total Carbs: {{ breakfast_total.total_carbs|floatformat:"1" }}</p>
-    <p>Total Fats: {{ breakfast_total.total_fats|floatformat:"1" }}</p>
-    <form action="{% url 'add_to_meal' meal_type='Breakfast' %}" method="get">
-        <button type="submit">Add to Breakfast</button>
-    </form>
-    <a href="{% if breakfast %}{% url 'meal_detail' meal_id=breakfast.id %}{% endif %}">
-        <button{% if not breakfast %} disabled{% endif %}>View Breakfast Details</button>
-    </a>
-
-    <!-- Repeat the above structure for lunch, dinner, and snacks -->
-
-    <!-- Lunch -->
-    <h2>Lunch</h2>
-    <ul>
-        {% for meal_product in lunch_products %}
-            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
-        {% endfor %}
-        {% for meal_api_product in lunch_api_products %}
-            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
-        {% endfor %}
-    </ul>
-    <h3>Total Nutritional Data:</h3>
-    <p>Total Calories: {{ lunch_total.total_calories|floatformat:"1" }}</p>
-    <p>Total Proteins: {{ lunch_total.total_proteins|floatformat:"1" }}</p>
-    <p>Total Carbs: {{ lunch_total.total_carbs|floatformat:"1" }}</p>
-    <p>Total Fats: {{ lunch_total.total_fats|floatformat:"1" }}</p>
-    <form action="{% url 'add_to_meal' meal_type='Lunch' %}" method="get">
-        <button type="submit">Add to Lunch</button>
-    </form>
-    <a href="{% if lunch %}{% url 'meal_detail' meal_id=lunch.id %}{% endif %}">
-        <button{% if not lunch %} disabled{% endif %}>View Lunch Details</button>
-    </a>
-
-    <!-- Dinner -->
-    <h2>Dinner</h2>
-    <ul>
-        {% for meal_product in dinner_products %}
-            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
-        {% endfor %}
-        {% for meal_api_product in dinner_api_products %}
-            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
-        {% endfor %}
-    </ul>
-    <h3>Total Nutritional Data:</h3>
-    <p>Total Calories: {{ dinner_total.total_calories|floatformat:"1" }}</p>
-    <p>Total Proteins: {{ dinner_total.total_proteins|floatformat:"1" }}</p>
-    <p>Total Carbs: {{ dinner_total.total_carbs|floatformat:"1" }}</p>
-    <p>Total Fats: {{ dinner_total.total_fats|floatformat:"1" }}</p>
-    <form action="{% url 'add_to_meal' meal_type='Dinner' %}" method="get">
-        <button type="submit">Add to Dinner</button>
-    </form>
-    <a href="{% if dinner %}{% url 'meal_detail' meal_id=dinner.id %}{% endif %}">
-        <button{% if not dinner %} disabled{% endif %}>View Dinner Details</button>
-    </a>
-
-    <!-- Snacks -->
-    <h2>Snacks</h2>
-    <ul>
-        {% for meal_product in snacks_products %}
-            <li>{{ meal_product.product.product_name }} - {{ meal_product.quantity_grams }} grams</li>
-        {% endfor %}
-        {% for meal_api_product in snacks_api_products %}
-            <li>{{ meal_api_product.api_product.product_name }} - {{ meal_api_product.quantity_grams }} grams</li>
-        {% endfor %}
-    </ul>
-    <h3>Total Nutritional Data:</h3>
-    <p>Total Calories: {{ snacks_total.total_calories|floatformat:"1" }}</p>
-    <p>Total Proteins: {{ snacks_total.total_proteins|floatformat:"1" }}</p>
-    <p>Total Carbs: {{ snacks_total.total_carbs|floatformat:"1" }}</p>
-    <p>Total Fats: {{ snacks_total.total_fats|floatformat:"1" }}</p>
-    <form action="{% url 'add_to_meal' meal_type='Snacks' %}" method="get">
-        <button type="submit">Add to Snacks</button>
-    </form>
-    <a href="{% if snacks %}{% url 'meal_detail' meal_id=snacks.id %}{% endif %}">
-        <button{% if not snacks %} disabled{% endif %}>View Snacks Details</button>
-    </a>
-
-    <!-- Total for all meals -->
-    <h3>Total Nutritional Data for all Meals:</h3>
-    <p>Total Calories: {{ total_all_meals.total_calories|floatformat:"1" }}</p>
-    <p>Total Proteins: {{ total_all_meals.total_proteins|floatformat:"1" }}</p>
-    <p>Total Carbs: {{ total_all_meals.total_carbs|floatformat:"1" }}</p>
-    <p>Total Fats: {{ total_all_meals.total_fats|floatformat:"1" }}</p>
-    <a href="{% url 'myprofile' %}">Update your profile</a>
-</div>
+    function closeBar() {
+     document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+     document.querySelector(".content-page").classList.remove("content-page-extended");
+    }
+    </script>
+    <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </body>
-<script>
-    function toggleBar() {
-document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
-document.querySelector(".content-page").classList.toggle("content-page-extended");
-}
-
-function closeBar() {
- document.querySelector(".left-bar").classList.remove("left-bar-expanded");
- document.querySelector(".content-page").classList.remove("content-page-extended");
-}
-
-</script>
-<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </html>
