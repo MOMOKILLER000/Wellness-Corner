@@ -1241,8 +1241,8 @@ def create_post(request):
         pass  # User is not banned or there is no ban record
     
     # Continue with the post creation logic
-    products = Product.objects.all()
-    api_products = ApiProduct.objects.all()
+    products = Product.objects.all().order_by('product_name')
+    api_products = ApiProduct.objects.all().order_by('product_name')
 
     if request.method == 'POST':
         form = PostForm(request.POST)
