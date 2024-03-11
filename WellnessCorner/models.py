@@ -60,6 +60,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_short_name(self):
         return self.name or self.email.split('@')[0]
 
+class Banned(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    banned_until = models.DateTimeField(null=True, blank=True)
+    
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.PositiveIntegerField()
@@ -566,3 +570,12 @@ class Discount(models.Model):
     def __str__(self):
         return self.code
 
+
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    content = models.TextField()
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} - {self.pub_date}"

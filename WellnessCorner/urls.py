@@ -46,6 +46,14 @@ urlpatterns = [
     path('apply_discount/', views.apply_discount, name='apply_discount'),
     path('user_discounts/', views.user_discounts, name='user_discounts'),
     path('remove_discount/<int:discount_id>/', views.remove_discount, name='remove_discount'),
+    path('comment/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'),
+    path('edit_comment/<int:comment_id>/', views.edit_comment, name='edit_comment'),
+    path('post/<int:post_id>/edit/', views.edit_post, name='edit_post'),
+    path('post/<int:post_id>/delete/', views.delete_post, name='delete_post'),
+    path('my-posts/', views.my_posts, name='my_posts'),
+    path('manage_delete/<int:post_id>/', views.manage_delete, name='manage_delete'),
+    path('manage_ban/<int:user_id>/', views.manage_ban, name='manage_ban'),
+    path('banned_info/', views.banned_info, name='banned_info'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

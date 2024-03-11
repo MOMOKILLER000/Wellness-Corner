@@ -16,14 +16,14 @@ from .models import PendingProduct, Subscriber
 from django.core.files.base import ContentFile
 from django.http import HttpResponseForbidden
 from django.conf import settings
-from .forms import PostForm, EmailSubscriberForm, ContactForm, NewsletterSubscriptionForm, CustomPasswordChangeForm
-from .models import Post
+from .forms import PostForm, EmailSubscriberForm, ContactForm, NewsletterSubscriptionForm, CustomPasswordChangeForm, CommentForm
+from .models import Post, Comment, User
 from itertools import chain
 from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import Meal, MealProduct, MealApiProduct
+from .models import Meal, MealProduct, MealApiProduct, Banned
 from .forms import MealProductForm, MealApiProductForm, UserAccountForm
 from django.http import HttpResponse
 from django.db.models import FloatField
@@ -33,6 +33,8 @@ from django.contrib.auth.views import PasswordChangeView
 import uuid
 import string
 import random
+from datetime import timedelta
+from django.utils import timezone
 
 @login_required
 def index(request):
@@ -692,60 +694,6 @@ def delete_product(request, pk):
 
     return render(request, 'delete_product.html', {'pending_product': pending_product})
 
-@login_required
-def create_post(request):
-    products = Product.objects.all()
-    api_products = ApiProduct.objects.all()
-
-    if request.method == 'POST':
-        form = PostForm(request.POST)
-        if form.is_valid():
-            product_type = form.cleaned_data.get('product_type')
-            content = form.cleaned_data.get('content')
-            title = form.cleaned_data.get('title')
-
-            # Ensure the current user is associated with the post
-            user = request.user
-
-            post = Post(content=content, title=title, user=user, product_type=product_type)
-
-            # Set the appropriate product instance based on the product type
-            if product_type == 'Product':
-                product_instance_id = form.cleaned_data.get('object_id')
-                try:
-                    product_instance = Product.objects.get(id=product_instance_id)
-                    post.product = product_instance
-                    post.product_name = product_instance.product_name  # Set the product_name attribute
-                except Product.DoesNotExist:
-                    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products, 'error_message': 'Selected product does not exist'})
-            elif product_type == 'ApiProduct':
-                api_product_instance_id = form.cleaned_data.get('object_id')
-                try:
-                    api_product_instance = ApiProduct.objects.get(id=api_product_instance_id)
-                    post.product = api_product_instance
-                    post.product_name = api_product_instance.product_name  # Set the product_name attribute
-                except ApiProduct.DoesNotExist:
-                    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products, 'error_message': 'Selected API product does not exist'})
-
-            post.save()
-
-            return redirect('index')
-    else:
-        # If it's a GET request, initialize the form and set the choices based on the initial product_type
-        initial_product_type = request.GET.get('product_type', 'Product')  # Default to 'Product' if not provided
-        form = PostForm(initial={'product_type': initial_product_type})
-        form.set_product_choices(initial_product_type)  # Set the initial choices for the object_id field
-
-    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products})
-
-def post_list(request):
-    posts = Post.objects.all()
-    return render(request, 'post_list.html', {'posts': posts})
-
-def post(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
-    return render(request, 'post.html', {'post': post})
-
 
 @login_required
 def send_email_to_subscribers(request):
@@ -1262,3 +1210,242 @@ def remove_discount(request, discount_id):
     discount.used = False
     discount.save()
     return redirect('basket_page')
+
+
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+
+    # Check if the current user is either the author of the comment or the author of the post
+    if request.user == comment.user or (comment.post.user and request.user == comment.post.user):
+        # Delete the comment
+        comment.delete()
+
+    # Redirect to the same post page after deleting the comment
+    return redirect('post', post_id=comment.post.id)
+
+
+@login_required
+def create_post(request):
+    # Check if the user is banned
+    try:
+        banned = Banned.objects.get(user=request.user)
+        if banned.banned_until and banned.banned_until > timezone.now():
+            # User is banned, redirect to a page informing about the ban duration
+            banned_until = banned.banned_until.strftime("%Y-%m-%d %H:%M:%S")
+            messages.error(request, f'You are banned until {banned_until}.')
+            return redirect('banned_info')  # Change 'banned_info' to the URL name of the page with ban information
+        else:
+            # If the ban duration has passed, delete the Banned model
+            banned.delete()
+    except Banned.DoesNotExist:
+        pass  # User is not banned or there is no ban record
+    
+    # Continue with the post creation logic
+    products = Product.objects.all()
+    api_products = ApiProduct.objects.all()
+
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            product_type = form.cleaned_data.get('product_type')
+            content = form.cleaned_data.get('content')
+            title = form.cleaned_data.get('title')
+
+            # Ensure the current user is associated with the post
+            user = request.user
+
+            post = Post(content=content, title=title, user=user, product_type=product_type)
+
+            # Set the appropriate product instance based on the product type
+            if product_type == 'Product':
+                product_instance_id = form.cleaned_data.get('object_id')
+                try:
+                    product_instance = Product.objects.get(id=product_instance_id)
+                    post.product = product_instance
+                    post.product_name = product_instance.product_name  # Set the product_name attribute
+                except Product.DoesNotExist:
+                    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products, 'error_message': 'Selected product does not exist'})
+            elif product_type == 'ApiProduct':
+                api_product_instance_id = form.cleaned_data.get('object_id')
+                try:
+                    api_product_instance = ApiProduct.objects.get(id=api_product_instance_id)
+                    post.product = api_product_instance
+                    post.product_name = api_product_instance.product_name  # Set the product_name attribute
+                except ApiProduct.DoesNotExist:
+                    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products, 'error_message': 'Selected API product does not exist'})
+
+            post.save()
+
+            return redirect('index')
+    else:
+        # If it's a GET request, initialize the form and set the choices based on the initial product_type
+        initial_product_type = request.GET.get('product_type', 'Product')  # Default to 'Product' if not provided
+        form = PostForm(initial={'product_type': initial_product_type})
+        form.set_product_choices(initial_product_type)  # Set the initial choices for the object_id field
+
+    return render(request, 'create_post.html', {'form': form, 'products': products, 'api_products': api_products})
+
+@login_required
+def post_list(request):
+    posts = Post.objects.all()
+    return render(request, 'post_list.html', {'posts': posts})
+
+def post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    comments = Comment.objects.filter(post=post).order_by('-pub_date')
+
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            # Save the comment
+            comment = comment_form.save(commit=False)
+            comment.post = post
+            comment.user = request.user
+            comment.save()
+
+            messages.success(request, 'Comment submitted successfully.')
+            # Redirect to the same post page after submitting the comment
+            return redirect('post', post_id=post_id)
+    else:
+        comment_form = CommentForm()
+
+    return render(request, 'post.html', {'post': post, 'comment_form': comment_form, 'comments': comments})
+
+
+def edit_comment(request, comment_id):
+    comment = get_object_or_404(Comment, pk=comment_id)
+
+    # Check if the current user is the author of the comment
+    if request.user != comment.user:
+        # If the current user is not the author, redirect to some other page or show an error message
+        return redirect('some_other_page')  # Replace 'some_other_page' with the URL name or path of your choice
+
+    if request.method == 'POST':
+        # Update the comment content with the data from the form
+        comment.content = request.POST.get('content')
+        comment.save()
+        # Redirect back to the post page after editing the comment
+        return redirect('post', post_id=comment.post.id)
+
+    # If the request method is not POST, simply render the same page
+    # You can handle GET requests differently if needed
+
+    return redirect('post', post_id=comment.post.id)  # Redirect back to the post page if not a POST request
+
+
+@login_required
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    products = Product.objects.all()
+    api_products = ApiProduct.objects.all()
+
+    # Check if the current user is the author of the post
+    if request.user != post.user:
+        messages.error(request, "You do not have permission to edit this post.")
+        return redirect('post', post_id=post_id)
+
+    if request.method == 'POST':
+        # If the form is submitted, update the post with the new data
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            # Save the form data without committing to the database
+            updated_post = form.save(commit=False)
+
+            # Set the user who originally wrote the post
+            updated_post.user = request.user
+
+            # Set the appropriate product instance based on the product type
+            product_type = form.cleaned_data.get('product_type')
+            if product_type == 'Product':
+                product_instance_id = form.cleaned_data.get('object_id')
+                try:
+                    product_instance = Product.objects.get(id=product_instance_id)
+                    updated_post.product = product_instance
+                    updated_post.product_name = product_instance.product_name
+                except Product.DoesNotExist:
+                    return render(request, 'edit_post.html', {'form': form, 'products': products, 'api_products': api_products, 'error_message': 'Selected product does not exist'})
+            elif product_type == 'ApiProduct':
+                api_product_instance_id = form.cleaned_data.get('object_id')
+                try:
+                    api_product_instance = ApiProduct.objects.get(id=api_product_instance_id)
+                    updated_post.product = api_product_instance
+                    updated_post.product_name = api_product_instance.product_name
+                except ApiProduct.DoesNotExist:
+                    return render(request, 'edit_post.html', {'form': form, 'products': products, 'api_products': api_products, 'error_message': 'Selected API product does not exist'})
+
+            # Save the updated post with the modified product name and user
+            updated_post.save()
+
+            messages.success(request, "Post updated successfully.")
+            return redirect('my_posts')
+    else:
+        # If it's a GET request, initialize the form with the current post data
+        form = PostForm(instance=post)
+    
+    return render(request, 'edit_post.html', {'form': form, 'products': products, 'api_products': api_products})
+
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    # Check if the current user is the author of the post
+    if request.user != post.user:
+        messages.error(request, "You do not have permission to delete this post.")
+        return redirect('post', post_id=post_id)
+
+    if request.method == 'POST':
+        # If the form is submitted, delete the post
+        post.delete()
+        messages.success(request, "Post deleted successfully.")
+        return redirect('my_posts')
+    else:
+        # If it's a GET request, confirm the deletion
+        return render(request, 'confirm_delete_post.html', {'post': post})
+    
+
+@login_required
+def my_posts(request):
+    posts = Post.objects.filter(user=request.user)
+
+    for post in posts:
+        post.editable = False
+        if request.user == post.user:
+            post.editable = True
+
+    return render(request, 'my_posts.html', {'posts': posts})
+
+@login_required
+def manage_delete(request, post_id):
+    if request.method == 'POST' and request.user.is_superuser:
+        try:
+            post = Post.objects.get(id=post_id)
+            post.delete()
+            messages.success(request, 'Post deleted successfully.')
+        except Post.DoesNotExist:
+            messages.error(request, 'Post does not exist.')
+    return redirect('post_list')
+
+@login_required
+def manage_ban(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST' and request.user.is_superuser:
+        try:
+            ban_duration_minutes = int(request.POST.get('ban_duration', 2))  # Default ban duration is 2 minutes
+            ban_end_date = timezone.now() + timedelta(minutes=ban_duration_minutes)
+            banned, created = Banned.objects.get_or_create(user=user)
+            banned.banned_until = ban_end_date
+            banned.save()
+            messages.success(request, f'User {user.name} has been banned until {ban_end_date}.')
+        except User.DoesNotExist:
+            messages.error(request, 'User does not exist.')
+    return redirect('post_list')
+
+def banned_info(request):
+    try:
+        banned = Banned.objects.get(user=request.user)
+        banned_until = banned.banned_until.strftime("%H:%M:%S %d.%m.%Y")
+    except Banned.DoesNotExist:
+        banned_until = None
+
+    return render(request, 'banned_info.html', {'banned_until': banned_until})

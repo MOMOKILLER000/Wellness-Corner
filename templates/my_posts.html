@@ -331,21 +331,12 @@ header .icons #menu-bars {
                 <p>No Product Data Available</p>
                 {% endif %}
                 <p>{{ post.content|truncatewords:50 }}</p>
-                {% if request.user.is_superuser %}
-                <form action="{% url 'manage_delete' post.id %}" method="post">
+        
+                {% if post.editable %}
+                <a href="{% url 'edit_post' post.id %}" style="color: green;">Edit</a>
+                <form method="post" action="{% url 'delete_post' post.id %}" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit">Delete Post</button>
-                </form>
-                <form action="{% url 'manage_ban' post.user.id %}" method="post">
-                    {% csrf_token %}
-                    <label for="ban_duration">Select Ban Duration:</label>
-                    <select name="ban_duration" id="ban_duration">
-                        <option value="2">2 Minutes</option>
-                        <option value="3">3 Minutes</option>
-                        <option value="4">4 Minutes</option>
-                        <option value="5">5 Minutes</option>
-                    </select>
-                    <button type="submit">Ban User</button>
+                    <button type="submit" style="color: red; border: none; background: none; cursor: pointer;">Delete</button>
                 </form>
                 {% endif %}
             </div>

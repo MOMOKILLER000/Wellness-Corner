@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import User, Allergy
 from .models import PendingProduct, Product, ApiProduct, Post, Subscriber
 from itertools import chain
-from .models import MealProduct, MealApiProduct, UserProfile
+from .models import MealProduct, MealApiProduct, UserProfile, Comment
 from django.contrib.auth.forms import PasswordChangeForm as DjangoPasswordChangeForm
 from django.contrib.auth import authenticate
 
@@ -127,3 +127,9 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     class Meta:
         model = User
         fields = ['old_password', 'new_password1', 'new_password2']
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']

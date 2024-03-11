@@ -94,7 +94,31 @@
           <h5>{{ post.user.name }}</h5>
           <p>{{ post.content }}</p>
       </div>
-  </div>
+  <h2>Comments</h2>
+  {% for comment in comments %}
+    <p>{{ comment.user }} - {{ comment.pub_date|date:"F d, Y H:i" }}</p>
+    {% if comment.user == request.user %}
+        <form method="post" action="{% url 'edit_comment' comment.id %}">
+            {% csrf_token %}
+            <textarea name="content">{{ comment.content }}</textarea>
+            <button type="submit">Save</button>
+        </form>
+        <form method="post" action="{% url 'delete_comment' comment.id %}">
+            {% csrf_token %}
+            <button type="submit">Delete</button>
+        </form>
+    {% else %}
+        <p>{{ comment.content }}</p>
+    {% endif %}
+{% endfor %}
+
+<h2>Add a Comment</h2>
+<form method="post" action="{% url 'post' post_id=post.id %}">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit">Submit Comment</button>
+</form>
+</div>
 </div>
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </body>
