@@ -579,3 +579,34 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.pub_date}"
+    
+
+
+
+class Recipe(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    image = models.ImageField(upload_to='recipes/', null=True, blank=True)
+    name = models.CharField(max_length=20, unique=True)
+    content = models.TextField()
+
+class Ingredient(models.Model):
+    RECIPE_SOURCES = (
+        ('database', 'Database'),
+        ('api', 'API'),
+    )
+
+    recipe = models.ForeignKey(Recipe, related_name='ingredients', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, null=True, blank=True, on_delete=models.CASCADE)
+    api_product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE)
+    source = models.CharField(max_length=20, choices=RECIPE_SOURCES)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        if self.product:
+            return f"Product: {self.product.product_name}"
+        elif self.api_product:
+            return f"API Product: {self.api_product.product_name}"
+        else:
+            return "Unknown Product"

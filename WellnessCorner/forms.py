@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import User, Allergy
 from .models import PendingProduct, Product, ApiProduct, Post, Subscriber
 from itertools import chain
-from .models import MealProduct, MealApiProduct, UserProfile, Comment
+from .models import MealProduct, MealApiProduct, UserProfile, Comment, Recipe
 from django.contrib.auth.forms import PasswordChangeForm as DjangoPasswordChangeForm
 from django.contrib.auth import authenticate
 
@@ -133,3 +133,12 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+
+
+class RecipeForm(forms.ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ['image', 'name', 'content']
+        widgets = {
+            'content': forms.Textarea(attrs={'rows': 8}),  # Adjust rows as needed
+        }

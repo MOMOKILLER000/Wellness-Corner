@@ -54,6 +54,10 @@ urlpatterns = [
     path('manage_delete/<int:post_id>/', views.manage_delete, name='manage_delete'),
     path('manage_ban/<int:user_id>/', views.manage_ban, name='manage_ban'),
     path('banned_info/', views.banned_info, name='banned_info'),
+    path('all_recipes/', views.all_recipes, name='all_recipes'),
+    path('manage_recipe/<int:recipe_id>/', views.manage_recipe, name='manage_recipe'),
+    path('add_to_recipe/<int:recipe_id>/', views.add_to_recipe, name='add_to_recipe'),
+    path('create_recipe/', views.create_recipe, name='create_recipe'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

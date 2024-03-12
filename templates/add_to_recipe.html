@@ -1,0 +1,68 @@
+{% load static %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Meal</title>
+    <link rel="stylesheet" href="{% static 'calculator.css' %}">
+</head>
+<body>
+    <div class="search-container-meal" id="search-container">
+        <form action="{% url 'add_to_recipe' recipe_id=recipe_id %}" method="post" class="search-form">
+            {% csrf_token %}
+            <input type="text" class="search-input" name="product_name" placeholder="Enter the product name" value="{{ search_query }}">
+            <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+            <button class="search-button" type="submit">
+                <i class="search-icon fas fa-search"></i> Search
+            </button>
+        </form>
+    </div>
+    <div style="padding-top:30px" class="heading">Add to Recipe</div>
+    {% if search_query %}
+    {% if search_results %}
+        <div class="products-container">
+            {% for product in search_results %}
+                <div class="product">
+                    <div class="top">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                        {% endif %}
+                    </div>
+                    <div class="middle">
+                        {% if product.source == 'database' %}
+                            <a href="{% url 'product_detail' product.id 'database' %}">{{ product.product_name }}</a>
+                        {% elif product.source == 'api' %}
+                            <a href="{% url 'product_detail' product.id 'api' %}">{{ product.product_name }}</a>
+                        {% endif %}
+                    </div>
+                    <div class="bottom">
+                        <h3 style="font-size:18px;">Nutritional Data:</h3>
+                        <ul class="product-details">
+                            <li>Calories: {{ product.kcal_per_100g }}</li>
+                            <li>Proteins: {{ product.protein_per_100g }}</li>
+                            <li>Carbs: {{ product.carbs_per_100g }}</li>
+                            <li>Fats: {{ product.fats_per_100g }}</li>
+                        </ul>
+                        <div class="button-meal">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_name" value="{{ product.product_name }}">
+                                <input type="hidden" name="recipe_id" value="{{ recipe_id }}">
+                                <input type="number" name="quantity_{{ product.id }}" value="1" min="1" max="10000">
+                                <button type="submit" name="add_to_recipe" value="{{ product.id }}">Add to Recipe</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-products">
+           <div style="padding-top:30px" class="heading">No products found</div>
+        </div>
+    {% endif %}
+    {% endif %}
+</body>
+</html>

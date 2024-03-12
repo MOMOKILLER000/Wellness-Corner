@@ -170,103 +170,102 @@ header .icons #menu-bars {
     color: #ffffff;
     /* Change color on hover */
 }
+body {
+    margin: 0;
+    font-family: 'Poppins', Arial, Helvetica, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: #1a1a1a; /* Dark blue text color */
+    background: #cfe4f7; /* Light blue background color */
+}
 
-        body {
-            margin: 0;
-            font-family: poppins, Arial, Helvetica, sans-serif;
-            font-size: 16px;
-            font-weight: 400;
-            color: #3f3e3e;
-            background: #eaeff4;
-        }
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
 
-        .container {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-        }
+.upper {
+    background: #3498db; /* Blue background color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    text-align: center;
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+}
 
-        .upper {
-            background: #d4af37;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            text-align: center;
-            color: #fff;
-            font-family: 'Playfair Display', serif;
-        }
+.upper h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #2c3e50; /* Darker blue text color */
+}
 
-        .upper h2 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            color: #1a1a1a;
-        }
+.upper p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
 
-        .upper p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
+@media screen and (max-width: 600px) {
+    .upper {
+        padding: 20px;
+    }
 
-        @media screen and (max-width: 600px) {
-            .upper {
-                padding: 20px;
-            }
+    .upper h2 {
+        font-size: 2em;
+    }
 
-            .upper h2 {
-                font-size: 2em;
-            }
+    .upper p {
+        font-size: 1em;
+    }
+}
 
-            .upper p {
-                font-size: 1em;
-            }
+.card {
+    background-color: #2c3e50; /* Dark blue card background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    padding: 20px;
+    height: 200px;
+    margin-left: 10px;
+    margin-right: 10px;
+    transition: transform 0.3s;
+    background-size: cover;
+    border: 2px solid #3498db; /* Border color matching upper background */
+}
 
-        }
+.card:hover {
+    transform: scale(1.02);
+}
 
-        .card {
-            background-color: #1a1a1a;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            padding: 20px;
-            height: 200px;
-            margin-left:10px;
-            margin-right:10px;
-            transition: transform 0.3s;
-            background-size: cover;
-            border: 2px solid #d4af37;
-        }
+.card a {
+    text-decoration: none;
+    color: #fff;
+}
 
-        .card:hover {
-            transform: scale(1.02);
-        }
+.card h2 {
+    margin-bottom: 10px;
+    color: #3498db; /* Blue heading color */
+}
 
-        .card a {
-            text-decoration: none;
-            color: #fff;
-        }
+.card p {
+    color: #ecf0f1;
+    display: none;
+}
 
-        .card h2 {
-            margin-bottom: 10px;
-            color: #d4af37;
-        }
+.card:hover p {
+    display: block;
+}
 
-        .card p {
-            color: #ecf0f1;
-            display: none;
-        }
+.card:hover h2 a {
+    color: #ffd700; /* Yellow color on hover */
+}
 
-        .card:hover p {
-            display: block;
-        }
+@media screen and (max-width: 800px) {
+    .leftcolumn {
+        flex: 100%;
+        margin-right: 0;
+    }
+}
 
-        .card:hover h2 a {
-            color: #ffd700;
-        }
-
-        @media screen and (max-width: 800px) {
-            .leftcolumn {
-                flex: 100%;
-                margin-right: 0;
-            }
-        }
     </style>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@400;700&display=swap">
@@ -288,18 +287,17 @@ header .icons #menu-bars {
             <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
         {% endif %}
         <a href="{% url 'contact' %}">Contact</a>
-        <a href="{% url 'calculator' %}">Calculator calorii</a>
         </div>
     </div>
     <header>
         <div class="more">
             <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
         </div>
-        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+        <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
     
         <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
-            <a href="#about">about</a>
+            <a href="{% url 'all_recipes' %}">Recipes</a>
             <a href="{% url 'user_discounts' %}">My discounts</a>
             <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>

@@ -6,6 +6,7 @@ from .forms import RegistrationForm, LoginForm, UserProfileForm
 import requests
 from decimal import Decimal
 import json
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages 
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
@@ -16,14 +17,14 @@ from .models import PendingProduct, Subscriber
 from django.core.files.base import ContentFile
 from django.http import HttpResponseForbidden
 from django.conf import settings
-from .forms import PostForm, EmailSubscriberForm, ContactForm, NewsletterSubscriptionForm, CustomPasswordChangeForm, CommentForm
+from .forms import PostForm, EmailSubscriberForm, ContactForm, NewsletterSubscriptionForm, CustomPasswordChangeForm, CommentForm, RecipeForm
 from .models import Post, Comment, User
 from itertools import chain
 from django.core.mail import send_mail
 from django.core.exceptions import PermissionDenied
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import Meal, MealProduct, MealApiProduct, Banned
+from .models import Meal, MealProduct, MealApiProduct, Banned, Recipe, Ingredient
 from .forms import MealProductForm, MealApiProductForm, UserAccountForm
 from django.http import HttpResponse
 from django.db.models import FloatField
@@ -1336,8 +1337,9 @@ def edit_comment(request, comment_id):
 @login_required
 def edit_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    products = Product.objects.all()
-    api_products = ApiProduct.objects.all()
+    products = Product.objects.all().order_by('product_name')
+    api_products = ApiProduct.objects.all().order_by('product_name')
+
 
     # Check if the current user is the author of the post
     if request.user != post.user:
@@ -1449,3 +1451,121 @@ def banned_info(request):
         banned_until = None
 
     return render(request, 'banned_info.html', {'banned_until': banned_until})
+
+
+def add_to_recipe(request, recipe_id):
+    search_query = request.POST.get('product_name', '')
+    search_results = []
+
+    if search_query.strip():
+        # Perform the search
+        search_results = search_product(search_query)
+        for product in search_results:
+            if isinstance(product, Product):
+                product.source = 'database'
+            elif isinstance(product, ApiProduct):
+                product.source = 'api'
+            else:
+                # Handle other cases if needed
+                pass
+
+    if 'add_to_recipe' in request.POST:
+        product_id = request.POST.get('add_to_recipe')
+        quantity = request.POST.get(f'quantity_{product_id}')
+
+        if product_id and quantity:
+            try:
+                product = Product.objects.get(pk=product_id)
+                source = 'database'
+            except Product.DoesNotExist:
+                try:
+                    product = ApiProduct.objects.get(pk=product_id)
+                    source = 'api'
+                except ApiProduct.DoesNotExist:
+                    messages.error(request, "Product not found.")
+                    return redirect('all_recipes')
+
+            recipe = get_object_or_404(Recipe, pk=recipe_id)
+            try:
+                if source == 'database':
+                    ingredient = Ingredient.objects.get(recipe=recipe, source=source, product=product)
+                elif source == 'api':
+                    # For API products, we create a new ingredient
+                    ingredient = Ingredient.objects.create(recipe=recipe, source=source, api_product=product, quantity=int(quantity))
+            except Ingredient.DoesNotExist:
+                # For database products, we create a new ingredient
+                if source == 'database':
+                    ingredient = Ingredient.objects.create(recipe=recipe, source=source, product=product, quantity=int(quantity))
+                elif source == 'api':
+                    messages.error(request, "API Product not found.")
+                    return redirect('all_recipes')
+
+            # Update quantity if it's a database product
+            if source == 'database':
+                ingredient.quantity += int(quantity)
+                ingredient.save()
+
+            if source == 'database':
+                messages.success(request, "Product added to recipe successfully.")
+            else:
+                messages.success(request, "API Product added to recipe successfully.")
+            return redirect('all_recipes')
+        else:
+            messages.error(request, "Please provide both a product and a quantity.")
+
+    context = {'recipe_id': recipe_id, 'search_results': search_results, 'search_query': search_query}
+    return render(request, 'add_to_recipe.html', context)
+
+@login_required
+def all_recipes(request):
+    recipes = Recipe.objects.all()
+    context = {'recipes': recipes}
+    return render(request, 'all_recipes.html', context)
+
+
+@login_required
+def manage_recipe(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    form = RecipeForm(instance=recipe)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        if action == 'update_quantity':
+            ingredient_id = request.POST.get('ingredient_id')
+            new_quantity = request.POST.get('quantity')
+            ingredient = get_object_or_404(Ingredient, id=ingredient_id)
+            ingredient.quantity = new_quantity
+            ingredient.save()
+            messages.success(request, "Ingredient quantity updated successfully.")
+        elif action == 'delete':
+            ingredient_id = request.POST.get('ingredient_id')
+            ingredient = get_object_or_404(Ingredient, id=ingredient_id)
+            ingredient.delete()
+            messages.success(request, "Ingredient deleted successfully.")
+        else:
+            form = RecipeForm(request.POST, instance=recipe)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Recipe updated successfully.")
+
+    context = {'recipe': recipe, 'form': form}
+    return render(request, 'manage_recipe.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def create_recipe(request):
+    if request.method == 'POST':
+        form = RecipeForm(request.POST, request.FILES)  # Add request.FILES to handle file uploads
+        if form.is_valid():
+            recipe = form.save(commit=False)
+            recipe.user = request.user
+            recipe.image = form.cleaned_data['image']  # Set the image field of the Recipe instance
+            recipe.save()
+            messages.success(request, "Recipe created successfully.")
+            return redirect('all_recipes')
+    else:
+        form = RecipeForm()
+
+    context = {'form': form}
+    return render(request, 'create_recipe.html', context)

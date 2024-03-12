@@ -8,6 +8,7 @@
     border: none;
     text-transform: capitalize;
     transition: all .2s linear;
+    
 }
 
 html {
@@ -119,6 +120,7 @@ header .icons #menu-bars {
 
 .content-page {
     transition: margin-left 0.3s ease;
+    
     /* Add a transition effect for the content page when the sidebar appears/disappears */
 }
 
@@ -214,6 +216,7 @@ header .icons #menu-bars {
     justify-content: space-between;
     padding-left: 30px;
     padding-right: 30px;
+    
 }
 
 .product {
@@ -343,14 +346,14 @@ header .icons #menu-bars {
     margin: 0 auto; /* Center horizontally */
     padding: 10px 30px; /* Adjust padding */
     font-size: 24px; /* Increase font size */
-    color: #FFD700;
+    color: #a8c2f3;
     background: #222222;
     border: none;
     border-radius: 5px;
 }
 .subscribe:hover{
     color: #222222;
-    background: #FFD700;
+    background: #a8c2f3;
     cursor: pointer;
 }
 #welcome a:hover {

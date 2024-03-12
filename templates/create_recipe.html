@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Recipe</title>
+    <link rel="stylesheet" href="{% static 'post-form.css' %}">
+    <style>
+        /* Additional styles for centering the container */
+        body {
+            display: flex;
+            justify-content: center; /* Center content horizontally */
+            align-items: center; /* Center content vertically */
+            height: 100vh; /* Full viewport height */
+            font-size: 1.6rem; /* Adjusted font size */
+        }
+
+        .profile-container {
+            padding: 2rem; /* Increased padding */
+        }
+
+        .col-right {
+            padding: 1rem; /* Increased padding */
+        }
+
+        label {
+            font-size: 1.8rem; /* Adjusted font size */
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        select,
+        .select,
+        textarea {
+            font-size: 1.6rem; /* Adjusted font size */
+            padding: 1rem; /* Increased padding */
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+        textarea {
+            height:300px;
+        }
+        button[type="submit"] {
+            font-size: 1.8rem; /* Adjusted font size */
+            padding: 1.2rem 2rem; /* Increased padding */
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper profile">
+        <div class="profile-container">
+            <div class="col-right">
+                <h1>Create Recipe</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.image.errors }}
+                    <label for="{{ form.image.id_for_label }}">Image:</label>
+                    {{ form.image }}
+
+                    {{ form.name.errors }}
+                    <label for="{{ form.name.id_for_label }}">Name:</label>
+                    {{ form.name }}
+
+                    {{ form.content.errors }}
+                    <label for="{{ form.content.id_for_label }}">Instructions:</label>
+                    {{ form.content }}
+
+                    <button type="submit">Create Recipe</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

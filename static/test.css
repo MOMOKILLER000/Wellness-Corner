@@ -18,7 +18,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to right, #fceabb, #f8b500); 
+    background: linear-gradient(to right, #bbd2fc, #7c73f8); 
 }
 
 main {
@@ -82,7 +82,7 @@ img {
 .add-now-btn {
     display: inline-block;
     padding: 15px;
-    background: #333;
+    background: #3a84da;
     color: #fff;
     text-align: center;
     text-decoration: none;
@@ -92,7 +92,7 @@ img {
 }
 
 .add-now-btn:hover {
-    background: #555;
+    background: #444379;
     cursor:pointer;
 }
 

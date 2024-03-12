@@ -23,18 +23,17 @@
             <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
         {% endif %}
         <a href="{% url 'contact' %}">Contact</a>
-        <a href="{% url 'calculator' %}">Calculator calorii</a>
         </div>
     </div>
     <header>
         <div class="more">
             <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
         </div>
-        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+        <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
     
         <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
-            <a href="#about">about</a>
+            <a href="{% url 'all_recipes' %}">Recipes</a>
             <a href="{% url 'user_discounts' %}">My discounts</a>
             <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
@@ -60,6 +59,7 @@
     <div style="padding-top:30px" class="heading">Add to {{ meal_type }}</div>
     <form method="post">
         {% csrf_token %}
+{% if search_query %}
 <div class="products-container">
     {% if search_results %}
         {% for product in search_results %}
@@ -87,7 +87,7 @@
                     </ul>
                     <div class="button-meal">
                         <input type="hidden" name="product_name" value="{{ product.product_name }}">
-                        <input type="number" name="quantity_{{ product.id }}" value="1" min="1" max="1000">
+                        <input type="number" name="quantity_{{ product.id }}" value="1" min="1" max="10000">
                         <button type="submit" name="add_to_meal" value="{{ product.id }}">Add to Meal</button>
                     </div>
                 </div>
@@ -98,6 +98,7 @@
         <div class="no-products">
            <div style="padding-top:30px" class="heading">No products found</div>
         </div>
+    {% endif %}
     {% endif %}
 </div>
 <script>

@@ -1,10 +1,11 @@
 * {
     font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
     text-decoration: none;
     outline: none;
     border: none;
-    text-transform: capitalize;
     transition: all .2s linear;
 }
 
@@ -16,8 +17,6 @@ html {
 }
 
 .heading {
-    margin-top: 40px;
-    padding: 0;
     text-align: center;
     color: black;
     font-size: 3rem;
@@ -30,6 +29,7 @@ header {
     left: 0;
     right: 0;
     background: #fff;
+    width: 100%;
     padding: 1rem 5%;
     display: flex;
     align-items: center;
@@ -99,8 +99,6 @@ header .icons #menu-bars {
 .left-bar {
     position: fixed;
     top: 0;
-    margin: 0;
-    padding: 0;
     left: -200px;
     /* Initially hide the sidebar off-screen */
     height: 100%;
@@ -133,6 +131,7 @@ header .icons #menu-bars {
     position: absolute;
     top: 10px;
     right: 10px;
+    background-color: #1434A4;
     /* Position the button on the right side */
     background: none;
     border: none;
@@ -141,7 +140,9 @@ header .icons #menu-bars {
     /* Increase the font size for a bigger button */
     cursor: pointer;
 }
-
+.close-button:hover{
+    background-color: #1434A4;
+}
 .links {
     display: flex;
     flex-direction: column;
@@ -164,16 +165,61 @@ header .icons #menu-bars {
     color: #ffffff;
     /* Change color on hover */
 }
-       body {
-    font-family: Arial, sans-serif;
+
+/*Search */
+.search-container {
+    margin-top: 40px;
+    display: none;
+    /* Initially hide the search container */
+}
+
+.show-search-container {
+    display: block;
+    /* Show the search container */
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    width: 250px;
+    /* Adjust as needed */
+}
+
+.search-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.search-icon {
+    margin-right: 5px;
+}
+body {
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* Center content horizontally */
     justify-content: flex-start;
     min-height: 100vh;
-    background-color: #f3f4f6;
 }
 
 
@@ -183,14 +229,11 @@ header .icons #menu-bars {
     padding: 2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 700px; /* Adjusted max-width for smaller container */
-    margin-top: 2rem; /* Added margin-top to center the container vertically */
+    max-width: 700px;
+    margin-top: 2rem;
+    color: #333;
+    box-sizing: border-box; /* Include padding in width calculation */
 }
-
-header {
-    width: 100%; /* Header width set to 100% */
-}
-
 h2 {
     color: #000000;
     font-weight: bold;
@@ -201,102 +244,89 @@ h2 {
 
 label {
     color: #000000;
-    font-size: 3.0rem;
+    font-size: 2.0rem; /* Adjusted font size */
     margin-bottom: 0.5rem;
     display: block;
     margin-right: 1rem;
-    margin-top:20px;
-    width: 100%; /* Set label width to 100% */
+    margin-top: 20px;
+    width: 100%;
 }
 
-input[type="text"],input[type="password"],input[type="number"],
+input[type="text"],
+input[type="password"],
+input[type="number"],
 select,
 .select,
 textarea {
-    width: calc(100% - 2rem); /* Adjusted width to accommodate for padding */
+    width: calc(100% - 2rem);
     font-size: 1.9rem;
-    background-color: #ffffff;
+    background-color: #f8f9fa; 
     border-radius: 0.5rem;
     border: 1.2px solid #d1d5db;
-    color: #000000;
+    color: #333; /* Text color */
     padding: 1rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
-    margin-right: 1rem; /* Added margin-right */
-    display: block; /* Changed display to block */
+    margin-right: 1rem;
+    display: block;
 }
-textarea{
-    height:200px;
+
+textarea {
+    height: 200px;
 }
+
 button[type="submit"] {
-    background-color: black;
-    color: white;
+    background-color: #007bff; /* Button color */
+    color: #fff;
     border-radius: 0.5rem;
-    padding: 1rem 1.5rem; /* Increased padding to make it bigger */
-    font-size: 1.6rem; /* Increased font size */
+    padding: 1.5rem; /* Increased padding */
+    font-size: 1.8rem; /* Increased font size */
     transition: all 0.2s ease-in-out;
     cursor: pointer;
     border: none;
     outline: none;
-    display: block; /* Change display to block to center it */
-    margin: 0 auto; /* Center the button horizontally */
+    display: block;
+    margin: 0 auto;
 }
 
 button[type="submit"]:hover {
-    background-color: #edf2f7;
-    color: black;
+    background-color: #0056b3; 
+    color: #fff;
 }
 
-
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
-
-.wrapper {
-    width: 80%;
-    font-size: 100%;
-    margin: 50px auto;
-}
-
+/* Additional styles for the profile section */
 .profile-container {
     background-color: #fff;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    box-sizing: border-box; 
+    width: 800px; /* Adjust the width as needed */
+    margin: 0 auto; /* Center the container horizontally */
 }
 
-.col-right {
-    margin-top: 20px;
+.profile-form label {
+    font-size: 1.8rem; 
 }
-
 .profile-form {
+    display: flex;
+    flex-direction: column;
     margin-bottom: 30px;
-}
-
-form {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    margin-bottom: 10px; /* Increased margin for better spacing */
-    font-weight: bold;
-    font-size: 18px; /* Increased font size */
 }
 
 .checkbox {
     margin-bottom: 10px;
-    font-size:1.8rem;
+    font-size: 1.8rem;
 }
+
 .profile-form form input {
-    padding: 15px; /* Adjust the padding for height */
+    padding: 15px;
     box-sizing: border-box;
     margin-bottom: 10px;
-    font-size:20px;
+    font-size: 1.8rem;
 }
+
 .button {
     background-color: #007bff;
     color: #fff;
@@ -304,21 +334,21 @@ label {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 1.8rem; /* Button font size */
 }
-.profile-form form label {
-    font-size: 18px; /* Set the font size to match other labels */
-}
+
 .message {
     margin-top: 10px;
-    margin-bottom:15px;
+    margin-bottom: 15px;
     padding: 20px;
     background-color: #d4edda;
     border: 1px solid #c3e6cb;
     color: #155724;
     border-radius: 5px;
-    font-size:18px;
+    font-size: 1.8rem;
 }
 
-li{
-    font-size:1.9rem;
+/* Adjust font size for lists */
+li {
+    font-size: 1.8rem;
 }

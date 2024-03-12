@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if recipe %}Edit Recipe{% else %}Create Recipe{% endif %}</title>
+</head>
+<body>
+    {% if request.user.is_superuser %}
+    <h1>{% if recipe %}Edit Recipe{% else %}Create Recipe{% endif %}</h1>
+    <form method="post">
+        {% csrf_token %} 
+        {{ form.name.errors }}
+        <label for="{{ form.name.id_for_label }}">Name:</label>
+        {{ form.name }}
+        <br>
+        {{ form.content.errors }}
+        <label for="{{ form.content.id_for_label }}">Content:</label>
+        {{ form.content }}
+        <br>
+        <button type="submit">Save Recipe</button>
+    </form>
+    {% else %}
+              <p>{{ recipe.name }}</p>
+              <p>{{ recipe.content}}</p>
+    {% endif %}
+    {% if recipe.image %}
+                    <img src="{{ recipe.image.url }}" alt="{{ recipe.product_name }}" class="product-image">
+                {% endif %}
+    <h2>Ingredients:</h2>
+    <ul>
+        {% for ingredient in recipe.ingredients.all %}
+            <li>
+                {% if ingredient.product %}
+                    {{ ingredient.product.product_name }} ({{ ingredient.quantity }} grams)
+                {% elif ingredient.api_product %}
+                    {{ ingredient.api_product.product_name }} ({{ ingredient.quantity }} grams)
+                {% endif %}
+                {% if request.user.is_superuser %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="ingredient_id" value="{{ ingredient.id }}">
+                    <input type="number" name="quantity" value="{{ ingredient.quantity }}">
+                    <button type="submit" name="action" value="update_quantity">Update Quantity</button>
+                    <button type="submit" name="action" value="delete">Delete</button>
+                </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

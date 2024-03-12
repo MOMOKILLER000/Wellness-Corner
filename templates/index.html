@@ -6,8 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wellnesscorner</title>
-
-    <!-- custom css file link  -->
     <link rel="stylesheet" href="{% static 'index.css' %}">
 </head>
 <body>
@@ -26,7 +24,6 @@
             <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
         {% endif %}
         <a href="{% url 'contact' %}">Contact</a>
-        <a href="{% url 'calculator' %}">Calculator calorii</a>
         </div>
     </div>
     <header>
@@ -37,7 +34,7 @@
     
         <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
-            <a href="#about">about</a>
+            <a href="{% url 'all_recipes' %}">Recipes</a>
             <a href="{% url 'user_discounts' %}">My discounts</a>
             <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>

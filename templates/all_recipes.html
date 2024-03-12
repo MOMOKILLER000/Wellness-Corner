@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Recipes</title>
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+</head>
+<style>
+    .page-title {
+    font-size: 40px; /* Larger font size for the page title */
+    margin-bottom: 20px; /* Add margin below the page title */
+}
+
+.recipes-container {
+    margin-top: 20px; /* Add margin to separate from page title */
+}
+
+.recipe-item {
+    font-size: 22px; /* Adjusted font size for recipe items */
+    margin-bottom: 10px; /* Add margin between recipe items */
+}
+</style>
+<body>
+    <div class="left-bar">
+        <button class="close-button" onclick="closeBar()">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        <div class="links">
+            <a href="{% url 'create' %}">Create Product</a>
+            <a href="{% url 'my_products' %}">My Products</a>
+            <a href="{% url 'create_post' %}">Create Post</a>
+            <a href="{% url 'post_list' %}">Posts</a>
+            <a href="{% url 'my_posts' %}">My posts</a>
+            {% if request.user.is_superuser %}
+            <a href="{% url 'approve_products' %}">Approve Products</a>
+            <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+        {% endif %}
+        <a href="{% url 'contact' %}">Contact</a>
+        </div>
+    </div>
+    <header>
+        <div class="more">
+            <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+        </div>
+        <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+    
+        <nav class="navbar">    
+            <a href="{% url 'index' %}">Home</a>
+            <a href="{% url 'all_recipes' %}">Recipes</a>
+            <a href="{% url 'user_discounts' %}">My discounts</a>
+            <a href="{% url 'myaccount' %}">My Profile</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </nav>
+    
+        <div class="icons">
+            <i class="fas fa-bars" id="menu-bars"></i>
+            <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
+            <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
+            <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+        </div>
+    
+    </header>
+    <h1 class="page-title">All Recipes</h1>
+    
+    <div class="recipes-container">
+        {% for recipe in recipes %}
+            <div class="recipe-item">
+                <a href="{% url 'manage_recipe' recipe_id=recipe.id %}">{{ recipe.name }}</a>
+                
+                {% if request.user.is_superuser %}
+                    <!-- Link to the add_to_recipe page with recipe details -->
+                    <a href="{% url 'add_to_recipe' recipe_id=recipe.id %}">Add to Recipe</a>
+                {% endif %}
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+
+    {% if request.user.is_superuser %}
+        <a href="{% url 'create_recipe' %}" class="btn btn-primary">Create New Recipe</a>
+    {% endif %}
+</body>
+<script>
+    function toggleBar() {
+document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+document.querySelector(".content-page").classList.toggle("content-page-extended");
+}
+
+function closeBar() {
+ document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+ document.querySelector(".content-page").classList.remove("content-page-extended");
+}
+</script>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+</html>

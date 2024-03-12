@@ -88,6 +88,61 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        .pie-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .pie {
+            width: 100px; /* Adjust width as needed */
+            aspect-ratio: 1;
+            position: relative;
+            display: inline-grid;
+            margin: 5px;
+            place-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: sans-serif;
+        }
+
+        .pie:before,
+        .pie:after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+        }
+
+        .pie:before {
+            inset: 0;
+            background:
+                radial-gradient(farthest-side,var(--c) 98%,#0000) top/var(--b) var(--b) no-repeat,
+                conic-gradient(var(--c) calc(var(--p)*1%),#0000 0);
+            -webkit-mask: radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
+            mask: radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
+        }
+
+        .pie:after {
+            inset: calc(50% - var(--b)/2);
+            background: var(--c);
+            transform: rotate(calc(var(--p)*3.6deg)) translateY(calc(50% - var(--w)/2));
+        }
+
+        .animate {
+            animation: p 1s .5s both;
+        }
+
+        .no-round:before {
+            background-size: 0 0, auto;
+        }
+
+        .no-round:after {
+            content: none;
+        }
+
+        @keyframes p {
+            from { --p: 0; }
+        }
     </style>
 </head>
 <body>
@@ -106,18 +161,17 @@
             <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
         {% endif %}
         <a href="{% url 'contact' %}">Contact</a>
-        <a href="{% url 'calculator' %}">Calculator calorii</a>
         </div>
     </div>
     <header>
         <div class="more">
             <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
         </div>
-        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+        <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
     
         <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
-            <a href="#about">about</a>
+            <a href="{% url 'all_recipes' %}">Recipes</a>
             <a href="{% url 'user_discounts' %}">My discounts</a>
             <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
@@ -246,7 +300,13 @@
                     </a>
                 </div>
             </div>
-    
+             <!-- graf placinta gen-->
+             <div class="pie-container">
+                <div class="pie" style="--p:{{ total_all_meals.total_calories_percentage }};--c:#3498db;"> {{ total_all_meals.total_calories_percentage }}%</div>
+                <div class="pie" style="--p:{{ total_all_meals.total_proteins_percentage }};--c:#2ecc71;"> {{ total_all_meals.total_proteins_percentage }}%</div>
+                <div class="pie no-round" style="--p:{{ total_all_meals.total_carbs_percentage }};--c:#9b59b6;"> {{ total_all_meals.total_carbs_percentage }}%</div>
+                <div class="pie animate no-round" style="--p:{{ total_all_meals.total_fats_percentage }};--c:#e67e22;"> {{ total_all_meals.total_fats_percentage }}%</div>
+            </div>
             <!-- Total for all meals -->
             <div class="total-summary">
                 <h3>Total Nutritional Data for all Meals:</h3>
