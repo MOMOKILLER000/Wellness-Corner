@@ -112,6 +112,7 @@
         </div>
         {% endfor %}
     </div>
+    <div class="total">
     <div class="total-section">
     <h2 style="font-size:24px;">Total</h2>
     <p>Total Calories: {{ meal.total_calories }}</p>
@@ -119,19 +120,68 @@
     <p>Total Carbs: {{ meal.total_carbs }}</p>
     <p >Total Fats: {{ meal.total_fats }}</p>
 </div>
-    <a class="back-button" href="{% url 'calculator' %}">Back to Product Summary</a>
-</body>
+<div style="width: 300px; height:300px;">
+    <canvas id="nutritionalChart"></canvas>
+</div>
+</div>
+    
+<a class="back-button" href="{% url 'calculator' %}">Back to Product Summary</a>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the canvas element
+        var ctx = document.getElementById('nutritionalChart').getContext('2d');
+
+        // Define data for the chart
+        var data = {
+            labels: ['Proteins', 'Carbs', 'Fats'],
+            datasets: [{
+                label: 'Nutritional Data',
+                data: [{{ meal.total_proteins }}, {{ meal.total_carbs }}, {{ meal.total_fats }}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.5)',
+                    'rgba(54, 162, 235, 0.5)',
+                    'rgba(255, 206, 86, 0.5)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)'
+                ],
+                borderWidth: 1
+            }]
+        };
+
+        // Create the chart
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: data,
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+</script>
+
 <script>
     function toggleBar() {
-document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
-document.querySelector(".content-page").classList.toggle("content-page-extended");
-}
+        document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+        document.querySelector(".content-page").classList.toggle("content-page-extended");
+    }
 
-function closeBar() {
- document.querySelector(".left-bar").classList.remove("left-bar-expanded");
- document.querySelector(".content-page").classList.remove("content-page-extended");
-}
-
+    function closeBar() {
+        document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+        document.querySelector(".content-page").classList.remove("content-page-extended");
+    }
 </script>
+
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+</body>
 </html>

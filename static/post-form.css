@@ -1,3 +1,4 @@
+
 * {
     font-family: 'Nunito', sans-serif;
     margin: 0;
@@ -6,6 +7,7 @@
     text-decoration: none;
     outline: none;
     border: none;
+    text-transform: capitalize;
     transition: all .2s linear;
 }
 
@@ -213,7 +215,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background: linear-gradient(to right, #bbd2fc, #7c73f8);
     color: #333;
     display: flex;
     flex-direction: column;
@@ -229,7 +231,7 @@ body {
     padding: 2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 700px;
+    max-width: 650px;
     margin-top: 2rem;
     color: #333;
     box-sizing: border-box; /* Include padding in width calculation */
@@ -244,7 +246,7 @@ h2 {
 
 label {
     color: #000000;
-    font-size: 2.0rem; /* Adjusted font size */
+    font-size: 2.2rem;
     margin-bottom: 0.5rem;
     display: block;
     margin-right: 1rem;

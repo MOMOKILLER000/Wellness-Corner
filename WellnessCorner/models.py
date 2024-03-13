@@ -398,19 +398,20 @@ class Post(models.Model):
     )
 
     product_type = models.CharField(max_length=20, choices=PRODUCT_CHOICES, null=True, blank=True)
-    object_id = models.PositiveIntegerField(default=0)  # Default value for the ID
+    object_id = models.PositiveIntegerField(default=0)  
     product = GenericForeignKey('content_type', 'object_id')
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=150, null=True, blank=True)
     content = models.TextField()
-    product_name = models.CharField(max_length=255, null=True, blank=True)  # Field to store the name of the product or API product
+    product_name = models.CharField(max_length=255, null=True, blank=True)  
+    pub_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return f"{self.product_type} Post"
 
     def save(self, *args, **kwargs):
         if self.product:
-            self.product_name = self.product.product_name  # Assuming the product model has a 'product_name' attribute
+            self.product_name = self.product.product_name  
         super().save(*args, **kwargs)
 
 
@@ -425,7 +426,7 @@ class Subscriber(models.Model):
 class ProductRating(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    rating = models.DecimalField(max_digits=3, decimal_places=1, default=0)  # Provide a default value
+    rating = models.DecimalField(max_digits=3, decimal_places=1, default=0) 
 
 class ApiProductRating(models.Model):
     product = models.ForeignKey(ApiProduct, on_delete=models.CASCADE)

@@ -1075,6 +1075,10 @@ def calculator(request):
         'total_all_meals': total_all_meals,
         'daily_calories': daily_calories,
         'calories_class': calories_class,
+        'breakfast_total_calories': breakfast_total['total_calories'],
+        'lunch_total_calories': lunch_total['total_calories'],
+        'dinner_total_calories': dinner_total['total_calories'],
+        'snacks_total_calories': snacks_total['total_calories'],
     }
     print("Calories class:", calories_class)
     return render(request, 'calculator.html', context)
@@ -1288,7 +1292,7 @@ def create_post(request):
 
 @login_required
 def post_list(request):
-    posts = Post.objects.all()
+    posts = Post.objects.order_by('-pub_date')  # Sort posts by pub_date in descending order
     return render(request, 'post_list.html', {'posts': posts})
 
 def post(request, post_id):

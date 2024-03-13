@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="{% static 'calculator.css' %}">
     <style>
         .bad{
-            color: red;
+            color: #e50000;
         }
         .good {
-            color: green;
+            color: #00a087;
         }
         .myfitnesspal .main {
             padding: 20px;
@@ -106,43 +106,6 @@
             font-family: sans-serif;
         }
 
-        .pie:before,
-        .pie:after {
-            content: "";
-            position: absolute;
-            border-radius: 50%;
-        }
-
-        .pie:before {
-            inset: 0;
-            background:
-                radial-gradient(farthest-side,var(--c) 98%,#0000) top/var(--b) var(--b) no-repeat,
-                conic-gradient(var(--c) calc(var(--p)*1%),#0000 0);
-            -webkit-mask: radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
-            mask: radial-gradient(farthest-side,#0000 calc(99% - var(--b)),#000 calc(100% - var(--b)));
-        }
-
-        .pie:after {
-            inset: calc(50% - var(--b)/2);
-            background: var(--c);
-            transform: rotate(calc(var(--p)*3.6deg)) translateY(calc(50% - var(--w)/2));
-        }
-
-        .animate {
-            animation: p 1s .5s both;
-        }
-
-        .no-round:before {
-            background-size: 0 0, auto;
-        }
-
-        .no-round:after {
-            content: none;
-        }
-
-        @keyframes p {
-            from { --p: 0; }
-        }
     </style>
 </head>
 <body>
@@ -190,16 +153,15 @@
             <!-- Daily Calories section moved to the top -->
             <div class="daily-calories-container">
                 <h2 class="meal-title">Daily Calories</h2>
-                <p class="meal-calories {{ calories_class }}">
+                <p class="{{ calories_class }}">
                     Daily Calories: {{ daily_calories|floatformat:"0" }}
                 </p>
             </div>
     
-            <!-- Meals container -->
             <div class="meals-container">
-                <!-- Display meals (Breakfast, Lunch, Dinner, Snacks) -->
-                <!-- Each meal is in a separate div with class "meal-summary" -->
-                <!-- Adjustments have been made to each meal-summary width to fit all meals on a line -->
+                <div>
+                <canvas id="caloriesPieChart"></canvas>
+            </div>
                 <div class="meal-summary">
                     <h2 class="meal-title">Breakfast</h2>
                     <ul class="meal-list">
@@ -300,13 +262,6 @@
                     </a>
                 </div>
             </div>
-             <!-- graf placinta gen-->
-             <div class="pie-container">
-                <div class="pie" style="--p:{{ total_all_meals.total_calories_percentage }};--c:#3498db;"> {{ total_all_meals.total_calories_percentage }}%</div>
-                <div class="pie" style="--p:{{ total_all_meals.total_proteins_percentage }};--c:#2ecc71;"> {{ total_all_meals.total_proteins_percentage }}%</div>
-                <div class="pie no-round" style="--p:{{ total_all_meals.total_carbs_percentage }};--c:#9b59b6;"> {{ total_all_meals.total_carbs_percentage }}%</div>
-                <div class="pie animate no-round" style="--p:{{ total_all_meals.total_fats_percentage }};--c:#e67e22;"> {{ total_all_meals.total_fats_percentage }}%</div>
-            </div>
             <!-- Total for all meals -->
             <div class="total-summary">
                 <h3>Total Nutritional Data for all Meals:</h3>
@@ -318,7 +273,55 @@
             </div>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the canvas element
+            var ctx = document.getElementById('caloriesPieChart').getContext('2d');
+    
+            // Define JavaScript variables and assign values from Django template
+            var breakfastCalories = {{ breakfast_total.total_calories|safe }};
+            var lunchCalories = {{ lunch_total.total_calories|safe }};
+            var dinnerCalories = {{ dinner_total.total_calories|safe }};
+            var snacksCalories = {{ snacks_total.total_calories|safe }};
+    
+            // Create the data for the pie chart
+            var data = {
+                labels: ['Breakfast', 'Lunch', 'Dinner', 'Snacks'],
+                datasets: [{
+                    label: 'Calories per Meal',
+                    data: [breakfastCalories, lunchCalories, dinnerCalories, snacksCalories],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)',
+                        'rgba(75, 192, 192, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+    
+            // Create the pie chart
+            var myPieChart = new Chart(ctx, {
+                type: 'pie',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    title: {
+                        display: true,
+                        text: 'Calories per Meal'
+                    }
+                }
+            });
+        });
+    </script>
     <script>
         function toggleBar() {
     document.querySelector(".left-bar").classList.toggle("left-bar-expanded");

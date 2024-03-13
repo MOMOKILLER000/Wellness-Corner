@@ -1,3 +1,4 @@
+ 
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -7,72 +8,80 @@
 </head>
 <style>
     .main {
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 80vh;
-        background-color: #f3f4f6;
+        font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #bbd2fc, #7c73f8);
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content horizontally */
+    justify-content: flex-start;
+    min-height: 100vh;
     }
 
     .container {
         background-color: #ffffff;
-        border-radius: 0.5rem;
-        padding: 2rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 95%; /* Adjusted width */
-        max-width: 800px; /* Increased max-width */
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 700px;
+    margin-top: 2rem;
+    color: #333;
+    box-sizing: border-box;
     }
 
     h2 {
         color: #000000;
-        font-weight: bold;
-        font-size: 2.5rem; /* Increased font size */
-        margin: 0;
-        margin-bottom: 1rem;
+    font-weight: bold;
+    font-size: 2.4rem;
+    margin: 0;
+    margin-bottom: 1rem;
     }
 
     label {
         color: #000000;
-        font-size: 1.5rem; /* Increased font size */
-        margin-bottom: 0.5rem;
-        display: block;
-        margin-right: 1rem;
+    font-size: 2.0rem; /* Adjusted font size */
+    margin-bottom: 0.5rem;
+    display: block;
+    margin-right: 1rem;
+    margin-top: 20px;
+    width: 100%;
     }
 
     input[type="text"],
     textarea {
         width: calc(100% - 2rem);
-        font-size: 1.2rem;
-        background-color: #ffffff;
-        border-radius: 0.5rem;
-        border: 1px solid #d1d5db;
-        color: #000000;
-        padding: 1rem;
-        margin-top: 0.5rem;
-        margin-bottom: 1rem;
-        margin-right: 1rem;
+    font-size: 1.9rem;
+    background-color: #f8f9fa; 
+    border-radius: 0.5rem;
+    border: 1.2px solid #d1d5db;
+    color: #333; /* Text color */
+    padding: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    display: block;
     }
 
     button[type="submit"] {
-        background-color: black;
-        color: white;
-        border-radius: 0.5rem;
-        padding: 1.5rem 2rem; /* Increased padding */
-        font-size: 1.5rem; /* Increased font size */
-        transition: all 0.2s ease-in-out;
-        cursor: pointer;
-        border: none;
-        outline: none;
-        display: block;
-        margin: 0 auto;
+        background-color: #007bff; /* Button color */
+    color: #fff;
+    border-radius: 0.5rem;
+    padding: 1.5rem; /* Increased padding */
+    font-size: 1.8rem; /* Increased font size */
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    display: block;
+    margin: 0 auto;
     }
 
     button[type="submit"]:hover {
-        background-color: #edf2f7;
-        color: black;
+        background-color: #0056b3; 
+    color: #fff;
     }
 </style>
 <body>
@@ -85,23 +94,23 @@
             <a href="{% url 'my_products' %}">My Products</a>
             <a href="{% url 'create_post' %}">Create Post</a>
             <a href="{% url 'post_list' %}">Posts</a>
-            <a href="{% url 'my_posts' %}">My posts</a>
             {% if request.user.is_superuser %}
             <a href="{% url 'approve_products' %}">Approve Products</a>
             <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
         {% endif %}
         <a href="{% url 'contact' %}">Contact</a>
+        <a href="{% url 'calculator' %}">Calculator calorii</a>
         </div>
     </div>
     <header>
         <div class="more">
             <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
         </div>
-        <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
     
         <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
-            <a href="{% url 'all_recipes' %}">Recipes</a>
+            <a href="#about">about</a>
             <a href="{% url 'user_discounts' %}">My discounts</a>
             <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>

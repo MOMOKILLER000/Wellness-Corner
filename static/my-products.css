@@ -1,3 +1,4 @@
+
 * {
     font-family: 'Nunito', sans-serif;
     margin: 0;
@@ -15,6 +16,8 @@ html {
     overflow-x: hidden;
     scroll-padding-top: 5.5rem;
     scroll-behavior: smooth;
+   
+    
 }
 
 .heading {

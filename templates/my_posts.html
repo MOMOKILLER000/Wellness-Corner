@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Your Luxurious HTML</title>
     <style>
+        /* Your CSS styles here */
         * {
             font-family: 'Nunito', sans-serif;
             margin: 0;
@@ -26,246 +27,399 @@
         }
 
         .heading {
-    text-align: center;
-    color: black;
-    font-size: 3rem;
-    padding-bottom: 2rem;
-    text-transform: uppercase;
-}
+            text-align: center;
+            color: black;
+            font-size: 3rem;
+            padding-bottom: 2rem;
+            text-transform: uppercase;
+        }
 
-header {
-    top: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    padding: 1rem 5%;
+        header {
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 1rem 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo {
+            color: black;
+            font-size: 2.5rem;
+            font-weight: bolder;
+        }
+
+        header .logo i {
+            color: #0F52BA;
+        }
+
+        header .navbar a {
+            font-size: 1.7rem;
+            border-radius: .5rem;
+            padding: .5rem 1.5rem;
+            color: black;
+        }
+
+        .more {
+            font-size: 1.7rem;
+            color: black;
+        }
+
+        .more:hover {
+            cursor: pointer;
+        }
+
+        header .navbar a.active,
+        header .navbar a:hover {
+            color: #fff;
+            background: 	#4169E1;
+        }
+
+        header .icons i,
+        header .icons a {
+            cursor: pointer;
+            margin-left: .5rem;
+            height: 4.5rem;
+            line-height: 4.5rem;
+            width: 4.5rem;
+            text-align: center;
+            font-size: 1.7rem;
+            color: black;
+            border-radius: 50%;
+            background: #eee;
+        }
+
+        header .icons i:hover,
+        header .icons a:hover {
+            color: #fff;
+            background: 		#4169E1;
+            transform: rotate(360deg);
+        }
+
+        header .icons #menu-bars {
+            display: none;
+        }
+
+        /* Left bar */
+        .left-bar {
+            position: fixed;
+            top: 0;
+            left: -200px;
+            /* Initially hide the sidebar off-screen */
+            height: 100%;
+            width: 200px;
+            background-color: #1434A4;
+            color: white;
+            transition: left 0.3s ease;
+            /* Add a transition effect for smooth appearance/disappearance */
+            z-index: 1000;
+            /* Set a higher z-index to make sure it appears above other elements */
+        }
+
+        .left-bar-expanded {
+            left: 0;
+            /* Display the sidebar when the class is applied */
+            z-index: 10;
+        }
+
+        .content-page {
+            transition: margin-left 0.3s ease;
+            /* Add a transition effect for the content page when the sidebar appears/disappears */
+        }
+
+        .content-page-extended {
+            margin-left: 200px;
+            /* Adjust the margin to make room for the sidebar */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            /* Position the button on the right side */
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            /* Increase the font size for a bigger button */
+            cursor: pointer;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+
+        .links a {
+            font-size: 24px;
+            /* Adjust the font size */
+            padding: 15px 20px;
+            /* Add padding for better spacing */
+            color: #89CFF0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            /* Add transition for smooth color change on hover */
+        }
+
+        .links a:hover {
+            color: #ffffff;
+            /* Change color on hover */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #1a1a1a;
+            /* Dark blue text color */
+            background: #cfe4f7;
+            /* Light blue background color */
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .upper {
+            background: #3498db;
+            /* Blue background color */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .upper h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            /* Darker blue text color */
+        }
+
+        .upper p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        @media screen and (max-width: 600px) {
+            .upper {
+                padding: 20px;
+            }
+
+            .upper h2 {
+                font-size: 2em;
+            }
+
+            .upper p {
+                font-size: 1em;
+            }
+        }
+
+        .card {
+            background-color: #2c3e50;
+            /* Dark blue card background */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            padding: 20px;
+            height: 240px;
+            margin-left: 10px;
+            margin-right: 10px;
+            transition: transform 0.1s;
+            background-size: cover;
+            border: 2px solid #3498db;
+            /* Border color matching upper background */
+            position: relative;
+            /* For positioning of buttons */
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            color: #3498db;
+            /* Blue heading color */
+        }
+
+        .card p {
+            color: #ecf0f1;
+            display: none;
+        }
+
+        .card:hover p {
+            display: block;
+        }
+
+        .card:hover h2 a {
+            color: #ffd700;
+            /* Yellow color on hover */
+        }
+
+        @media screen and (max-width: 800px) {
+            .leftcolumn {
+                flex: 100%;
+                margin-right: 0;
+            }
+        }
+
+        .button-group {
+            position: absolute;
+            bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: calc(100% - 60px);
+            /* Adjusted width */
+            left: 30px;
+            /* Positioned on the left */
+        }
+
+        .edit-button,
+        .delete-button {
+            padding: 10px 20px;
+            /* Adjust padding as needed */
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            font-size: 16px;
+            /* Set the font size */
+            display: flex;
+            align-items: center;
+        }
+
+        .delete-button {
+    padding: 10px 20px;
+    /* Adjust padding as needed */
+    border: 1px solid #cc0000;
+    background-color: #e50000;
+    overflow: hidden;
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    z-index: 2;
-    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+    width:120px;
 }
 
-header .logo {
-    color: black;
-    font-size: 2.5rem;
-    font-weight: bolder;
-}
-
-header .logo i {
-    color: #0F52BA;
-}
-
-header .navbar a {
-    font-size: 1.7rem;
-    border-radius: .5rem;
-    padding: .5rem 1.5rem;
-    color: black;
-}
-
-.more {
-    font-size: 1.7rem;
-    color: black;
-}
-
-.more:hover {
-    cursor: pointer;
-}
-
-header .navbar a.active,
-header .navbar a:hover {
+.delete-button .button__text {
+    transform: translateX(0);
     color: #fff;
-    background: 	#4169E1;
+    font-weight: 600;
+    transition: all 0.3s;
 }
 
-header .icons i,
-header .icons a {
-    cursor: pointer;
-    margin-left: .5rem;
-    height: 4.5rem;
-    line-height: 4.5rem;
-    width: 4.5rem;
-    text-align: center;
-    font-size: 1.7rem;
-    color: black;
-    border-radius: 50%;
-    background: #eee;
-}
-
-header .icons i:hover,
-header .icons a:hover {
-    color: #fff;
-    background: 		#4169E1;
-    transform: rotate(360deg);
-}
-
-header .icons #menu-bars {
-    display: none;
-}
-
-/*Left bar */
-.left-bar {
-    position: fixed;
-    top: 0;
-    left: -200px;
-    /* Initially hide the sidebar off-screen */
-    height: 100%;
-    width: 200px;
-    background-color: #1434A4;
-    color: white;
-    transition: left 0.3s ease;
-    /* Add a transition effect for smooth appearance/disappearance */
-    z-index: 1000;
-    /* Set a higher z-index to make sure it appears above other elements */
-}
-
-.left-bar-expanded {
-    left: 0;
-    /* Display the sidebar when the class is applied */
-    z-index: 10;
-}
-
-.content-page {
-    transition: margin-left 0.3s ease;
-    /* Add a transition effect for the content page when the sidebar appears/disappears */
-}
-
-.content-page-extended {
-    margin-left: 200px;
-    /* Adjust the margin to make room for the sidebar */
-}
-
-.close-button {
+.delete-button .button__icon {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    /* Position the button on the right side */
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    /* Increase the font size for a bigger button */
-    cursor: pointer;
-}
-
-.links {
+    left: calc(100% - 40px);
+    height: 100%;
+    width: 40px;
+    background-color: #cc0000;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-top: 50px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
 }
 
-.links a {
-    font-size: 24px;
-    /* Adjust the font size */
-    padding: 15px 20px;
-    /* Add padding for better spacing */
-    color: #89CFF0;
-    text-decoration: none;
-    transition: color 0.3s ease;
-    /* Add transition for smooth color change on hover */
+.delete-button .svg {
+    width: 20px;
 }
 
-.links a:hover {
-    color: #ffffff;
-    /* Change color on hover */
-}
-body {
-    margin: 0;
-    font-family: 'Poppins', Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    color: #1a1a1a; /* Dark blue text color */
-    background: #cfe4f7; /* Light blue background color */
+.delete-button:hover {
+    background: #cc0000;
 }
 
-.container {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+.delete-button:hover .button__text {
+    color: transparent;
 }
 
-.upper {
-    background: #3498db; /* Blue background color */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    text-align: center;
+.delete-button:hover .button__icon {
+    width: 100%;
+    left: 0;
+}
+
+.delete-button:active .button__icon {
+    background-color: #b20000;
+}
+
+.delete-button:active {
+    border: 1px solid #b20000;
+}
+
+
+.edit-button {
+    padding: 10px 20px;
+    /* Adjust padding as needed */
+    border: 1px solid #49FF33;
+    background-color: #49FF33;
+    overflow: hidden;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 120px;
+    transform: translateX(0);
     color: #fff;
-    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    transition: all 0.3s;
 }
 
-.upper h2 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #2c3e50; /* Darker blue text color */
-}
-
-.upper p {
-    font-size: 1.2em;
-    margin-bottom: 30px;
-    line-height: 1.5;
-}
-
-@media screen and (max-width: 600px) {
-    .upper {
-        padding: 20px;
-    }
-
-    .upper h2 {
-        font-size: 2em;
-    }
-
-    .upper p {
-        font-size: 1em;
-    }
-}
-
-.card {
-    background-color: #2c3e50; /* Dark blue card background */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-    padding: 20px;
-    height: 200px;
-    margin-left: 10px;
-    margin-right: 10px;
-    transition: transform 0.3s;
-    background-size: cover;
-    border: 2px solid #3498db; /* Border color matching upper background */
-}
-
-.card:hover {
-    transform: scale(1.02);
-}
-
-.card a {
-    text-decoration: none;
+.edit-button .button__text {
+    transform: translateX(0);
     color: #fff;
+    font-weight: 600;
+    transition: all 0.3s;
 }
 
-.card h2 {
-    margin-bottom: 10px;
-    color: #3498db; /* Blue heading color */
+.edit-button .button__icon {
+    position: absolute;
+    left: calc(100% - 40px);
+    height: 100%;
+    width: 40px;
+    background-color: #48E734;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
 }
 
-.card p {
-    color: #ecf0f1;
-    display: none;
+.edit-button .svg {
+    width: 20px;
 }
 
-.card:hover p {
-    display: block;
+.edit-button:hover {
+    background: #40D32E;
 }
 
-.card:hover h2 a {
-    color: #ffd700; /* Yellow color on hover */
+.edit-button:hover .button__text {
+    color: transparent;
 }
 
-@media screen and (max-width: 800px) {
-    .leftcolumn {
-        flex: 100%;
-        margin-right: 0;
-    }
+.edit-button:hover .button__icon {
+    width: 100%;
+    left: 0;
 }
 
+.edit-button:active .button__icon {
+    background-color: #40D32E;
+}
+
+.edit-button:active {
+    border: 1px solid #40D32E;
+}
     </style>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@400;700&display=swap">
@@ -317,6 +471,7 @@ body {
             <p>Discover insights, reviews, and information about the products featured here. Gain valuable knowledge to make informed decisions about your purchases!</p>
         </div>
         <div class="container">
+            <!-- Post cards -->
             {% for post in posts %}
             <div class="card">
                 <h2><a href="{% url 'post' post.id %}">{{ post.title }}</a></h2>
@@ -328,15 +483,35 @@ body {
                 {% else %}
                 <p>No Product Data Available</p>
                 {% endif %}
-                <p>{{ post.content|truncatewords:50 }}</p>
-        
-                {% if post.editable %}
-                <a href="{% url 'edit_post' post.id %}" style="color: green;">Edit</a>
-                <form method="post" action="{% url 'delete_post' post.id %}" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" style="color: red; border: none; background: none; cursor: pointer;">Delete</button>
-                </form>
-                {% endif %}
+                <p>{{ post.content|truncatewords:30 }}</p>
+                <div class="button-group">
+                    <div>
+                        <a href="{% url 'edit_post' post.id %}" class="edit-button">
+                            <span class="button__text">Edit</span>
+                            <span class="button__icon">
+                                <svg class="svg" viewBox="0 0 512 512">
+                                    <path fill="#ffffff" d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
+                            </span>
+                        </a>
+                </div>
+                    <form method="post" action="{% url 'delete_post' post.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-button">
+                            <span class="button__text">Delete</span>
+                            <span class="button__icon">
+                                <svg class="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                    <title></title>
+                                    <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path>
+                                    <line style="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
+                                    <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path>
+                                    <line style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px" x1="256" x2="256" y1="176" y2="400"></line>
+                                    <line style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px" x1="184" x2="192" y1="176" y2="400"></line>
+                                    <line style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px" x1="328" x2="320" y1="176" y2="400"></line>
+                                </svg>
+                            </span>
+                        </button>
+                    </form>
+                </div>
             </div>
             {% endfor %}
         </div>

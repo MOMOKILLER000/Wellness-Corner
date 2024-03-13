@@ -64,11 +64,11 @@
                         <h1>{{ product.product_name }}</h1>
                     </div>
                     <div class="bottom">
-                        <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
-                        <h3>Quantity: {{ product.quantity }}</h3>
-                        <h3>Price: {{ product.price }}</h3>
-                        <h5>Categories: {{ product.categories }}</h5>
-                        <h5>Nutrients</h5>
+                        <h2>Brand: {{ product.brands|truncatewords:15 }}</h2>
+                        <h2>Quantity: {{ product.quantity }}</h2>
+                        <h2>Price: {{ product.price }}</h2>
+                        <h2>Categories: {{ product.categories }}</h2>
+                        <h2>Nutrients</h2>
                         <ul>
                             <li>Protein per 100g: {{ product.protein_per_100g }}</li>
                             <li>Carbs per 100g: {{ product.carbs_per_100g }}</li>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Your Luxurious HTML</title>
     <style>
+        /* Your CSS styles here */
         * {
             font-family: 'Nunito', sans-serif;
             margin: 0;
@@ -26,247 +27,374 @@
         }
 
         .heading {
-    text-align: center;
-    color: black;
-    font-size: 3rem;
-    padding-bottom: 2rem;
-    text-transform: uppercase;
-}
+            text-align: center;
+            color: black;
+            font-size: 3rem;
+            padding-bottom: 2rem;
+            text-transform: uppercase;
+        }
 
-header {
-    top: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    padding: 1rem 5%;
+        header {
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 1rem 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo {
+            color: black;
+            font-size: 2.5rem;
+            font-weight: bolder;
+        }
+
+        header .logo i {
+            color: #0F52BA;
+        }
+
+        header .navbar a {
+            font-size: 1.7rem;
+            border-radius: .5rem;
+            padding: .5rem 1.5rem;
+            color: black;
+        }
+
+        .more {
+            font-size: 1.7rem;
+            color: black;
+        }
+
+        .more:hover {
+            cursor: pointer;
+        }
+
+        header .navbar a.active,
+        header .navbar a:hover {
+            color: #fff;
+            background: 	#4169E1;
+        }
+
+        header .icons i,
+        header .icons a {
+            cursor: pointer;
+            margin-left: .5rem;
+            height: 4.5rem;
+            line-height: 4.5rem;
+            width: 4.5rem;
+            text-align: center;
+            font-size: 1.7rem;
+            color: black;
+            border-radius: 50%;
+            background: #eee;
+        }
+
+        header .icons i:hover,
+        header .icons a:hover {
+            color: #fff;
+            background: 		#4169E1;
+            transform: rotate(360deg);
+        }
+
+        header .icons #menu-bars {
+            display: none;
+        }
+
+        /* Left bar */
+        .left-bar {
+            position: fixed;
+            top: 0;
+            left: -200px;
+            /* Initially hide the sidebar off-screen */
+            height: 100%;
+            width: 200px;
+            background-color: #1434A4;
+            color: white;
+            transition: left 0.3s ease;
+            /* Add a transition effect for smooth appearance/disappearance */
+            z-index: 1000;
+            /* Set a higher z-index to make sure it appears above other elements */
+        }
+
+        .left-bar-expanded {
+            left: 0;
+            /* Display the sidebar when the class is applied */
+            z-index: 10;
+        }
+
+        .content-page {
+            transition: margin-left 0.3s ease;
+            /* Add a transition effect for the content page when the sidebar appears/disappears */
+        }
+
+        .content-page-extended {
+            margin-left: 200px;
+            /* Adjust the margin to make room for the sidebar */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            /* Position the button on the right side */
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            /* Increase the font size for a bigger button */
+            cursor: pointer;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+
+        .links a {
+            font-size: 24px;
+            /* Adjust the font size */
+            padding: 15px 20px;
+            /* Add padding for better spacing */
+            color: #89CFF0;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            /* Add transition for smooth color change on hover */
+        }
+
+        .links a:hover {
+            color: #ffffff;
+            /* Change color on hover */
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Poppins', Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            color: #1a1a1a;
+            /* Dark blue text color */
+            background: #cfe4f7;
+            /* Light blue background color */
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+
+        .upper {
+            background: #3498db;
+            /* Blue background color */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            text-align: center;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .upper h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            /* Darker blue text color */
+        }
+
+        .upper p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        @media screen and (max-width: 600px) {
+            .upper {
+                padding: 20px;
+            }
+
+            .upper h2 {
+                font-size: 2em;
+            }
+
+            .upper p {
+                font-size: 1em;
+            }
+        }
+
+        .card {
+            background-color: #2c3e50;
+            /* Dark blue card background */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            padding: 20px;
+            height: 245px;
+            margin-left: 10px;
+            margin-right: 10px;
+            transition: transform 0.1s;
+            background-size: cover;
+            border: 2px solid #3498db;
+            /* Border color matching upper background */
+            position: relative;
+            /* For positioning of buttons */
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+        }
+
+        .card a {
+            text-decoration: none;
+            color: #fff;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+            color: #3498db;
+            /* Blue heading color */
+        }
+
+        .card p {
+            color: #ecf0f1;
+            display: none;
+        }
+
+        .card:hover p {
+            display: block;
+        }
+
+        .card:hover h2 a {
+            color: #ffd700;
+            /* Yellow color on hover */
+        }
+
+        @media screen and (max-width: 800px) {
+            .leftcolumn {
+                flex: 100%;
+                margin-right: 0;
+            }
+        }
+
+        .button-group {
+            position: absolute;
+            bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: calc(100% - 60px);
+            /* Adjusted width */
+            left: 30px;
+            /* Positioned on the left */
+        }
+
+        .edit-button,
+        .delete-button {
+            padding: 10px 20px;
+            /* Adjust padding as needed */
+            border: none;
+            background: none;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            font-size: 16px;
+            /* Set the font size */
+            display: flex;
+            align-items: center;
+        }
+
+        .delete-button {
+    padding: 10px 20px;
+    /* Adjust padding as needed */
+    border: 1px solid #cc0000;
+    background-color: #e50000;
+    overflow: hidden;
+    position: relative;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    z-index: 2;
-    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+    width:140px;
 }
 
-header .logo {
-    color: black;
-    font-size: 2.5rem;
-    font-weight: bolder;
-}
-
-header .logo i {
-    color: #0F52BA;
-}
-
-header .navbar a {
-    font-size: 1.7rem;
-    border-radius: .5rem;
-    padding: .5rem 1.5rem;
-    color: black;
-}
-
-.more {
-    font-size: 1.7rem;
-    color: black;
-}
-
-.more:hover {
-    cursor: pointer;
-}
-
-header .navbar a.active,
-header .navbar a:hover {
+.delete-button .button__text {
+    transform: translateX(0);
     color: #fff;
-    background: 	#4169E1;
+    font-weight: 600;
+    transition: all 0.3s;
 }
 
-header .icons i,
-header .icons a {
-    cursor: pointer;
-    margin-left: .5rem;
-    height: 4.5rem;
-    line-height: 4.5rem;
-    width: 4.5rem;
-    text-align: center;
-    font-size: 1.7rem;
-    color: black;
-    border-radius: 50%;
-    background: #eee;
-}
-
-header .icons i:hover,
-header .icons a:hover {
-    color: #fff;
-    background: 		#4169E1;
-    transform: rotate(360deg);
-}
-
-header .icons #menu-bars {
-    display: none;
-}
-
-/*Left bar */
-.left-bar {
-    position: fixed;
-    top: 0;
-    left: -200px;
-    /* Initially hide the sidebar off-screen */
-    height: 100%;
-    width: 200px;
-    background-color: #1434A4;
-    color: white;
-    transition: left 0.3s ease;
-    /* Add a transition effect for smooth appearance/disappearance */
-    z-index: 1000;
-    /* Set a higher z-index to make sure it appears above other elements */
-}
-
-.left-bar-expanded {
-    left: 0;
-    /* Display the sidebar when the class is applied */
-    z-index: 10;
-}
-
-.content-page {
-    transition: margin-left 0.3s ease;
-    /* Add a transition effect for the content page when the sidebar appears/disappears */
-}
-
-.content-page-extended {
-    margin-left: 200px;
-    /* Adjust the margin to make room for the sidebar */
-}
-
-.close-button {
+.delete-button .button__icon {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    /* Position the button on the right side */
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    /* Increase the font size for a bigger button */
-    cursor: pointer;
-}
-
-.links {
+    left: calc(100% - 40px);
+    height: 100%;
+    width: 40px;
+    background-color: #cc0000;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-top: 50px;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
 }
 
-.links a {
-    font-size: 24px;
-    /* Adjust the font size */
-    padding: 15px 20px;
-    /* Add padding for better spacing */
-    color: #89CFF0;
-    text-decoration: none;
-    transition: color 0.3s ease;
-    /* Add transition for smooth color change on hover */
+.delete-button .svg {
+    width: 20px;
 }
 
-.links a:hover {
-    color: #ffffff;
-    /* Change color on hover */
-}
-body {
-    margin: 0;
-    font-family: 'Poppins', Arial, Helvetica, sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    color: #1a1a1a; /* Dark blue text color */
-    background: #cfe4f7; /* Light blue background color */
+.delete-button:hover {
+    background: #cc0000;
 }
 
-.container {
+.delete-button:hover .button__text {
+    color: transparent;
+}
+
+.delete-button:hover .button__icon {
+    width: 100%;
+    left: 0;
+}
+
+.delete-button:active .button__icon {
+    background-color: #b20000;
+}
+
+.delete-button:active {
+    border: 1px solid #b20000;
+}
+.ban-form {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: auto auto;
+    grid-gap: 5px;
+    background-color: #f9f9f9; /* Add background color */
 }
 
-.upper {
-    background: #3498db; /* Blue background color */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+label {
+    grid-column: 1;
+    padding:3px;
+}
+
+select {
+    grid-column: 2;
+    padding:3px;
+}
+
+button {
+    grid-column: 1 / span 2;
     text-align: center;
-    color: #fff;
-    font-family: 'Playfair Display', serif;
 }
 
-.upper h2 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #2c3e50; /* Darker blue text color */
+.ban {
+    /* Adjust padding as needed */
+    border: 1px solid #cc0000;
+    background-color: #e50000;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 30px;
+    width: 100%; /* Make the ban class width match the form's width */
+    font-size:15px;
 }
-
-.upper p {
-    font-size: 1.2em;
-    margin-bottom: 30px;
-    line-height: 1.5;
-}
-
-@media screen and (max-width: 600px) {
-    .upper {
-        padding: 20px;
-    }
-
-    .upper h2 {
-        font-size: 2em;
-    }
-
-    .upper p {
-        font-size: 1em;
-    }
-}
-
-.card {
-    background-color: #2c3e50; /* Dark blue card background */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
-    padding: 20px;
-    height: 200px;
-    margin-left: 10px;
-    margin-right: 10px;
-    transition: transform 0.3s;
-    background-size: cover;
-    border: 2px solid #3498db; /* Border color matching upper background */
-}
-
-.card:hover {
-    transform: scale(1.02);
-}
-
-.card a {
-    text-decoration: none;
-    color: #fff;
-}
-
-.card h2 {
-    margin-bottom: 10px;
-    color: #3498db; /* Blue heading color */
-}
-
-.card p {
-    color: #ecf0f1;
-    display: none;
-}
-
-.card:hover p {
-    display: block;
-}
-
-.card:hover h2 a {
-    color: #ffd700; /* Yellow color on hover */
-}
-
-@media screen and (max-width: 800px) {
-    .leftcolumn {
-        flex: 100%;
-        margin-right: 0;
-    }
-}
-
     </style>
+
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@400;700&display=swap">
 </head>
@@ -328,24 +456,40 @@ body {
                 {% else %}
                 <p>No Product Data Available</p>
                 {% endif %}
-                <p>{{ post.content|truncatewords:50 }}</p>
+                <p>{{ post.content|truncatewords:30 }}</p>
                 {% if request.user.is_superuser %}
-                <form action="{% url 'manage_delete' post.id %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit">Delete Post</button>
-                </form>
-                <form action="{% url 'manage_ban' post.user.id %}" method="post">
-                    {% csrf_token %}
-                    <label for="ban_duration">Select Ban Duration:</label>
-                    <select name="ban_duration" id="ban_duration">
-                        <option value="2">2 Minutes</option>
-                        <option value="3">3 Minutes</option>
-                        <option value="4">4 Minutes</option>
-                        <option value="5">5 Minutes</option>
-                    </select>
-                    <button type="submit">Ban User</button>
-                </form>
+                <div class="button-group">
+                    <form action="{% url 'manage_delete' post.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="delete-button">
+                            <span class="button__text">Delete</span>
+                            <span class="button__icon">
+                                <svg class="svg" height="512" viewBox="0 0 512 512" width="512" xmlns="http://www.w3.org/2000/svg">
+                                    <title></title>
+                                    <path d="M112,112l20,320c.95,18.49,14.4,32,32,32H348c17.67,0,30.87-13.51,32-32l20-320" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path>
+                                    <line style="stroke:#fff;stroke-linecap:round;stroke-miterlimit:10;stroke-width:32px" x1="80" x2="432" y1="112" y2="112"></line>
+                                    <path d="M192,112V72h0a23.93,23.93,0,0,1,24-24h80a23.93,23.93,0,0,1,24,24h0v40" style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px"></path>
+                                    <line style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px" x1="256" x2="256" y1="176" y2="400"></line>
+                                    <line style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px" x1="184" x2="192" y1="176" y2="400"></line>
+                                    <line style="fill:none;stroke:#fff;stroke-linecap:round;stroke-linejoin:round;stroke-width:32px" x1="328" x2="320" y1="176" y2="400"></line>
+                                </svg>
+                            </span>
+                        </button>
+                    </form>
+                    <form class="ban-form" action="{% url 'manage_ban' post.user.id %}" method="post">
+                        {% csrf_token %}
+                        <label for="ban_duration">Select Ban Duration:</label>
+                        <select name="ban_duration" id="ban_duration">
+                            <option value="2">2 Minutes</option>
+                            <option value="3">3 Minutes</option>
+                            <option value="4">4 Minutes</option>
+                            <option value="5">5 Minutes</option>
+                        </select>
+                        <button class="ban" type="submit">Ban User</button>
+                    </form>
+                
                 {% endif %}
+            </div>
             </div>
             {% endfor %}
         </div>

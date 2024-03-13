@@ -1,125 +1,173 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    * {
-        box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ post.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-FZqReOV2qur9eZWpB62v+4kPYbRIYbs4jWE05dfnvvVnq8QyabK2JUClZdgvc/3Vg2PSFfJHZvxvVdBoyu+SOA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-    body {
-        font-family: 'Lato', sans-serif;
-        background: #2c3e50;
-        color: #ecf0f1;
-        margin: 0;
-        padding: 20px;
-    }
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
 
-    .header {
-        background: #d4af37;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        text-align: center;
-        color: #fff;
-        font-family: 'Playfair Display', serif;
-        margin-bottom: 20px;
-    }
-
-    .header h2 {
-        font-size: 2.5em;
-        margin-bottom: 20px;
-        color: #1a1a1a;
-    }
-
-    .container {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        gap: 20px;
-    }
-
-    .card {
-            background-color: #1a1a1a;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            padding: 40px; /* Increased padding to make the card larger */
-            height: auto; /* Adjusted height to auto for variable content */
-            transition: transform 0.3s;
-            background-size: cover;
-            border: 2px solid #d4af37;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        }
+
+        .post-header {
+            background-color: #d4af37;
+            color: #fff;
             text-align: center;
-            font-size: 1.5em;
-            margin: 100px; /* Adjust as needed for separation from the margins */
+            padding: 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            margin-bottom: 20px;
         }
 
-        .card h1,
-        .card h5,
-        .card p {
-            margin-bottom: 20px; /* Increased margin for better spacing */
+        .post-header h1 {
+            margin: 0;
+            font-size: 3em; /* Increased font size */
+            text-align: center; /* Center the title */
         }
 
-        .card img {
-            max-width: 100%; /* Ensure images don't overflow the card */
-            margin-top: 20px; /* Add margin to separate image from text */
+        .post-header h3 {
+            margin: 5px 0; /* Adjust margin */
+            font-size: 1.1em; /* Decreased font size */
+            text-align: left; /* Align left */
         }
 
-        /* Adjusted styles to fit more content */
-        .card p {
-            max-width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        .post-content {
+            font-size: 1.2em; /* Increased font size */
+            line-height: 1.8; /* Increased line height */
+            white-space: pre-line; /* Preserve line breaks and wrap text when needed */
         }
 
-        @media screen and (min-width: 768px) {
-            /* Adjust styles for larger screens */
-            .card p {
-                white-space: initial;
-                overflow: visible;
-                text-overflow: initial;
-            }
+        .comments {
+            margin-top: 40px;
         }
-</style>
+
+        .comment {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .comment-content {
+            margin-bottom: 10px;
+        }
+
+        .comment-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .comment-actions form {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .comment-actions form button {
+            margin-left: 10px;
+            background-color: transparent;
+            color: #999;
+            border: none;
+            cursor: pointer;
+        }
+
+        .comment-actions form button:hover {
+            color: #d4af37;
+        }
+
+        .add-comment {
+            margin-top: 40px;
+        }
+
+        .add-comment textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .add-comment button {
+            display: block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #d4af37;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-comment button:hover {
+            background-color: #b3922f;
+        }
+    </style>
 </head>
 
-</head>
 <body>
-    <div class="row-container">
-        <div class="leftcolumn">
-            <div class="card">
-                <h1>{{ post.title }}</h1>
-                <h5>{{ post.user.name }}</h5>
-                <p>{{ post.content }}</p>
+    <div class="container">
+        <div class="post-header">
+            <h1>{{ post.title }}</h1>
+            <h3>{{ post.user.name }}</h3> 
+            <h3> {{ post.pub_date }}</h3>
+        </div>
+        <div class="post-content">
+            {{ post.content }}
+        </div>
+
+        <div class="comments">
+            <h2>Comments</h2>
+            {% for comment in comments %}
+            <div class="comment">
+                <p class="comment-content">{{ comment.user }} - {{ comment.pub_date|date:"F d, Y H:i" }}</p>
+                {% if comment.user == request.user %}
+                <form method="post" action="{% url 'edit_comment' comment.id %}">
+                    {% csrf_token %}
+                    <textarea name="content">{{ comment.content }}</textarea>
+                    <div class="comment-actions">
+                        <button type="submit">Save</button>
+                        <button formaction="{% url 'delete_comment' comment.id %}" type="submit">Delete</button>
+                    </div>
+                </form>
+                {% else %}
+                <p class="comment-content">{{ comment.content }}</p>
+                {% endif %}
             </div>
-        <h2>Comments</h2>
-        {% for comment in comments %}
-          <p>{{ comment.user }} - {{ comment.pub_date|date:"F d, Y H:i" }}</p>
-          {% if comment.user == request.user %}
-              <form method="post" action="{% url 'edit_comment' comment.id %}">
-                  {% csrf_token %}
-                  <textarea name="content">{{ comment.content }}</textarea>
-                  <button type="submit">Save</button>
-              </form>
-              <form method="post" action="{% url 'delete_comment' comment.id %}">
-                  {% csrf_token %}
-                  <button type="submit">Delete</button>
-              </form>
-          {% else %}
-              <p>{{ comment.content }}</p>
-          {% endif %}
-      {% endfor %}
-      
-      <h2>Add a Comment</h2>
-      <form method="post" action="{% url 'post' post_id=post.id %}">
-          {% csrf_token %}
-          {{ comment_form.as_p }}
-          <button type="submit">Submit Comment</button>
-      </form>
-      </div>
-      </div>
-<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+            {% endfor %}
+        </div>
+
+        <div class="add-comment">
+            <h2>Add a Comment</h2>
+            <form method="post" action="{% url 'post' post_id=post.id %}">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit">Submit Comment</button>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>
