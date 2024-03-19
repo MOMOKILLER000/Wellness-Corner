@@ -45,7 +45,7 @@ header .logo {
 }
 
 header .logo i {
-    color: #0F52BA;
+    color: #28a745;
 }
 
 header .navbar a {
@@ -67,7 +67,7 @@ header .navbar a {
 header .navbar a.active,
 header .navbar a:hover {
     color: #fff;
-    background: 	#4169E1;
+    background:  #28a745;
 }
 
 header .icons i,
@@ -87,7 +87,7 @@ header .icons a {
 header .icons i:hover,
 header .icons a:hover {
     color: #fff;
-    background: 		#4169E1;
+    background: #8fbc8f;
     transform: rotate(360deg);
 }
 
@@ -95,50 +95,41 @@ header .icons #menu-bars {
     display: none;
 }
 
-/*Left bar */
+
+
 .left-bar {
     position: fixed;
     top: 0;
-    margin: 0;
-    padding: 0;
     left: -200px;
-    /* Initially hide the sidebar off-screen */
     height: 100%;
     width: 200px;
-    background-color: #1434A4;
+    background-color:#00a087;
     color: white;
     transition: left 0.3s ease;
-    /* Add a transition effect for smooth appearance/disappearance */
     z-index: 1000;
-    /* Set a higher z-index to make sure it appears above other elements */
 }
 
 .left-bar-expanded {
     left: 0;
-    /* Display the sidebar when the class is applied */
     z-index: 10;
 }
 
 .content-page {
     transition: margin-left 0.3s ease;
-    /* Add a transition effect for the content page when the sidebar appears/disappears */
 }
 
 .content-page-extended {
     margin-left: 200px;
-    /* Adjust the margin to make room for the sidebar */
 }
 
 .close-button {
     position: absolute;
     top: 10px;
     right: 10px;
-    /* Position the button on the right side */
     background: none;
     border: none;
     color: white;
     font-size: 24px;
-    /* Increase the font size for a bigger button */
     cursor: pointer;
 }
 
@@ -151,22 +142,19 @@ header .icons #menu-bars {
 
 .links a {
     font-size: 24px;
-    /* Adjust the font size */
     padding: 15px 20px;
-    /* Add padding for better spacing */
-    color: #89CFF0;
+    color: white;
     text-decoration: none;
     transition: color 0.3s ease;
-    /* Add transition for smooth color change on hover */
 }
 
 .links a:hover {
     color: #ffffff;
-    /* Change color on hover */
 }
 
+
 .main {
-    font-size: 1.6rem; /* Increase font size */
+    font-size: 1.6rem; 
 }
 
 
@@ -179,7 +167,7 @@ header .icons #menu-bars {
     margin-bottom: 2rem;
 }
 
-/* Product Card */
+
 .product {
     width: calc(25% - 20px);
     margin-bottom: 20px;
@@ -191,7 +179,7 @@ header .icons #menu-bars {
 
 
 
-/* Product Details */
+
 .products-container {
     display: flex;
     flex-wrap: wrap;
@@ -202,20 +190,20 @@ header .icons #menu-bars {
 
 .product {
     width: calc(25% - 20px);
-    /* Adjust width for 4 products per line */
+    
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    /* Use flexbox */
+    
     flex-direction: column;
     justify-content: space-between;
-    /* Add space between top, middle, and bottom */
+    
     align-items: center;
     text-align: center;
     border-radius: 30px;
-    /* Add border radius */
+    
 }
 .product:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -234,13 +222,13 @@ header .icons #menu-bars {
     font-size: 1.2rem;
     font-size: 2rem;
     margin-bottom: 10px;
-    /* Adjust padding */
+    
 }
 
 .product-image {
     height: 130px;
     width: auto;
-    /* Set a fixed width for all images */
+    
     margin-bottom: 10px;
 }
 
@@ -250,7 +238,7 @@ header .icons #menu-bars {
     text-decoration: none;
     font-size: 1.2rem;
     padding: 10px 20px;
-    /* Adjust button padding */
+    
     border-radius: 5px;
 }
 
@@ -270,25 +258,25 @@ header .icons #menu-bars {
 .top {
     display: flex;
     justify-content: center;
-    /* Center the image horizontally */
+    
     align-items: center;
-    /* Center the image vertically */
+    
 }
 
 .middle {
     text-align: center;
-    /* Center text horizontally */
+    
 }
 
 .bottom {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* Center child elements vertically */
+    
     align-items: center;
-    /* Center child elements horizontally */
+    
     margin-top: 10px;
-    /* Add space between middle and bottom */
+    
 }
 
 .product-details ul {
@@ -301,7 +289,7 @@ header .icons #menu-bars {
     margin-bottom: 0.2rem;
 }
 
-/* Form */
+
 form {
     margin-top: 1rem;
     display: flex;
@@ -327,15 +315,16 @@ form button {
 }
 
 form button:hover {
-    background-color: #0056b3;
+    background-color:#3CB371;
 }
 
-/* Total Section */
+
 .total-section {
     background-color: #fff;
     border-radius: 10px;
     padding: 20px;
     margin: 0 30px 2rem;
+    width:800px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -344,12 +333,12 @@ form button:hover {
     margin-bottom: 0.5rem;
 }
 
-/* Back Button */
+
 .back-button {
     display: block;
-    width: 250px; /* Increase width */
+    width: 250px; 
     margin: 0 auto;
-    padding: 1rem 2rem; /* Increase padding */
+    padding: 1rem 2rem; 
     border: none;
     border-radius: 5px;
     background-color: #007bff;
@@ -357,7 +346,7 @@ form button:hover {
     text-align: center;
     text-decoration: none;
     transition: background-color 0.3s;
-    font-size: 1.6rem; /* Increase font size */
+    font-size: 1.6rem; 
 }
 
 .back-button:hover {
@@ -365,7 +354,7 @@ form button:hover {
 }
 
 
-/* Search */
+
 .search-form {
     margin-top:30px;
     display: flex;
@@ -379,7 +368,7 @@ form button:hover {
     border-radius: 5px;
     margin-right: 10px;
     width: 250px;
-    /* Adjust as needed */
+    
 }
 
 .search-button {
@@ -436,7 +425,7 @@ form button:hover {
 }
 
 .meal {
-    width: 23%; /* Adjust as needed */
+    width: 23%; 
     padding: 20px;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
@@ -450,4 +439,100 @@ form button:hover {
     display:flex;
     width:100%;
     margin-bottom:40px;
+}
+
+
+@media only screen and (max-width: 1200px) {
+    
+    header {
+        padding: 1rem 2%;
+    }
+    
+    .left-bar {
+        width: 150px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .products-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .product {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    
+    .products-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .product {
+        width: calc(50% - 20px);
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    
+    .products-container {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    .product {
+        width: calc(100% - 20px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    header .logo {
+        font-size: 2rem;
+    }
+
+    header .navbar {
+        flex-direction: column;
+        background: #fff;
+        box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    header .navbar.active {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    header .navbar a {
+        display: block;
+        padding: 1rem 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    header .icons i,
+    header .icons a {
+        height: auto;
+        line-height: normal;
+        width: auto;
+        font-size: 2rem;
+        margin-left: 1rem;
+    }
 }

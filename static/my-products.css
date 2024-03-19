@@ -48,7 +48,7 @@ header .logo {
 }
 
 header .logo i {
-    color: #0F52BA;
+    color: #28a745;
 }
 
 header .navbar a {
@@ -70,7 +70,7 @@ header .navbar a {
 header .navbar a.active,
 header .navbar a:hover {
     color: #fff;
-    background: 	#4169E1;
+    background:  #28a745;
 }
 
 header .icons i,
@@ -90,7 +90,7 @@ header .icons a {
 header .icons i:hover,
 header .icons a:hover {
     color: #fff;
-    background: 		#4169E1;
+    background: #8fbc8f;
     transform: rotate(360deg);
 }
 
@@ -98,54 +98,44 @@ header .icons #menu-bars {
     display: none;
 }
 
-/*Left bar */
+
+
 .left-bar {
     position: fixed;
     top: 0;
     left: -200px;
-    /* Initially hide the sidebar off-screen */
     height: 100%;
     width: 200px;
-    background-color: #1434A4;
+    background-color:#00a087;
     color: white;
     transition: left 0.3s ease;
-    /* Add a transition effect for smooth appearance/disappearance */
     z-index: 1000;
-    /* Set a higher z-index to make sure it appears above other elements */
 }
 
 .left-bar-expanded {
     left: 0;
-    /* Display the sidebar when the class is applied */
     z-index: 10;
 }
 
 .content-page {
     transition: margin-left 0.3s ease;
-    /* Add a transition effect for the content page when the sidebar appears/disappears */
 }
 
 .content-page-extended {
     margin-left: 200px;
-    /* Adjust the margin to make room for the sidebar */
 }
 
 .close-button {
     position: absolute;
     top: 10px;
     right: 10px;
-    background-color: #1434A4;
-    /* Position the button on the right side */
     background: none;
     border: none;
     color: white;
     font-size: 24px;
-    /* Increase the font size for a bigger button */
     cursor: pointer;
 }
-.close-button:hover{
-    background-color: #1434A4;
-}
+
 .links {
     display: flex;
     flex-direction: column;
@@ -155,30 +145,27 @@ header .icons #menu-bars {
 
 .links a {
     font-size: 24px;
-    /* Adjust the font size */
     padding: 15px 20px;
-    /* Add padding for better spacing */
-    color: #89CFF0;
+    color: white;
     text-decoration: none;
     transition: color 0.3s ease;
-    /* Add transition for smooth color change on hover */
 }
 
 .links a:hover {
     color: #ffffff;
-    /* Change color on hover */
 }
 
-/*Search */
+
+
 .search-container {
     margin-top: 40px;
     display: none;
-    /* Initially hide the search container */
+    
 }
 
 .show-search-container {
     display: block;
-    /* Show the search container */
+    
 }
 
 .search-form {
@@ -193,7 +180,7 @@ header .icons #menu-bars {
     border-radius: 5px;
     margin-right: 10px;
     width: 250px;
-    /* Adjust as needed */
+    
 }
 
 .search-button {
@@ -213,7 +200,7 @@ header .icons #menu-bars {
     margin-right: 5px;
 }
 
-/*Products*/
+
 .products-container {
     display: flex;
     flex-wrap: wrap;
@@ -224,20 +211,20 @@ header .icons #menu-bars {
 
 .product {
     width: calc(25% - 20px);
-    /* Adjust width for 4 products per line */
+    
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    /* Use flexbox */
+    
     flex-direction: column;
     justify-content: space-between;
-    /* Add space between top, middle, and bottom */
+    
     align-items: center;
     text-align: center;
     border-radius: 30px;
-    /* Add border radius */
+    
 }
 
 .product h1 {
@@ -248,16 +235,16 @@ header .icons #menu-bars {
 
 .product a {
     text-decoration: none;
-    color: black;
+    color: rgb(255, 255, 255);
     font-size: 1.2rem;
     padding: 10px 15px;
-    /* Adjust padding */
+    
 }
 
 .product-image {
     height: 130px;
     width: auto;
-    /* Set a fixed width for all images */
+    
     margin-bottom: 10px;
 }
 
@@ -266,49 +253,146 @@ header .icons #menu-bars {
     text-decoration: none;
     font-size: 1.2rem;
     padding: 10px 20px;
-    /* Adjust button padding */
+    
     border-radius: 5px;
 }
 
 .product-button .edit{
-    background-color: #007bff;
+    background-color: #00b351;
     margin-right:10px;
 }
 .product-button .delete{
-    background-color: #007bff;
+    background-color: #00b351;
     margin-left: 10px;
 }
 
 .product-button .edit:hover {
     cursor: pointer;
-    color: black;
-    background-color: #0056b3;
+    color: rgb(255, 255, 255);
+    background-color: #027033fb;
 }
 
 .product-button .delete:hover {
     cursor: pointer;
-    color: black;
-    background-color: #0056b3;
+    color: rgb(255, 255, 255);
+    background-color: #027033fb;
 }
 
 .approve {
     display: block;
-    margin: 0 auto; /* Center the button horizontally */
-    padding: 15px 30px; /* Increase padding for a bigger button */
-    font-size: 1.5rem; /* Increase font size */
-    background-color: #007bff; /* Change background color */
-    color: white; /* Change text color */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Add border radius */
+    margin: 0 auto; 
+    padding: 15px 30px; 
+    font-size: 1.5rem; 
+    background-color:#00b351;
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Add transition effect */
+    transition: background-color 0.3s ease; 
 }
 
 .approve:hover {
    cursor:pointer;
-   background-color: #0056b3;
+   background-color:  #027033fb;
 }
 
 li{
     font-size:12px;
+}
+
+
+
+@media only screen and (max-width: 1200px) {
+    
+    header {
+        padding: 1rem 2%;
+    }
+    
+    .left-bar {
+        width: 150px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .products-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .product {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    
+    .products-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .product {
+        width: calc(50% - 20px);
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    
+    .products-container {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    .product {
+        width: calc(100% - 20px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    header .logo {
+        font-size: 2rem;
+    }
+
+    header .navbar {
+        flex-direction: column;
+        background: #fff;
+        box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    header .navbar.active {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    header .navbar a {
+        display: block;
+        padding: 1rem 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    header .icons i,
+    header .icons a {
+        height: auto;
+        line-height: normal;
+        width: auto;
+        font-size: 2rem;
+        margin-left: 1rem;
+    }
 }

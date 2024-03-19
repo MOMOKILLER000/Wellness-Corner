@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meal Detail</title>
     <link rel="stylesheet" href="{% static 'calculator.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
 </head>
 <body>
     <div class="left-bar">
@@ -51,7 +52,7 @@
     <div class="products-container">
         {% for meal_product in meal.mealproduct_set.all %}
         <div class="product">
-            <!-- Display smaller image -->
+            
             <div class="top">
             {% if meal_product.product.image %}
                 <img src="{{ meal_product.product.image.url }}" alt="{{ meal_product.product.product_name }}" class="product-image">
@@ -82,7 +83,7 @@
         {% endfor %}
         {% for meal_api_product in meal.mealapiproduct_set.all %}
         <div class="product">
-            <!-- Display smaller image -->
+            
             <div class="top">
             {% if meal_api_product.api_product.image %}
                 <img src="{{ meal_api_product.api_product.image.url }}" alt="{{ meal_api_product.api_product.product_name }}" class="product-image">
@@ -126,7 +127,16 @@
 </div>
     
 <a class="back-button" href="{% url 'calculator' %}">Back to Product Summary</a>
-
+<footer class="footer">
+    <div class="footer-container">
+        <div class="social-media">
+            <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        </div>
+        <p class="footer-text">Follow us on social media for updates on our latest food products! Connect with us to stay updated on new recipes, promotions, and more.</p>
+    </div>
+</footer>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

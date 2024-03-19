@@ -212,17 +212,17 @@ form.sign-in-form {
 }
 
 .g-recaptcha {
-  margin-top: 20px; /* Adjust as needed */
+  margin-top: 10px; 
 }
 
-/* Additional styles for the reCAPTCHA widget */
+
 .g-recaptcha > div {
   display: flex;
   justify-content: center;
 }
 
 .g-recaptcha > div > div {
-  width: 304px; /* Adjust width as needed */
+  width: 304px; 
 }
 
 #toggleAllergies {
@@ -240,3 +240,35 @@ form.sign-in-form {
     color: #555;
   }
   
+  
+  .input-field {
+    display: flex; /* Add flexbox */
+    align-items: center; /* Vertically center the icon and select */
+    max-width: 380px;
+    width: 100%;
+    background-color: #f0f0f0;
+    margin: 10px 0;
+    border-radius: 55px;
+    padding: 0 0.4rem;
+    position: relative;
+  }
+  
+  .input-field i {
+    flex: none; /* Prevent icon from growing */
+    margin-right: 10px; /* Add spacing between icon and select */
+    line-height: 55px;
+    color: #acacac;
+    font-size: 1.1rem;
+  }
+  
+  .input-field select {
+    flex: 1; /* Allow select to grow and fill remaining space */
+    background: none;
+    outline: none;
+    border: none;
+    line-height: 1;
+    font-size: 1.1rem;
+    color: #333;
+    width: 100%;
+    border-radius: 55px;
+  }

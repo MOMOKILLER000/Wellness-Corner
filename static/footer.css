@@ -1,0 +1,42 @@
+/* Set the body to flex layout to push the footer to the bottom */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure the body takes up at least the full viewport height */
+}
+
+/* Make the footer stick to the bottom */
+.footer {
+    background-color: #f4f4f4;
+    padding: 20px 0;
+    text-align: center;
+    width: 100%;
+    margin-top: auto; /* Push the footer to the bottom */
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.social-media {
+    margin-bottom: 10px;
+}
+
+.social-icon {
+    display: inline-block;
+    margin-right: 10px;
+    color: #333;
+    font-size: 24px;
+    transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+    color: #555;
+}
+
+.footer-text {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.5;
+}

@@ -34,7 +34,7 @@ class Allergy(models.Model):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(default='', unique=True)
-    name = models.CharField(max_length=255,  default='')
+    name = models.CharField(max_length=255,  default='', unique=True)
 
     is_active = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
@@ -44,6 +44,15 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateTimeField(blank=True, null=True)
     allergies = models.ManyToManyField(Allergy, blank=True)
     is_subscribed = models.BooleanField(default=False)
+    PREFERRED_DIET_CHOICES = [
+        ('None', 'None'),
+        ('vegan', 'Vegan'),
+        ('Vegetarian', 'Vegetarian'),
+        ('Low Fat', 'Low Fat'),
+        ('High Protein', 'High Protein'),
+        ( 'Keto', 'Keto'),
+    ]
+    diet = models.CharField(max_length=20, choices=PREFERRED_DIET_CHOICES, default='None')
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -67,7 +76,7 @@ class Banned(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.PositiveIntegerField()
-    height = models.PositiveIntegerField()  # in cm
+    height = models.PositiveIntegerField()  
     weight = models.DecimalField(max_digits=5, decimal_places=2)
     GENDER_CHOICES = [
         ('male', 'Male'),
@@ -98,7 +107,7 @@ class Product(models.Model):
         ('carne', 'Carne'),
         ('legume', 'Legume'),
         ('fructe', 'Fructe'),
-        # Add more choices as needed
+        
     )
 
     product_name = models.CharField(max_length=100)
@@ -106,14 +115,15 @@ class Product(models.Model):
     quantity = models.CharField(max_length=50)
     categories = models.CharField(max_length=200)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
+    ean_code = models.CharField(max_length=13, unique=True, blank=True, null=True, help_text='European Article Number (EAN) code')
     kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sugar field
-    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sodium field
-    saturated_fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add saturated fats field
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add price field
+    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
+    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
+    saturated_fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     total_ratings = models.IntegerField(default=0)
@@ -121,12 +131,13 @@ class Product(models.Model):
     allergies = models.TextField(null=True, blank=True) 
     nutriscore = models.CharField(max_length=1, null=True, blank=True)
     approved = models.BooleanField(default=False)
-
+    is_vegan = models.BooleanField(default=False)
+    is_vegetarian = models.BooleanField(default=False)
     def __str__(self):
         return self.product_name
     
     def calculate_average_rating(self):
-        # Get the average rating from related ratings
+        
         average_rating = self.productrating_set.aggregate(avg_rating=Avg('rating'))['avg_rating']
         if average_rating is not None:
             self.user_rating = average_rating
@@ -134,15 +145,15 @@ class Product(models.Model):
 
     def calculate_nutriscore(self):
         thresholds = {
-            'energy': 170,  # kcal per 100g
-            'saturated_fats': 1.5,  # grams per 100g
-            'sugars': 5,  # grams per 100g
-            'sodium': 90,  # milligrams per 100g
+            'energy': 170,  
+            'saturated_fats': 1.5,  
+            'sugars': 5,  
+            'sodium': 90,  
         }
 
         score = 0
 
-        # Energy score
+        
         if self.kcal_per_100g <= thresholds['energy']:
             score += 0
         elif self.kcal_per_100g <= 335:
@@ -158,7 +169,7 @@ class Product(models.Model):
         else:
             score += 10
 
-        # Saturated fats score
+        
         if self.saturated_fats_per_100g is not None:
             if self.saturated_fats_per_100g <= thresholds['saturated_fats']:
                 score += 0
@@ -171,7 +182,7 @@ class Product(models.Model):
             else:
                 score += 4
 
-        # Sugars score
+        
         if self.sugars_per_100g is not None:
             if self.sugars_per_100g <= thresholds['sugars']:
                 score += 0
@@ -184,7 +195,7 @@ class Product(models.Model):
             else:
                 score += 4
 
-        # Sodium score
+        
         if self.sodium_per_100g is not None:
             if self.sodium_per_100g <= thresholds['sodium']:
                 score += 0
@@ -197,7 +208,7 @@ class Product(models.Model):
             else:
                 score += 4
 
-        # Map the total score to a NutriScore grade
+        
         if score <= 1:
             self.nutriscore = 'A'
         elif score <= 5:
@@ -210,7 +221,7 @@ class Product(models.Model):
             self.nutriscore = 'E'
 
     def save(self, *args, **kwargs):
-        self.calculate_nutriscore()  # Calculate NutriScore before saving
+        self.calculate_nutriscore()  
         super().save(*args, **kwargs)
 
 class PendingProduct(models.Model):
@@ -220,7 +231,7 @@ class PendingProduct(models.Model):
         ('carne', 'Carne'),
         ('legume', 'Legume'),
         ('fructe', 'Fructe'),
-        # Add more choices as needed
+        
     )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
     product_name = models.CharField(max_length=100)
@@ -228,12 +239,13 @@ class PendingProduct(models.Model):
     quantity = models.CharField(max_length=50)
     categories = models.CharField(max_length=200)
     image = models.ImageField(upload_to='pending_product_images/', null=True, blank=True)
+    ean_code = models.CharField(max_length=13, unique=True, blank=True, null=True, help_text='European Article Number (EAN) code')
     kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sugar field
-    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sodium field
+    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
+    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
     saturated_fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
@@ -241,11 +253,13 @@ class PendingProduct(models.Model):
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     approved = models.BooleanField(default=False)
     nutriscore = models.CharField(max_length=1, null=True, blank=True)
+    is_vegan = models.BooleanField(default=False)
+    is_vegetarian = models.BooleanField(default=False)
     def __str__(self):
         return self.product_name
     
     def approve(self):
-        # Create a new Product instance based on the PendingProduct instance
+        
         product = Product.objects.create(
             product_name=self.product_name,
             brands=self.brands,
@@ -259,10 +273,10 @@ class PendingProduct(models.Model):
             product_type=self.product_type,
             user_rating=self.user_rating,
             allergies=self.allergies,
-            sugars_per_100g=self.sugars_per_100g,  # Assign sugars_per_100g
-            sodium_per_100g=self.sodium_per_100g,  # Assign sodium_per_100g
-            saturated_fats_per_100g=self.saturated_fats_per_100g,  # Assign saturated_fats_per_100g
-            approved=True  # Mark as approved
+            sugars_per_100g=self.sugars_per_100g,  
+            sodium_per_100g=self.sodium_per_100g,  
+            saturated_fats_per_100g=self.saturated_fats_per_100g,  
+            approved=True  
         )
 
         return product
@@ -282,8 +296,8 @@ class PendingProduct(models.Model):
             approved=False
         )
 
-        if similar_products.count() >= 4:  # Check if there are four or more similar products
-            # Create a new Product instance
+        if similar_products.count() >= 4:  
+            
             product = Product.objects.create(
                 product_name=self.product_name,
                 price__gte=self.price - 10,
@@ -296,13 +310,13 @@ class PendingProduct(models.Model):
                 fats_per_100g__lte=self.fats_per_100g + 10,
                 kcal_per_100g__gte=self.kcal_per_100g - 10,
                 kcal_per_100g__lte=self.kcal_per_100g + 10,
-                sugars_per_100g=self.sugars_per_100g,  # Assign sugars_per_100g
-                sodium_per_100g=self.sodium_per_100g,  # Assign sodium_per_100g
-                saturated_fats_per_100g=self.saturated_fats_per_100g,  # Assign saturated_fats_per_100g
+                sugars_per_100g=self.sugars_per_100g,  
+                sodium_per_100g=self.sodium_per_100g,  
+                saturated_fats_per_100g=self.saturated_fats_per_100g,  
                 approved=False
             )
 
-            # Delete all similar pending products
+            
             similar_products.delete()
 
             return product
@@ -311,7 +325,7 @@ class PendingProduct(models.Model):
             return None
 
 
-# models.py
+
 class ApiProduct(models.Model):
     PRODUCT_TYPES = (
         ('None', 'None'),
@@ -319,33 +333,37 @@ class ApiProduct(models.Model):
         ('carne', 'Carne'),
         ('legume', 'Legume'),
         ('fructe', 'Fructe'),
-        # Add more choices as needed
+        
     )
     
-    product_name = models.CharField(max_length=100)
+    product_name = models.CharField(max_length=255, unique=True)
     brands = models.CharField(max_length=100)
     quantity = models.CharField(max_length=50)
     categories = models.CharField(max_length=200)
-    image = models.ImageField(upload_to='api_product_images/', null=True, blank=True)  # Field to store image
+    image = models.ImageField(upload_to='api_product_images/', null=True, blank=True)  
+    ean_code = models.CharField(max_length=13, unique=True, blank=True, null=True, help_text='European Article Number (EAN) code')
     kcal_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
     protein_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
     carbs_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
     fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=None)
-    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sugar field
-    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add sodium field
-    saturated_fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add saturated fats field
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  # Add price field
+    sugars_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
+    sodium_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
+    saturated_fats_per_100g = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)  
     product_type = models.CharField(max_length=20, choices=PRODUCT_TYPES, default='None')
     user_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     total_ratings = models.IntegerField(default=0)
     rated_by = models.ManyToManyField(User, through='ApiProductRating')
-    allergies = models.TextField(null=True, blank=True)  # Field to store allergies as JSON string
+    allergies = models.TextField(null=True, blank=True)  
     nutriscore = models.CharField(max_length=1, null=True, blank=True)
+    is_vegan = models.BooleanField(default=False)
+    is_vegetarian = models.BooleanField(default=False)
+
     def __str__(self):
         return self.product_name
     
     def calculate_average_rating(self):
-        # Get the average rating from related ratings
+        
         average_rating = self.apiproductrating_set.aggregate(avg_rating=Avg('rating'))['avg_rating']
         if average_rating is not None:
             self.user_rating = average_rating
@@ -371,15 +389,15 @@ class BasketItem(models.Model):
     api_product = models.ForeignKey(ApiProduct, null=True, blank=True, on_delete=models.CASCADE)
     source = models.CharField(max_length=20, choices=BASKET_SOURCES)
     quantity = models.PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Add this line
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)  
 
     def save(self, *args, **kwargs):
         if self.product:
             self.price = self.product.price * self.quantity
-        elif self.api_product and self.api_product.price is not None:  # Check if price exists
+        elif self.api_product and self.api_product.price is not None:  
             self.price = self.api_product.price * self.quantity
         else:
-            self.price = Decimal('0.00')  # Set default price to 0 if price is None
+            self.price = Decimal('0.00')  
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -451,7 +469,7 @@ class Meal(models.Model):
     total_fats = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def update_totals(self):
-        # Calculate total nutritional data for meal products
+        
         meal_products = self.mealproduct_set.all()
         total_calories_meal = meal_products.aggregate(
             total_calories=Sum((F('product__kcal_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
@@ -466,7 +484,7 @@ class Meal(models.Model):
             total_fats=Sum((F('product__fats_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
         )['total_fats'] or 0
 
-        # Calculate total nutritional data for API meal products
+        
         meal_api_products = self.mealapiproduct_set.all()
         total_calories_api = meal_api_products.aggregate(
             total_calories=Sum((F('kcal_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
@@ -481,7 +499,7 @@ class Meal(models.Model):
             total_fats=Sum((F('fats_per_100g') * F('quantity_grams') / 100), output_field=FloatField())
         )['total_fats'] or 0
 
-        # Update the fields
+        
         self.total_calories = total_calories_meal + total_calories_api
         self.total_proteins = total_proteins_meal + total_proteins_api
         self.total_carbs = total_carbs_meal + total_carbs_api
@@ -490,7 +508,7 @@ class Meal(models.Model):
 
     def add_product(self, product, quantity_grams, user=None):
         if isinstance(product, Product):
-            # Assign default values for nutritional fields if they are empty
+            
             kcal_per_100g = product.kcal_per_100g or 0
             protein_per_100g = product.protein_per_100g or 0
             carbs_per_100g = product.carbs_per_100g or 0
@@ -506,10 +524,10 @@ class Meal(models.Model):
                 carbs_per_100g=carbs_per_100g,
                 fats_per_100g=fats_per_100g
             )
-            self.update_totals()  # Update totals after adding a product
+            self.update_totals()  
             return meal_product
         elif isinstance(product, ApiProduct):
-            # Assign default values for nutritional fields if they are empty
+            
             kcal_per_100g = product.kcal_per_100g or 0
             protein_per_100g = product.protein_per_100g or 0
             carbs_per_100g = product.carbs_per_100g or 0
@@ -525,13 +543,13 @@ class Meal(models.Model):
                 carbs_per_100g=carbs_per_100g,
                 fats_per_100g=fats_per_100g
             )
-            self.update_totals()  # Update totals after adding an API product
+            self.update_totals()  
             return meal_api_product
         else:
             raise ValueError("Invalid product type")
 
     def remove_product(self, product):
-        # Remove the product and update totals
+        
         if isinstance(product, MealProduct):
             product.delete()
             self.update_totals()
@@ -591,6 +609,7 @@ class Recipe(models.Model):
     image = models.ImageField(upload_to='recipes/', null=True, blank=True)
     name = models.CharField(max_length=20, unique=True)
     content = models.TextField()
+    description = models.TextField(max_length=120, null=True, blank=True)
 
 class Ingredient(models.Model):
     RECIPE_SOURCES = (

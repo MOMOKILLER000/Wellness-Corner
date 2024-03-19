@@ -8,7 +8,7 @@ from django.contrib.auth.forms import PasswordChangeForm as DjangoPasswordChange
 from django.contrib.auth import authenticate
 
 class RegistrationForm(UserCreationForm):
-
+    diet = forms.ChoiceField(choices=User.PREFERRED_DIET_CHOICES, initial='None')
     allergies = forms.ModelMultipleChoiceField(
         queryset=Allergy.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -19,7 +19,7 @@ class RegistrationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['email', 'name', 'password1', 'password2', 'allergies']
+        fields = ['email', 'name', 'password1', 'password2', 'diet', 'allergies']
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Email')
@@ -33,10 +33,16 @@ class AllergyForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     class Meta:
         model = PendingProduct
-        fields = ['product_name', 'brands', 'quantity', 'categories', 'image', 'protein_per_100g', 'carbs_per_100g', 'fats_per_100g', 'sugars_per_100g', 'sodium_per_100g', 'saturated_fats_per_100g', 'kcal_per_100g', 'price', 'product_type', 'allergies']
+        fields = ['product_name', 'brands', 'quantity', 'categories', 'image','ean_code', 'protein_per_100g', 'carbs_per_100g', 'fats_per_100g', 'sugars_per_100g', 'sodium_per_100g', 'saturated_fats_per_100g', 'kcal_per_100g', 'price', 'allergies', 'is_vegan', 'is_vegetarian']
         widgets = {
-            'image': forms.FileInput(attrs={'accept': 'image/*'}),  # Add an accept attribute to limit file types to images
+            'image': forms.FileInput(attrs={'accept': 'image/*'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(ProductForm, self).__init__(*args, **kwargs)
+        required_fields = ['product_name', 'brands', 'quantity', 'categories', 'image', 'protein_per_100g', 'carbs_per_100g', 'fats_per_100g', 'sugars_per_100g', 'sodium_per_100g', 'saturated_fats_per_100g', 'kcal_per_100g', 'price']
+        for field_name in required_fields:
+            self.fields[field_name].required = True
 
     def clean(self):
         cleaned_data = super().clean()
@@ -50,7 +56,12 @@ class ProductForm(forms.ModelForm):
         if not image:
             raise forms.ValidationError("Image is required.")
         return image
-    
+
+    def clean_ean_code(self):
+        ean_code = self.cleaned_data.get('ean_code')
+        if not ean_code.isdigit() or len(ean_code) != 13:
+            raise forms.ValidationError("EAN code must be exactly 13 digits long and contain only numbers.")
+        return ean_code
 
 class PostForm(forms.ModelForm):
     class Meta:
@@ -61,10 +72,10 @@ class PostForm(forms.ModelForm):
         super(PostForm, self).__init__(*args, **kwargs)
         self.fields['product_type'].widget = forms.Select(choices=Post.PRODUCT_CHOICES)
 
-        # Customize the widget for the object_id field based on product_type
-        self.fields['object_id'].widget = forms.Select(choices=[])  # Empty choices initially
+        
+        self.fields['object_id'].widget = forms.Select(choices=[])  
 
-        # Optionally, you can add JavaScript to dynamically update the choices based on product_type
+        
 
     def set_product_choices(self, product_type):
         if product_type == 'Product':
@@ -106,6 +117,7 @@ class UserProfileForm(forms.ModelForm):
         fields = ['age', 'height', 'weight','gender', 'activity_level', 'goal']
 
 class UserAccountForm(forms.ModelForm):
+    diet = forms.ChoiceField(choices=User.PREFERRED_DIET_CHOICES, initial='None')
     allergies = forms.ModelMultipleChoiceField(
         queryset=Allergy.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -116,7 +128,7 @@ class UserAccountForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['name', 'allergies']
+        fields = ['name', 'allergies', 'diet']
 
 class CustomPasswordChangeForm(PasswordChangeForm):
     old_password = forms.CharField(
@@ -138,7 +150,8 @@ class CommentForm(forms.ModelForm):
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['image', 'name', 'content']
+        fields = ['image', 'name', 'description', 'content']
         widgets = {
-            'content': forms.Textarea(attrs={'rows': 8}),  # Adjust rows as needed
+            'content': forms.Textarea(attrs={'rows': 8}),
+            'description': forms.Textarea(attrs={'rows': 3, 'class': 'small-textarea'}),  
         }

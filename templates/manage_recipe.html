@@ -3,49 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <title>{% if recipe %}Edit Recipe{% else %}Create Recipe{% endif %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height:100%;
+            background: linear-gradient(to right, #bbfce3, #73f8db);
+        }
+
+
+        .header-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .section-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .instruction-box {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .instruction-text {
+            font-family: 'Courier New', Courier, monospace;
+            color: #333;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            font-size: 1.8rem;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            display: block;
+            margin: 0 auto;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        ul {
+        
+            padding: 0;
+            margin: 0;
+        }
+
+        ul li {
+            margin-bottom: 10px;
+        }
+
+        .product-image {
+            max-width: 100%;
+            height: auto;
+            margin: 20px auto; 
+            display: block; 
+        }
+
+      
+        .ingredient-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .steps-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .step-text {
+            font-family: Arial, sans-serif; 
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .container {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 900px;
+    margin-top: 2rem;
+    color: #333;
+    box-sizing: border-box; 
+    margin-bottom:30px;
+}
+h2 {
+    color: #000000;
+    font-weight: bold;
+    font-size: 2rem;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+label {
+    color: #000000;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    margin-right: 1rem;
+    margin-top: 20px;
+    width: 100%;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select,
+.select,
+textarea {
+    width: calc(100% - 2rem);
+    font-size: 1.3rem;
+    background-color: #f8f9fa; 
+    border-radius: 0.5rem;
+    border: 1.2px solid #d1d5db;
+    color: #333; 
+    padding: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+    display: block;
+}
+
+textarea {
+    height: 200px;
+}
+
+button[type="submit"] {
+    background-color:  #00b351; 
+    color: #fff;
+    border-radius: 0.5rem;
+    padding: 1.5rem; 
+    font-size: 1.8rem;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    display: block;
+    margin: 0 auto;
+}
+
+button[type="submit"]:hover {
+    background-color: #027033fb; 
+    color: #fff;
+}
+
+
+.profile-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    box-sizing: border-box; 
+    width: 800px; 
+    margin: 0 auto;
+    margin-top:20px;
+}
+
+.profile-form label {
+    font-size: 1rem; 
+}
+.profile-form {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+
+.profile-form form input {
+    padding: 15px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+.small-textarea {
+            height: 100px; 
+        }
+
+        .post-header {
+            background-color: #339969;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    {% if request.user.is_superuser %}
-    <h1>{% if recipe %}Edit Recipe{% else %}Create Recipe{% endif %}</h1>
-    <form method="post">
-        {% csrf_token %} 
-        {{ form.name.errors }}
-        <label for="{{ form.name.id_for_label }}">Name:</label>
-        {{ form.name }}
-        <br>
-        {{ form.content.errors }}
-        <label for="{{ form.content.id_for_label }}">Content:</label>
-        {{ form.content }}
-        <br>
-        <button type="submit">Save Recipe</button>
-    </form>
-    {% else %}
-              <p>{{ recipe.name }}</p>
-              <p>{{ recipe.content}}</p>
-    {% endif %}
-    {% if recipe.image %}
-                    <img src="{{ recipe.image.url }}" alt="{{ recipe.product_name }}" class="product-image">
-                {% endif %}
-    <h2>Ingredients:</h2>
-    <ul>
-        {% for ingredient in recipe.ingredients.all %}
-            <li>
-                {% if ingredient.product %}
-                    {{ ingredient.product.product_name }} ({{ ingredient.quantity }} grams)
-                {% elif ingredient.api_product %}
-                    {{ ingredient.api_product.product_name }} ({{ ingredient.quantity }} grams)
-                {% endif %}
-                {% if request.user.is_superuser %}
-                <form method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="ingredient_id" value="{{ ingredient.id }}">
-                    <input type="number" name="quantity" value="{{ ingredient.quantity }}">
-                    <button type="submit" name="action" value="update_quantity">Update Quantity</button>
-                    <button type="submit" name="action" value="delete">Delete</button>
-                </form>
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
+<div class="container">
+    <div class="section-container">
+        {% if request.user.is_superuser %}
+        <div class="section-content">
+            <h1 class="title">Edit Recipe</h1>
+            <form method="post">
+                {% csrf_token %} 
+                {{ form.name.errors }}
+                <label for="{{ form.name.id_for_label }}">Name:</label>
+                {{ form.name }}
+                <br>
+                {{ form.description.errors }}
+                    <label for="{{ form.description.id_for_label }}">Description:</label>
+                    {{ form.description }}
+                <br>
+                {{ form.content.errors }}
+                <label for="{{ form.content.id_for_label }}">Content:</label>
+                {{ form.content }}
+                <br>
+                <button type="submit">Save Recipe</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="post-header">
+            <h1 class="title">{{ recipe.name }}</h1>
+            <h3>{{ recipe.description }}</h3> 
+        </div>
+        <div class="post-content">
+            <div class="ingredient-container">
+                <h2>Ingredients:</h2>
+                <ul>
+                    {% for ingredient in recipe.ingredients.all %}
+                    {% if ingredient.product %}
+                    <li>{{ ingredient.product.product_name }} ({{ ingredient.quantity }} grams)</li>
+                    {% elif ingredient.api_product %}
+                    <li>{{ ingredient.api_product.product_name }} ({{ ingredient.quantity }} grams)</li>
+                    {% endif %}
+                    {% if request.user.is_superuser %}
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="ingredient_id" value="{{ ingredient.id }}">
+                        <input type="number" name="quantity" value="{{ ingredient.quantity }}">
+                        <button type="submit" name="action" value="update_quantity">Update Quantity</button>
+                        <button type="submit" name="action" value="delete">Delete</button>
+                    </form>
+                    {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="steps-container">
+                <h2>Steps:</h2>
+                <div class="instruction-box">
+                    <p class="instruction-text step-text">{{ recipe.content }}</p>
+                </div>
+            </div>
+            {% if recipe.image %}
+            <img src="{{ recipe.image.url }}" alt="{{ recipe.product_name }}" class="product-image">
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
 </body>
 </html>

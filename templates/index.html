@@ -7,7 +7,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wellnesscorner</title>
     <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+    
 </head>
+</head>
+<style>
+#scannedBarcode {
+    display: none; /* Initially hide the container */
+    justify-content: center;
+    align-items: center;
+    height: 70vh; /* Adjust the height as needed */
+    margin-top: 20px; /* Adjust the margin as needed */
+    position: relative; /* Add position relative */
+}
+
+#scannedBarcode video {
+    width: auto;
+    height: 100%; /* Make the video fill the container */
+    position: absolute; /* Add position absolute */
+    left: 50%; /* Move the video to the center horizontally */
+    top: 50%; /* Move the video to the center vertically */
+    transform: translate(-50%, -50%); /* Center the video */
+}
+</style>
 <body>
     <div class="left-bar">
         <button class="close-button" onclick="closeBar()">
@@ -48,22 +71,37 @@
         </div>
     
     </header>
-<div class="search-container" id="search-container">
-    <form action="{% url 'index' %}" method="post" class="search-form">
-        {% csrf_token %}
-        <input type="text" class="search-input" name="product_name" placeholder="Introduceți numele produsului">
-        <button class="search-button" type="submit">
-            <i class="search-icon fas fa-search"></i> Căutare
+    {% if messages %}
+        {% for message in messages %}
+            <div{% if message.tags %} style="padding-top:30px" class="heading {{ message.tags }}"{% endif %}>{{ message }}</div>
+        {% endfor %}
+{% endif %}
+
+    
+    <!-- Container to display the scanned barcode -->
+    <div id="scannedBarcode"></div>
+    
+
+    <div class="search-container" id="search-container">
+        <button class="scan-button" onclick="scanBarcode()">
+            <i class="scan-icon fas fa-barcode"></i> Scan Barcode
         </button>
-    </form>
-</div>
+        <form action="{% url 'index' %}" method="post" class="search-form">
+            {% csrf_token %}
+            <input type="text" class="search-input" name="product_name" placeholder="Introduceți numele produsului">
+            <button class="search-button" type="submit">
+                <i class="search-icon fas fa-search"></i> Căutare
+            </button>
+        </form>
+    </div>
+
 
 {% if search_query %}
-<div class="products-container">
+<div style="margin-top:40px;" class="products-container">
     {% if search_results %}
         {% for product in search_results %}
             <div class="product">
-                <!-- Display smaller image -->
+                
                 <div class="top">
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
@@ -98,12 +136,46 @@
     {% endif %}
 </div>
 {% else %}
+{% if suggested_products %}
+        <div style="padding-top:30px" class="heading">Suggested products</div>
+        <div class="products-container">
+            {% for product in suggested_products %}
+                <div class="product">
+                    <div class="top">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
+                    {% endif %}
+                    </div>
+                    <div class="middle">
+                    <h1>{{ product.product_name }}</h1>
+                    </div>
+                    <div class="bottom">
+                    <h3>Brand: {{ product.brands|truncatewords:15 }}</h3>
+                    <h3>Quantity: {{ product.quantity }}</h3>
+                    {% if product.user_rating %}
+                        <h3>Product Rating: {{ product.user_rating }}</h3>
+                    {% else %}
+                        <h3>No rating available for this product.</h3>
+                    {% endif %}
+                    <h3>Price: {{ product.price }}</h3>
+                    <div class="product-button">
+                    {% if product.source == 'database' %}
+                            <a href="{% url 'product_detail' product.id 'database' %}">View product</a>
+                    {% elif product.source == 'api' %}
+                            <a href="{% url 'product_detail' product.id 'api' %}">View product</a>
+                    {% endif %}
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     {% if best_rated_products %}
     <div style="padding-top:30px" class="heading">Best rated products</div>
     <div class="products-container">
         {% for product in best_rated_products %}
             <div class="product">
-                <!-- Display smaller image -->
+                
                 <div class="top">
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
@@ -143,7 +215,7 @@
     <div class="products-container">
         {% for product in cheapest_products %}
             <div class="product">
-                <!-- Display smaller image -->
+                
                 <div class="top">
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">
@@ -172,7 +244,7 @@
             </div>
         {% endfor %}
     {% else %}
-        <div class="no-products">
+        <div style="margin-top:40px;" class="products-container">
             <div style="padding-top:30px" class="heading">No products found</div>
         </div>
     {% endif %}
@@ -192,22 +264,89 @@
     </div>          
 </div>
 {% endif %}
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="social-media">
+            <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        </div>
+        <p class="footer-text">Follow us on social media for updates on our latest food products! Connect with us to stay updated on new recipes, promotions, and more.</p>
+    </div>
+</footer>
+
 <script>
     function toggleBar() {
-document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
-document.querySelector(".content-page").classList.toggle("content-page-extended");
-}
+        document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+        document.querySelector(".content-page").classList.toggle("content-page-extended");
+    }
 
-function closeBar() {
- document.querySelector(".left-bar").classList.remove("left-bar-expanded");
- document.querySelector(".content-page").classList.remove("content-page-extended");
-}
+    function closeBar() {
+        document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+        document.querySelector(".content-page").classList.remove("content-page-extended");
+    }
 
-function toggleSearch() {
-    var searchContainer = document.getElementById("search-container");
-    searchContainer.classList.toggle("show-search-container");
-}
+    function toggleSearch() {
+        var searchContainer = document.getElementById("search-container");
+        searchContainer.classList.toggle("show-search-container");
+    }
+
 </script>
+
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </body>
 </html>
+
+<script>
+    function scanBarcode() {
+    var foundProduct = false;
+
+    Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector('#scannedBarcode'), // Container to display the scanned barcode
+            constraints: {
+                facingMode: "environment" // Use the rear camera for scanning
+            },
+        },
+        decoder: {
+            readers: ["ean_reader"] // Specify the type of barcode to scan (EAN)
+        }
+    }, function (err) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log("Initialization finished. Ready to start");
+        Quagga.start();
+        // Show the video container once Quagga is initialized
+        document.getElementById("scannedBarcode").style.display = "flex";
+    });
+
+    Quagga.onDetected(function (data) {
+        console.log("Barcode detected and processed : [" + data.codeResult.code + "]", data);
+        // Redirect to the search_product_by_barcode view with the scanned barcode
+        window.location.href = '/search_product_by_barcode/' + data.codeResult.code + '/';
+        foundProduct = true;
+    });
+
+    // Function to execute if product is not found after 15 seconds
+    function productNotFound() {
+        if (!foundProduct) {
+            console.log("Product not found after 15 seconds");
+            // Stop the barcode detection process
+            Quagga.stop();
+            // Hide the camera container
+            document.getElementById("scannedBarcode").style.display = "none";
+            // Show the search container again
+            document.getElementById("search-container").style.display = "none";
+            location.reload();
+        }
+    }
+
+    // Call the productNotFound function after 15 seconds
+    setTimeout(productNotFound, 35000);
+}
+</script>

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Summary</title>
     <link rel="stylesheet" href="{% static 'calculator.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
     <style>
         .bad{
             color: #e50000;
@@ -21,7 +22,7 @@
             display: inline-block;
             vertical-align: top;
             margin-right: 20px;
-            width: 200px; /* Adjust width as needed */
+            width: 200px; 
             border: 1px solid #ddd;
             padding: 10px;
         }
@@ -33,7 +34,7 @@
 
         .myfitnesspal .meal-calories {
             font-size: 16px;
-            color: #00a087; /* Adjust color as needed */
+            color: #00a087; 
         }
 
         .myfitnesspal .meal-list {
@@ -70,7 +71,7 @@
             cursor: not-allowed;
         }
 
-        /* New CSS styles for the layout */
+        
         .meals-container {
             display: flex;
             flex-wrap: wrap;
@@ -81,7 +82,7 @@
 
         .meal-summary {
             flex: 1 1 auto;
-            width: calc(25% - 20px); /* Adjust width as needed */
+            width: calc(25% - 20px); 
         }
 
         .daily-calories-container {
@@ -95,7 +96,7 @@
         }
 
         .pie {
-            width: 100px; /* Adjust width as needed */
+            width: 100px; 
             aspect-ratio: 1;
             position: relative;
             display: inline-grid;
@@ -150,7 +151,7 @@
     </header>
     <div class="myfitnesspal">
         <div class="main">
-            <!-- Daily Calories section moved to the top -->
+            
             <div class="daily-calories-container">
                 <h2 class="meal-title">Daily Calories</h2>
                 <p class="{{ calories_class }}">
@@ -262,7 +263,7 @@
                     </a>
                 </div>
             </div>
-            <!-- Total for all meals -->
+            
             <div class="total-summary">
                 <h3>Total Nutritional Data for all Meals:</h3>
                 <p>Total Calories: {{ total_all_meals.total_calories|floatformat:"1" }}</p>
@@ -273,6 +274,16 @@
             </div>
         </div>
     </div>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="social-media">
+                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p class="footer-text">Follow us on social media for updates on our latest food products! Connect with us to stay updated on new recipes, promotions, and more.</p>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

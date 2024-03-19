@@ -19,7 +19,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to right, #bbd2fc, #7c73f8); 
+    background: linear-gradient(to right, #bbfce3, #73f8db);
 }
 
 main {
@@ -105,10 +105,21 @@ img {
     padding-bottom: 2rem;
     text-transform: uppercase;
 }
-header{
-    top:0; left: 0; right:0;
+.heading {
+    text-align: center;
+    color: black;
+    font-size: 3rem;
+    padding-bottom: 2rem;
+    text-transform: uppercase;
+}
+
+
+header {
+    top: 0;
+    left: 0;
+    right: 0;
     background: #fff;
-    padding:1rem 5%;
+    padding: 1rem 5%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -116,95 +127,118 @@ header{
     box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
 }
 
-header .logo{
-    color:black;
+header .logo {
+    color: black;
     font-size: 2.5rem;
     font-weight: bolder;
 }
 
-header .logo i{
-    color:#007bff;
+header .logo i {
+    color: #28a745;
 }
 
-header .navbar a{
+header .navbar a {
     font-size: 1.7rem;
     border-radius: .5rem;
-    padding:.5rem 1.5rem;
-    color:black;
+    padding: .5rem 1.5rem;
+    color: black;
 }
-.more{
+
+.more {
     font-size: 1.7rem;
-    color:black;
-    
+    color: black;
 }
-.more:hover{
-    cursor:pointer;
+
+.more:hover {
+    cursor: pointer;
 }
+
 header .navbar a.active,
-header .navbar a:hover{
-    color:#fff;
-    background: #4169E1;
+header .navbar a:hover {
+    color: #fff;
+    background:  #28a745;
 }
 
 header .icons i,
-header .icons a{
+header .icons a {
     cursor: pointer;
     margin-left: .5rem;
-    height:4.5rem;
+    height: 4.5rem;
     line-height: 4.5rem;
-    width:4.5rem;
+    width: 4.5rem;
     text-align: center;
     font-size: 1.7rem;
-    color:black;
+    color: black;
     border-radius: 50%;
     background: #eee;
 }
 
 header .icons i:hover,
-header .icons a:hover{
-    color:#fff;
-    background: #4169E1;
+header .icons a:hover {
+    color: #fff;
+    background: #8fbc8f;
     transform: rotate(360deg);
 }
 
-header .icons #menu-bars{
+header .icons #menu-bars {
     display: none;
 }
 
-/*Left bar */
+
+
 .left-bar {
     position: fixed;
     top: 0;
-    left: -200px; /* Initially hide the sidebar off-screen */
+    left: -200px;
     height: 100%;
     width: 200px;
-    background-color: #1434A4;
+    background-color:#00a087;
     color: white;
-    transition: left 0.3s ease; /* Add a transition effect for smooth appearance/disappearance */
-    z-index: 1000; /* Set a higher z-index to make sure it appears above other elements */
+    transition: left 0.3s ease;
+    z-index: 1000;
 }
 
 .left-bar-expanded {
-    left: 0;/* Display the sidebar when the class is applied */
-    z-index:10;
+    left: 0;
+    z-index: 10;
 }
 
 .content-page {
-    transition: margin-left 0.3s ease; /* Add a transition effect for the content page when the sidebar appears/disappears */
+    transition: margin-left 0.3s ease;
 }
 
 .content-page-extended {
-    margin-left: 200px; /* Adjust the margin to make room for the sidebar */
+    margin-left: 200px;
 }
 
 .close-button {
     position: absolute;
     top: 10px;
-    right: 10px; /* Position the button on the right side */
+    right: 10px;
     background: none;
     border: none;
     color: white;
-    font-size: 24px; /* Increase the font size for a bigger button */
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
+.content-page {
+    transition: margin-left 0.3s ease; 
+}
+
+.content-page-extended {
+    margin-left: 200px; 
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px; 
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px; 
     cursor: pointer;
 }
 .links {
@@ -215,13 +249,109 @@ header .icons #menu-bars{
 }
 
 .links a {
-    font-size: 24px; /* Adjust the font size */
-    padding: 15px 20px; /* Add padding for better spacing */
-    color: #89CFF0;
+    font-size: 24px;
+    padding: 15px 20px;
+    color: white;
     text-decoration: none;
-    transition: color 0.3s ease; /* Add transition for smooth color change on hover */
+    transition: color 0.3s ease;
 }
 
 .links a:hover {
-    color: #ffffff; /* Change color on hover */
+    color: #ffffff;
+}
+
+
+@media only screen and (max-width: 1200px) {
+    
+    header {
+        padding: 1rem 2%;
+    }
+    
+    .left-bar {
+        width: 150px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .products-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .product {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    
+    .products-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .product {
+        width: calc(50% - 20px);
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    
+    .products-container {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    .product {
+        width: calc(100% - 20px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    header .logo {
+        font-size: 2rem;
+    }
+
+    header .navbar {
+        flex-direction: column;
+        background: #fff;
+        box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    header .navbar.active {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    header .navbar a {
+        display: block;
+        padding: 1rem 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    header .icons i,
+    header .icons a {
+        height: auto;
+        line-height: normal;
+        width: auto;
+        font-size: 2rem;
+        margin-left: 1rem;
+    }
 }

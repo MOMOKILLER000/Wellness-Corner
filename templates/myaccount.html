@@ -48,7 +48,7 @@
         </div>
     
     </header>
-<div class="wrapper profile">
+<div style="margin-bottom:30px;" class="wrapper profile">
     <div class="profile-container">
         <h2>Welcome to your profile, {{ user.get_full_name }}</h2>
         <div class="col-right">
@@ -60,22 +60,25 @@
                     <label for="{{ form.name.id_for_label }}">Name:</label>
                     {{ form.name }}
 
-                    <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
-                    {{ form.allergies.errors }}
-                    {% for allergy in form.allergies %}
-                        <div class="checkbox">
-                            {{ allergy.tag }} {{ allergy.choice_label }}
-                        </div>
-                    {% endfor %}
+                    <button type="button" class="show-allergies-button" onclick="toggleAllergies()">Show Allergies</button>
+                    <div id="allergiesContainer" style="display: none;">
+                        <label for="{{ form.allergies.id_for_label }}">Allergies:</label>
+                        {{ form.allergies.errors }}
+                        {% for allergy in form.allergies %}
+                            <div class="checkbox">
+                                {{ allergy.tag }} {{ allergy.choice_label }}
+                            </div>
+                        {% endfor %}
+                    </div>
 
+                    <label for="{{ form.diet.id_for_label }}">Diet:</label>
+                        <select name="diet" id="diet">
+                            {% for diet_choice in form.diet.field.choices %}
+                                <option value="{{ diet_choice.0 }}" {% if diet_choice.0 == form.diet.value %}selected{% endif %}>{{ diet_choice.1 }}</option>
+                            {% endfor %}
+                        </select>
                     <button class="password-change-form button" type="submit">Update Profile</button>
                 </form>
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="message">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-
                 <h2>Change Password</h2>
                 <form method="post" action="{% url 'password_change' %}">
                     {% csrf_token %}
@@ -110,6 +113,16 @@
         document.querySelector(".left-bar").classList.remove("left-bar-expanded");
         document.querySelector(".content-page").classList.remove("content-page-extended");
     }
+
+    function toggleAllergies() {
+        var allergiesContainer = document.getElementById("allergiesContainer");
+        if (allergiesContainer.style.display === "none" || allergiesContainer.style.display === "") {
+            allergiesContainer.style.display = "block";
+        } else {
+            allergiesContainer.style.display = "none";
+        }
+    }
+
 </script>
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </html>

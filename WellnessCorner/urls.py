@@ -14,7 +14,7 @@ urlpatterns = [
     path('basket/', views.basket_page, name='basket_page'),
     path('delete_from_basket/<int:product_id>/<str:source>/', views.delete_from_basket, name='delete_from_basket'),
     path('create/', views.create, name='create'),
-    path('product_created/', views.product_created, name='product_created'),  # New URL for product creation success
+    path('product_created/', views.product_created, name='product_created'),  
     path('approve-products/', views.approve_products, name='approve_products'),
     path('pending-products/', views.pending_products, name='pending_products'),
     path('my-products/', views.my_products, name='my_products'),
@@ -30,7 +30,7 @@ urlpatterns = [
     path('decrement_quantity/<int:product_id>/<str:source>/', views.decrement_quantity, name='decrement_quantity'),
     path('checkout/', views.checkout, name='checkout'),
     path('meal-detail/<int:meal_id>/', views.meal_detail, name='meal_detail'),
-    path('calculator/', views.calculator, name='calculator'),  # Add this line
+    path('calculator/', views.calculator, name='calculator'),
     path('add_to_meal/<str:meal_type>/', views.add_to_meal, name='add_to_meal'),
     path('update-meal-product/<int:meal_product_id>/', views.update_meal_product, name='update_meal_product'),
     path('delete-meal-product/<int:meal_product_id>/', views.delete_meal_product, name='delete_meal_product'),
@@ -58,6 +58,7 @@ urlpatterns = [
     path('manage_recipe/<int:recipe_id>/', views.manage_recipe, name='manage_recipe'),
     path('add_to_recipe/<int:recipe_id>/', views.add_to_recipe, name='add_to_recipe'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
+    path('search_product_by_barcode/<str:barcode>/', views.search_product_by_barcode, name='search_product_by_barcode'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

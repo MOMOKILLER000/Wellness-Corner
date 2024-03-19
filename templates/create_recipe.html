@@ -6,25 +6,26 @@
     <title>Create Recipe</title>
     <link rel="stylesheet" href="{% static 'post-form.css' %}">
     <style>
-        /* Additional styles for centering the container */
+        
         body {
             display: flex;
-            justify-content: center; /* Center content horizontally */
-            align-items: center; /* Center content vertically */
-            height: 100vh; /* Full viewport height */
-            font-size: 1.6rem; /* Adjusted font size */
+            justify-content: center; 
+            align-items: center; 
+            height: 100%; 
+            font-size: 1.6rem; 
         }
 
         .profile-container {
-            padding: 2rem; /* Increased padding */
+            padding: 2rem; 
+            margin-bottom:50px;
         }
 
         .col-right {
-            padding: 1rem; /* Increased padding */
+            padding: 1rem; 
         }
 
         label {
-            font-size: 1.8rem; /* Adjusted font size */
+            font-size: 1.8rem; 
             margin-bottom: 1rem;
         }
 
@@ -34,17 +35,25 @@
         select,
         .select,
         textarea {
-            font-size: 1.6rem; /* Adjusted font size */
-            padding: 1rem; /* Increased padding */
+            font-size: 1.6rem; 
+            padding: 1rem; 
             margin-top: 1rem;
             margin-bottom: 2rem;
+            width: 100%; 
+            box-sizing: border-box; 
         }
+
         textarea {
-            height:300px;
+            height: 180px; 
         }
+
+        .small-textarea {
+            height: 80px; 
+        }
+
         button[type="submit"] {
-            font-size: 1.8rem; /* Adjusted font size */
-            padding: 1.2rem 2rem; /* Increased padding */
+            font-size: 1.8rem; 
+            padding: 1.2rem 2rem; 
         }
     </style>
 </head>
@@ -62,6 +71,10 @@
                     {{ form.name.errors }}
                     <label for="{{ form.name.id_for_label }}">Name:</label>
                     {{ form.name }}
+                    
+                    {{ form.description.errors }}
+                    <label for="{{ form.description.id_for_label }}">Description:</label>
+                    {{ form.description }}
 
                     {{ form.content.errors }}
                     <label for="{{ form.content.id_for_label }}">Instructions:</label>

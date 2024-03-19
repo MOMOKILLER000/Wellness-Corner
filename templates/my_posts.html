@@ -1,12 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Your Luxurious HTML</title>
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
+    <title>My posts</title>
     <style>
-        /* Your CSS styles here */
+        
         * {
             font-family: 'Nunito', sans-serif;
             margin: 0;
@@ -35,142 +37,132 @@
         }
 
         header {
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #fff;
-            padding: 1rem 5%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 2;
-            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
-        }
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 1rem 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+    box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+}
 
-        header .logo {
-            color: black;
-            font-size: 2.5rem;
-            font-weight: bolder;
-        }
+header .logo {
+    color: black;
+    font-size: 2.5rem;
+    font-weight: bolder;
+}
 
-        header .logo i {
-            color: #0F52BA;
-        }
+header .logo i {
+    color: #28a745;
+}
 
-        header .navbar a {
-            font-size: 1.7rem;
-            border-radius: .5rem;
-            padding: .5rem 1.5rem;
-            color: black;
-        }
+header .navbar a {
+    font-size: 1.7rem;
+    border-radius: .5rem;
+    padding: .5rem 1.5rem;
+    color: black;
+}
 
-        .more {
-            font-size: 1.7rem;
-            color: black;
-        }
+.more {
+    font-size: 1.7rem;
+    color: black;
+}
 
-        .more:hover {
-            cursor: pointer;
-        }
+.more:hover {
+    cursor: pointer;
+}
 
-        header .navbar a.active,
-        header .navbar a:hover {
-            color: #fff;
-            background: 	#4169E1;
-        }
+header .navbar a.active,
+header .navbar a:hover {
+    color: #fff;
+    background:  #28a745;
+}
 
-        header .icons i,
-        header .icons a {
-            cursor: pointer;
-            margin-left: .5rem;
-            height: 4.5rem;
-            line-height: 4.5rem;
-            width: 4.5rem;
-            text-align: center;
-            font-size: 1.7rem;
-            color: black;
-            border-radius: 50%;
-            background: #eee;
-        }
+header .icons i,
+header .icons a {
+    cursor: pointer;
+    margin-left: .5rem;
+    height: 4.5rem;
+    line-height: 4.5rem;
+    width: 4.5rem;
+    text-align: center;
+    font-size: 1.7rem;
+    color: black;
+    border-radius: 50%;
+    background: #eee;
+}
 
-        header .icons i:hover,
-        header .icons a:hover {
-            color: #fff;
-            background: 		#4169E1;
-            transform: rotate(360deg);
-        }
+header .icons i:hover,
+header .icons a:hover {
+    color: #fff;
+    background: #8fbc8f;
+    transform: rotate(360deg);
+}
 
-        header .icons #menu-bars {
-            display: none;
-        }
+header .icons #menu-bars {
+    display: none;
+}
 
-        /* Left bar */
-        .left-bar {
-            position: fixed;
-            top: 0;
-            left: -200px;
-            /* Initially hide the sidebar off-screen */
-            height: 100%;
-            width: 200px;
-            background-color: #1434A4;
-            color: white;
-            transition: left 0.3s ease;
-            /* Add a transition effect for smooth appearance/disappearance */
-            z-index: 1000;
-            /* Set a higher z-index to make sure it appears above other elements */
-        }
 
-        .left-bar-expanded {
-            left: 0;
-            /* Display the sidebar when the class is applied */
-            z-index: 10;
-        }
 
-        .content-page {
-            transition: margin-left 0.3s ease;
-            /* Add a transition effect for the content page when the sidebar appears/disappears */
-        }
+.left-bar {
+    position: fixed;
+    top: 0;
+    left: -200px;
+    height: 100%;
+    width: 200px;
+    background-color:#00a087;
+    color: white;
+    transition: left 0.3s ease;
+    z-index: 1000;
+}
 
-        .content-page-extended {
-            margin-left: 200px;
-            /* Adjust the margin to make room for the sidebar */
-        }
+.left-bar-expanded {
+    left: 0;
+    z-index: 10;
+}
 
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            /* Position the button on the right side */
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            /* Increase the font size for a bigger button */
-            cursor: pointer;
-        }
+.content-page {
+    transition: margin-left 0.3s ease;
+}
 
-        .links {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            padding-top: 50px;
-        }
+.content-page-extended {
+    margin-left: 200px;
+}
 
-        .links a {
-            font-size: 24px;
-            /* Adjust the font size */
-            padding: 15px 20px;
-            /* Add padding for better spacing */
-            color: #89CFF0;
-            text-decoration: none;
-            transition: color 0.3s ease;
-            /* Add transition for smooth color change on hover */
-        }
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
 
-        .links a:hover {
-            color: #ffffff;
-            /* Change color on hover */
-        }
+.links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-top: 50px;
+}
+
+.links a {
+    font-size: 24px;
+    padding: 15px 20px;
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.links a:hover {
+    color: #ffffff;
+}
+
 
         body {
             margin: 0;
@@ -178,9 +170,9 @@
             font-size: 16px;
             font-weight: 400;
             color: #1a1a1a;
-            /* Dark blue text color */
+            
             background: #cfe4f7;
-            /* Light blue background color */
+            
         }
 
         .container {
@@ -189,8 +181,8 @@
         }
 
         .upper {
-            background: #3498db;
-            /* Blue background color */
+            background:  #00b351;
+            
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             padding: 40px;
             text-align: center;
@@ -201,8 +193,8 @@
         .upper h2 {
             font-size: 2.5em;
             margin-bottom: 20px;
-            color: #2c3e50;
-            /* Darker blue text color */
+            color: #ffffff;
+            
         }
 
         .upper p {
@@ -227,7 +219,7 @@
 
         .card {
             background-color: #2c3e50;
-            /* Dark blue card background */
+            
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
             padding: 20px;
@@ -236,10 +228,10 @@
             margin-right: 10px;
             transition: transform 0.1s;
             background-size: cover;
-            border: 2px solid #3498db;
-            /* Border color matching upper background */
+            border: 4px solid #34db87;
+            
             position: relative;
-            /* For positioning of buttons */
+            
         }
 
         .card:hover {
@@ -253,8 +245,8 @@
 
         .card h2 {
             margin-bottom: 10px;
-            color: #3498db;
-            /* Blue heading color */
+            color: #34db95;
+            
         }
 
         .card p {
@@ -267,8 +259,8 @@
         }
 
         .card:hover h2 a {
-            color: #ffd700;
-            /* Yellow color on hover */
+            color: #b6ffb5;
+            
         }
 
         @media screen and (max-width: 800px) {
@@ -284,29 +276,29 @@
             display: flex;
             justify-content: space-between;
             width: calc(100% - 60px);
-            /* Adjusted width */
+            
             left: 30px;
-            /* Positioned on the left */
+            
         }
 
         .edit-button,
         .delete-button {
             padding: 10px 20px;
-            /* Adjust padding as needed */
+            
             border: none;
             background: none;
             cursor: pointer;
             text-decoration: none;
             color: inherit;
             font-size: 16px;
-            /* Set the font size */
+            
             display: flex;
             align-items: center;
         }
 
         .delete-button {
     padding: 10px 20px;
-    /* Adjust padding as needed */
+    
     border: 1px solid #cc0000;
     background-color: #e50000;
     overflow: hidden;
@@ -363,7 +355,7 @@
 
 .edit-button {
     padding: 10px 20px;
-    /* Adjust padding as needed */
+    
     border: 1px solid #49FF33;
     background-color: #49FF33;
     overflow: hidden;
@@ -420,6 +412,133 @@
 .edit-button:active {
     border: 1px solid #40D32E;
 }
+@media screen and (max-width: 913px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .button-group {
+        width: calc(100% - 40px);
+        left: 20px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .left-bar {
+        width: 100%;
+        left: -100%;
+    }
+
+    .left-bar-expanded {
+        left: 0;
+    }
+
+    .content-page {
+        margin-left: 0;
+    }
+
+    .button-group {
+        width: calc(100% - 20px);
+        left: 10px;
+    }
+}  
+@media only screen and (max-width: 1200px) {
+    
+    header {
+        padding: 1rem 2%;
+    }
+    
+    .left-bar {
+        width: 150px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .products-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .product {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    
+    .products-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .product {
+        width: calc(50% - 20px);
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    
+    .products-container {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    .product {
+        width: calc(100% - 20px);
+    }
+}
+
+
+
+@media screen and (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    header .logo {
+        font-size: 2rem;
+    }
+
+    header .navbar {
+        flex-direction: column;
+        background: #fff;
+        box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    header .navbar.active {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    header .navbar a {
+        display: block;
+        padding: 1rem 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    header .icons i,
+    header .icons a {
+        height: auto;
+        line-height: normal;
+        width: auto;
+        font-size: 2rem;
+        margin-left: 1rem;
+    }
+}
+
     </style>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@400;700&display=swap">
@@ -471,15 +590,15 @@
             <p>Discover insights, reviews, and information about the products featured here. Gain valuable knowledge to make informed decisions about your purchases!</p>
         </div>
         <div class="container">
-            <!-- Post cards -->
+            
             {% for post in posts %}
             <div class="card">
                 <h2><a href="{% url 'post' post.id %}">{{ post.title }}</a></h2>
                 <p class="author">Written by {{ post.user.name }}</p>
                 {% if post.product_type == 'Product' %}
-                <p>Product: <a href="{% url 'product_detail' post.object_id 'database' %}" style="color: gold;">{{ post.product_name }}</a></p>
+                <p>Product: <a href="{% url 'product_detail' post.object_id 'database' %}" style="color: rgb(0, 255, 106);">{{ post.product_name }}</a></p>
                 {% elif post.product_type == 'ApiProduct' %}
-                <p>Product: <a href="{% url 'product_detail' post.object_id 'api' %}" style="color: gold;">{{ post.product_name }}</a></p>
+                <p>Product: <a href="{% url 'product_detail' post.object_id 'api' %}" style="color: rgb(0, 255, 106);">{{ post.product_name }}</a></p>
                 {% else %}
                 <p>No Product Data Available</p>
                 {% endif %}
@@ -493,7 +612,7 @@
                                     <path fill="#ffffff" d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path></svg>
                             </span>
                         </a>
-                </div>
+                    </div>
                     <form method="post" action="{% url 'delete_post' post.id %}" style="display: inline;">
                         {% csrf_token %}
                         <button type="submit" class="delete-button">
@@ -516,6 +635,16 @@
             {% endfor %}
         </div>
     </div>
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="social-media">
+                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p class="footer-text">Follow us on social media for updates on our latest food products! Connect with us to stay updated on new recipes, promotions, and more.</p>
+        </div>
+    </footer>
     <script>
         function toggleBar() {
             document.querySelector(".left-bar").classList.toggle("left-bar-expanded");

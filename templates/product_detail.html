@@ -70,8 +70,13 @@
                     <p>{{ product.price }}</p>
                 </div>
                 <div>
-                    <h3>Stock</h3>
-                    <p>In stock</p>
+                    
+    <h3>NutriScore Grade: </h3>
+    {% if product.nutriscore %}
+    <p>{{ product.nutriscore }}</p>
+    {% else %}
+    <p>Not Available</p>
+    {% endif %}
                 </div>
             </div>
     
@@ -100,11 +105,6 @@
     <h5>Product Rating: {{ product_rating }}</h5>
     {% else %}
     <p>No rating available for this product.</p>
-    {% endif %}
-    {% if product.nutriscore %}
-    <h5>NutriScore Grade: {{ product.nutriscore }}</h5>
-    {% else %}
-    <p>NutriScore Grade: Not Available</p>
     {% endif %}
     {% if product.id %}
     <form method="post" action="{% url 'rate_product' product.id source %}">

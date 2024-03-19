@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Post</title>
     <link rel="stylesheet" href="{% static 'post-form.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
 </head>
 <body>
     <div class="left-bar">
@@ -88,7 +89,16 @@
             <button type="submit">Submit</button>
         </form>
     </div>
-
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="social-media">
+                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            </div>
+            <p class="footer-text">Follow us on social media for updates on our latest food products! Connect with us to stay updated on new recipes, promotions, and more.</p>
+        </div>
+    </footer>
     <script>
         document.getElementById('id_product_type').addEventListener('change', function() {
             var productDiv = document.getElementById('product-div');

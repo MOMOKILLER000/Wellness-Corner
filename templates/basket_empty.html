@@ -22,32 +22,51 @@
         border-radius: 0.5rem;
         padding: 3rem;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 95%; /* Adjusted width */
-        max-width: 800px; /* Increased max-width */
+        width: 95%; 
+        max-width: 800px; 
         text-align: center;
     }
 
     h1 {
         color: #000000;
         font-weight: bold;
-        font-size: 3.5rem; /* Increased font size */
-        margin-bottom: 2rem; /* Increased margin */
+        font-size: 3.5rem; 
+        margin-bottom: 2rem; 
     }
 
     p {
         color: #000000;
-        font-size: 1.5rem; /* Increased font size */
-        margin-bottom: 2rem; /* Increased margin */
+        font-size: 1.5rem; 
+        margin-bottom: 2rem; 
     }
 
     button {
         color: black;
         text-decoration: none;
-        font-size: 1.5rem; /* Increased font size */
+        font-size: 1.5rem; 
     }
     a{
         text-decoration: none;
     }
+    @media only screen and (max-width: 768px) {
+    .container {
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: 3rem; 
+        margin-bottom: 1.5rem; 
+    }
+
+    p {
+        font-size: 1.3rem; 
+        margin-bottom: 1.5rem; 
+    }
+
+    button, a {
+        font-size: 1.3rem; 
+    }
+}
 </style>
 <body>
     <div class="container">

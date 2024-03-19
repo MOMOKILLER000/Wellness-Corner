@@ -47,7 +47,7 @@ header .logo {
 }
 
 header .logo i {
-    color: #0F52BA;
+    color: #28a745;
 }
 
 header .navbar a {
@@ -69,7 +69,7 @@ header .navbar a {
 header .navbar a.active,
 header .navbar a:hover {
     color: #fff;
-    background: 	#4169E1;
+    background:  #28a745;
 }
 
 header .icons i,
@@ -89,7 +89,7 @@ header .icons a {
 header .icons i:hover,
 header .icons a:hover {
     color: #fff;
-    background: 		#4169E1;
+    background: #8fbc8f;
     transform: rotate(360deg);
 }
 
@@ -97,36 +97,36 @@ header .icons #menu-bars {
     display: none;
 }
 
-/*Left bar */
+
 .left-bar {
     position: fixed;
     top: 0;
     left: -200px;
-    /* Initially hide the sidebar off-screen */
+    
     height: 100%;
     width: 200px;
-    background-color: #1434A4;
+    background-color:#00a087;
     color: white;
     transition: left 0.3s ease;
-    /* Add a transition effect for smooth appearance/disappearance */
+    
     z-index: 1000;
-    /* Set a higher z-index to make sure it appears above other elements */
+    
 }
 
 .left-bar-expanded {
     left: 0;
-    /* Display the sidebar when the class is applied */
+    
     z-index: 10;
 }
 
 .content-page {
     transition: margin-left 0.3s ease;
-    /* Add a transition effect for the content page when the sidebar appears/disappears */
+    
 }
 
 .content-page-extended {
     margin-left: 200px;
-    /* Adjust the margin to make room for the sidebar */
+    
 }
 
 .close-button {
@@ -134,12 +134,12 @@ header .icons #menu-bars {
     top: 10px;
     right: 10px;
     background-color: #1434A4;
-    /* Position the button on the right side */
+    
     background: none;
     border: none;
     color: white;
     font-size: 24px;
-    /* Increase the font size for a bigger button */
+    
     cursor: pointer;
 }
 .close-button:hover{
@@ -154,74 +154,39 @@ header .icons #menu-bars {
 
 .links a {
     font-size: 24px;
-    /* Adjust the font size */
     padding: 15px 20px;
-    /* Add padding for better spacing */
-    color: #89CFF0;
+    color: white;
     text-decoration: none;
     transition: color 0.3s ease;
-    /* Add transition for smooth color change on hover */
 }
 
 .links a:hover {
     color: #ffffff;
-    /* Change color on hover */
 }
 
-/*Search */
+
 .search-container {
     margin-top: 40px;
     display: none;
-    /* Initially hide the search container */
+    
 }
 
 .show-search-container {
     display: block;
-    /* Show the search container */
+    
 }
 
-.search-form {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.search-input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-right: 10px;
-    width: 250px;
-    /* Adjust as needed */
-}
-
-.search-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
-}
-
-.search-button:hover {
-    background-color: #0056b3;
-}
-
-.search-icon {
-    margin-right: 5px;
-}
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to right, #bbd2fc, #7c73f8);
+    background: linear-gradient(to right, #bbfce3, #73f8db);
     color: #333;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center content horizontally */
+    align-items: center; 
     justify-content: flex-start;
-    min-height: 100vh;
+    height:100%;
 }
 
 
@@ -234,7 +199,8 @@ body {
     max-width: 650px;
     margin-top: 2rem;
     color: #333;
-    box-sizing: border-box; /* Include padding in width calculation */
+    box-sizing: border-box; 
+    margin-bottom:50px;
 }
 h2 {
     color: #000000;
@@ -265,7 +231,7 @@ textarea {
     background-color: #f8f9fa; 
     border-radius: 0.5rem;
     border: 1.2px solid #d1d5db;
-    color: #333; /* Text color */
+    color: #333; 
     padding: 1rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
@@ -278,11 +244,11 @@ textarea {
 }
 
 button[type="submit"] {
-    background-color: #007bff; /* Button color */
+    background-color:#00b351; 
     color: #fff;
     border-radius: 0.5rem;
-    padding: 1.5rem; /* Increased padding */
-    font-size: 1.8rem; /* Increased font size */
+    padding: 1.5rem; 
+    font-size: 1.8rem; 
     transition: all 0.2s ease-in-out;
     cursor: pointer;
     border: none;
@@ -292,11 +258,11 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #0056b3; 
+    background-color:#027033fb; 
     color: #fff;
 }
 
-/* Additional styles for the profile section */
+
 .profile-container {
     background-color: #fff;
     padding: 20px;
@@ -304,8 +270,9 @@ button[type="submit"]:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     color: #333;
     box-sizing: border-box; 
-    width: 800px; /* Adjust the width as needed */
-    margin: 0 auto; /* Center the container horizontally */
+    width: 800px; 
+    margin: 0 auto; 
+    margin-top:20px;
 }
 
 .profile-form label {
@@ -336,7 +303,7 @@ button[type="submit"]:hover {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 1.8rem; /* Button font size */
+    font-size: 1.8rem; 
 }
 
 .message {
@@ -350,7 +317,195 @@ button[type="submit"]:hover {
     font-size: 1.8rem;
 }
 
-/* Adjust font size for lists */
+
 li {
     font-size: 1.8rem;
+}
+
+@media screen and (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    header .logo {
+        font-size: 2rem;
+    }
+
+    header .navbar a {
+        font-size: 1.5rem;
+        padding: .5rem 1rem;
+    }
+
+    header .icons i,
+    header .icons a {
+        height: 3.5rem;
+        line-height: 3.5rem;
+        width: 3.5rem;
+        font-size: 1.5rem;
+    }
+
+    .container {
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    label {
+        font-size: 1.8rem;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select,
+    .select,
+    textarea {
+        font-size: 1.6rem;
+        padding: 0.8rem;
+        margin-top: 0.4rem;
+        margin-bottom: 0.8rem;
+    }
+
+    textarea {
+        height: 150px;
+    }
+
+    button[type="submit"] {
+        font-size: 1.6rem;
+        padding: 1.2rem;
+    }
+
+    .profile-container {
+        width: 100%;
+        padding: 15px;
+        margin-top: 10px;
+    }
+
+    .profile-form label {
+        font-size: 1.6rem;
+    }
+
+    .message {
+        padding: 15px;
+        font-size: 1.6rem;
+    }
+
+    li {
+        font-size: 1.6rem;
+    }
+}
+
+
+@media only screen and (max-width: 1200px) {
+    
+    header {
+        padding: 1rem 2%;
+    }
+    
+    .left-bar {
+        width: 150px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .products-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .product {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    
+    .products-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .product {
+        width: calc(50% - 20px);
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    
+    .products-container {
+        padding-left: 5px;
+        padding-right: 5px;
+    }
+    
+    .product {
+        width: calc(100% - 20px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    header .logo {
+        font-size: 2rem;
+    }
+
+    header .navbar {
+        flex-direction: column;
+        background: #fff;
+        box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    header .navbar.active {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    header .navbar a {
+        display: block;
+        padding: 1rem 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+
+
+
+    header .icons i,
+    header .icons a {
+        height: auto;
+        line-height: normal;
+        width: auto;
+        font-size: 2rem;
+        margin-left: 1rem;
+    }
+}
+
+
+.show-allergies-button {
+    background-color: #00b351;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.8rem;
+    margin-top:20px;
+}
+
+.show-allergies-button:hover {
+    background-color: #027033fb;
 }

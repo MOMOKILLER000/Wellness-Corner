@@ -64,7 +64,6 @@
     {% if search_results %}
         {% for product in search_results %}
             <div class="product">
-                <!-- Display smaller image -->
                 <div class="top">
                 {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-image">

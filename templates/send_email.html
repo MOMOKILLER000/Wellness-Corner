@@ -5,19 +5,20 @@
 <head>
     <title>Contact Us</title>
     <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
 </head>
 <style>
     .main {
         font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to right, #bbd2fc, #7c73f8);
+    background: linear-gradient(to right, #bbfce3, #73f8db);
     color: #333;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center content horizontally */
+    align-items: center; 
     justify-content: flex-start;
-    min-height: 100vh;
+    height:100%;
     }
 
     .container {
@@ -30,6 +31,7 @@
     margin-top: 2rem;
     color: #333;
     box-sizing: border-box;
+    margin-bottom:30px;
     }
 
     h2 {
@@ -42,7 +44,7 @@
 
     label {
         color: #000000;
-    font-size: 2.0rem; /* Adjusted font size */
+    font-size: 2.0rem; 
     margin-bottom: 0.5rem;
     display: block;
     margin-right: 1rem;
@@ -57,7 +59,7 @@
     background-color: #f8f9fa; 
     border-radius: 0.5rem;
     border: 1.2px solid #d1d5db;
-    color: #333; /* Text color */
+    color: #333; 
     padding: 1rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
@@ -66,11 +68,11 @@
     }
 
     button[type="submit"] {
-        background-color: #007bff; /* Button color */
+        background-color: #00b351;
     color: #fff;
     border-radius: 0.5rem;
-    padding: 1.5rem; /* Increased padding */
-    font-size: 1.8rem; /* Increased font size */
+    padding: 1.5rem; 
+    font-size: 1.8rem; 
     transition: all 0.2s ease-in-out;
     cursor: pointer;
     border: none;
@@ -80,7 +82,7 @@
     }
 
     button[type="submit"]:hover {
-        background-color: #0056b3; 
+        background-color: #027033fb;
     color: #fff;
     }
 </style>
@@ -94,23 +96,23 @@
             <a href="{% url 'my_products' %}">My Products</a>
             <a href="{% url 'create_post' %}">Create Post</a>
             <a href="{% url 'post_list' %}">Posts</a>
+            <a href="{% url 'my_posts' %}">My posts</a>
             {% if request.user.is_superuser %}
             <a href="{% url 'approve_products' %}">Approve Products</a>
             <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
         {% endif %}
         <a href="{% url 'contact' %}">Contact</a>
-        <a href="{% url 'calculator' %}">Calculator calorii</a>
         </div>
     </div>
     <header>
         <div class="more">
             <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
         </div>
-        <a href="#" class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+        <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
     
         <nav class="navbar">    
             <a href="{% url 'index' %}">Home</a>
-            <a href="#about">about</a>
+            <a href="{% url 'all_recipes' %}">Recipes</a>
             <a href="{% url 'user_discounts' %}">My discounts</a>
             <a href="{% url 'myaccount' %}">My Profile</a>
             <a href="{% url 'logout' %}">Logout</a>
@@ -134,6 +136,16 @@
   </form>
 </div>
 </div>
+<footer class="footer">
+    <div class="footer-container">
+        <div class="social-media">
+            <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+        </div>
+        <p class="footer-text">Follow us on social media for updates on our latest food products! Connect with us to stay updated on new recipes, promotions, and more.</p>
+    </div>
+</footer>
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 <script>
    function toggleBar() {

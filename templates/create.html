@@ -45,10 +45,17 @@
         </div>
     
     </header>
-    <div class="wrapper profile">
+    <div style="margin-bottom:30px" class="wrapper profile">
         <div class="profile-container">
             <div class="col-right">
                 <h2>Create a product</h2>
+                {% if messages %}
+        <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
                 <form method="post" enctype="multipart/form-data" autocomplete="off">
                     {% csrf_token %}
                     {{ form.product_name.errors }}
@@ -70,6 +77,10 @@
                     {{ form.image.errors }}
                     <label for="{{ form.image.id_for_label }}">Image:</label>
                     {{ form.image }}
+                    
+                    {{ form.ean_code.errors }}
+                    <label for="{{ form.ean_code.id_for_label }}">Ean code:</label>
+                    {{ form.ean_code }}
 
                     {{ form.protein_per_100g.errors }}
                     <label for="{{ form.protein_per_100g.id_for_label }}">Protein per 100g:</label>
@@ -103,9 +114,13 @@
                     <label for="{{ form.price.id_for_label }}">Price:</label>
                     {{ form.price }}
 
-                    {{ form.product_type.errors }}
-                    <label for="{{ form.product_type.id_for_label }}">Product Type:</label>
-                    {{ form.product_type }}
+                    {{ form.is_vegan.errors }}
+                    <label for="{{ form.is_vegan.id_for_label }}">Is vegan:</label>
+                    {{ form.is_vegan }}
+
+                    {{ form.is_vegetarian.errors }}
+                    <label for="{{ form.is_vegetarian.id_for_label }}">Is vegetarian:</label>
+                    {{ form.is_vegetarian}}
 
                     {{ form.allergies.errors }}
                     <label for="{{ form.allergies.id_for_label }}">Allergies:</label>

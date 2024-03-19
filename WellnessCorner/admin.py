@@ -9,12 +9,12 @@ User = get_user_model()
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['product_name', 'brands', 'quantity', 'categories', 'product_type']
     list_filter = ['product_name', 'brands', 'categories', 'product_type']
-    search_fields = ['product_name']
+    search_fields = ['product_name', 'ean_code']
 
 class ApiProductAdmin(admin.ModelAdmin):
     list_display = ['product_name', 'brands', 'quantity', 'categories', 'product_type']
     list_filter = ['product_name', 'brands', 'categories', 'product_type']
-    search_fields = ['product_name']
+    search_fields = ['product_name', 'ean_code']
 
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ApiProduct, ApiProductAdmin)

@@ -4,6 +4,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    
+    
 }
 
 .container {
@@ -13,6 +15,7 @@
 
 .container > h1 {
     padding: 20px 0;
+    font-size:32px;
 }
 
 .cart {
@@ -30,6 +33,7 @@
     overflow: hidden;
     border: 1px solid silver;
     margin-bottom: 20px;
+    font-size:18px;
 }
 
 .product:hover {
@@ -41,7 +45,7 @@
 .product > img {
     width: 300px;
     height: 200px;
-    object-fit: contain; /* Updated to 'contain' */
+    object-fit: contain; 
 }
 
 .product > img:hover {
@@ -85,8 +89,8 @@
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem;
-    padding: 0;
+    font-size: 1.6rem;
+    padding: 5px;
     margin: 0;
 }
 
@@ -181,14 +185,14 @@
 }
 
 .discounts input[type="text"] {
-    font-size: 1rem;
+    font-size: 1.6rem;
     background-color: #ffffff;
     border-radius: 0.5rem;
     padding:10px;
     border: 1.2px solid #d1d5db;
     color: #000000;
     margin-top: 0.5rem;
-    margin-bottom: 0l6rem; /* Added margin-right */
+    margin-bottom: 0l6rem; 
     
 }
 
@@ -197,12 +201,12 @@
     color: white;
     border-radius: 0.5rem;
     padding:10px;
-    font-size: 1rem; /* Increased font size */
+    font-size: 1.6rem; 
     transition: all 0.2s ease-in-out;
     cursor: pointer;
     border: none;
     outline: none;
-    margin: 0 auto; /* Center the button horizontally */
+    margin: 0 auto; 
 }
 
 
@@ -215,6 +219,7 @@
 .discount-list {
     list-style-type: none;
     padding: 0;
+    font-size:18px;
 }
 
 .discount-item {
@@ -224,7 +229,7 @@
 }
 
 .remove-form {
-    margin-left: 10px; /* Adjust as needed for spacing */
+    margin-left: 10px; 
 }
 
 .remove-button {
@@ -234,6 +239,7 @@
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size:1.5rem;
 }
 
 .remove-button:hover {

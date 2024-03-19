@@ -1,3 +1,4 @@
+
 * {
     font-family: 'Nunito', sans-serif;
     margin: 0;
@@ -8,7 +9,6 @@
     border: none;
     text-transform: capitalize;
     transition: all .2s linear;
-    
 }
 
 html {
@@ -18,6 +18,7 @@ html {
     scroll-behavior: smooth;
 }
 
+
 .heading {
     text-align: center;
     color: black;
@@ -25,6 +26,7 @@ html {
     padding-bottom: 2rem;
     text-transform: uppercase;
 }
+
 
 header {
     top: 0;
@@ -46,7 +48,7 @@ header .logo {
 }
 
 header .logo i {
-    color: #0F52BA;
+    color: #28a745;
 }
 
 header .navbar a {
@@ -68,7 +70,7 @@ header .navbar a {
 header .navbar a.active,
 header .navbar a:hover {
     color: #fff;
-    background: 	#4169E1;
+    background:  #28a745;
 }
 
 header .icons i,
@@ -88,7 +90,7 @@ header .icons a {
 header .icons i:hover,
 header .icons a:hover {
     color: #fff;
-    background: 		#4169E1;
+    background: #8fbc8f;
     transform: rotate(360deg);
 }
 
@@ -96,49 +98,41 @@ header .icons #menu-bars {
     display: none;
 }
 
-/*Left bar */
+
+
 .left-bar {
     position: fixed;
     top: 0;
     left: -200px;
-    /* Initially hide the sidebar off-screen */
     height: 100%;
     width: 200px;
-    background-color: #1434A4;
+    background-color:#00a087;
     color: white;
     transition: left 0.3s ease;
-    /* Add a transition effect for smooth appearance/disappearance */
     z-index: 1000;
-    /* Set a higher z-index to make sure it appears above other elements */
 }
 
 .left-bar-expanded {
     left: 0;
-    /* Display the sidebar when the class is applied */
     z-index: 10;
 }
 
 .content-page {
     transition: margin-left 0.3s ease;
-    
-    /* Add a transition effect for the content page when the sidebar appears/disappears */
 }
 
 .content-page-extended {
     margin-left: 200px;
-    /* Adjust the margin to make room for the sidebar */
 }
 
 .close-button {
     position: absolute;
     top: 10px;
     right: 10px;
-    /* Position the button on the right side */
     background: none;
     border: none;
     color: white;
     font-size: 24px;
-    /* Increase the font size for a bigger button */
     cursor: pointer;
 }
 
@@ -151,30 +145,26 @@ header .icons #menu-bars {
 
 .links a {
     font-size: 24px;
-    /* Adjust the font size */
     padding: 15px 20px;
-    /* Add padding for better spacing */
-    color: #89CFF0;
+    color: white;
     text-decoration: none;
     transition: color 0.3s ease;
-    /* Add transition for smooth color change on hover */
 }
 
 .links a:hover {
     color: #ffffff;
-    /* Change color on hover */
 }
 
-/*Search */
+
 .search-container {
     margin-top: 40px;
     display: none;
-    /* Initially hide the search container */
 }
 
 .show-search-container {
-    display: block;
-    /* Show the search container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .search-form {
@@ -189,57 +179,68 @@ header .icons #menu-bars {
     border-radius: 5px;
     margin-right: 10px;
     width: 250px;
-    /* Adjust as needed */
 }
 
 .search-button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color:#28a745;
     color: #fff;
     cursor: pointer;
 }
 
 .search-button:hover {
-    background-color: #0056b3;
+    background-color: #28a745;
 }
 
 .search-icon {
     margin-right: 5px;
 }
 
-/*Products*/
+.scan-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: #fff;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.scan-button:hover {
+    background-color: #218838;
+}
+
+.scan-icon {
+    margin-right: 5px;
+}
+
 .products-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     padding-left: 30px;
     padding-right: 30px;
-    
 }
 
 .product {
     width: calc(25% - 20px);
-    /* Adjust width for 4 products per line */
     margin-bottom: 20px;
     padding: 10px;
     border: 1px solid #ccc;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    /* Use flexbox */
     flex-direction: column;
     justify-content: space-between;
-    /* Add space between top, middle, and bottom */
     align-items: center;
     text-align: center;
     border-radius: 30px;
-    /* Add border radius */
 }
+
 .product:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-7px);
-    transition: box-shadow 0.3s, transform 0.3s;
 }
 
 .product h1 {
@@ -253,23 +254,20 @@ header .icons #menu-bars {
     color: black;
     font-size: 1.2rem;
     padding: 10px 15px;
-    /* Adjust padding */
 }
 
 .product-image {
     height: 130px;
     width: auto;
-    /* Set a fixed width for all images */
     margin-bottom: 10px;
 }
 
 .product-button {
-    background-color:	#4169E1;
+    background-color:#3cb371;
     color: white;
     text-decoration: none;
     font-size: 1.2rem;
     padding: 10px 20px;
-    /* Adjust button padding */
     border-radius: 5px;
 }
 
@@ -289,73 +287,72 @@ header .icons #menu-bars {
 .top {
     display: flex;
     justify-content: center;
-    /* Center the image horizontally */
     align-items: center;
-    /* Center the image vertically */
 }
 
 .middle {
     text-align: center;
-    /* Center text horizontally */
 }
 
 .bottom {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* Center child elements vertically */
     align-items: center;
-    /* Center child elements horizontally */
     margin-top: 10px;
-    /* Add space between middle and bottom */
 }
 
-/* Subscribe */
 
-.scris-sus h2{
+.scris-sus h2 {
     position: relative;
-    font-size:40px;
-    padding-top:40px;
-    padding-left:200px;
-    padding-right:200px;   
+    font-size: 40px;
+    padding-top: 40px;
+    padding-left: 200px;
+    padding-right: 200px;
     background: #f2f2f2;
     text-align: center;
 }
-.scris-sus p{
-    position: relative; 
-    padding-left:200px;
-    padding-right:200px;
-    padding-bottom:20px;
-    padding-top:15px;
+
+.scris-sus p {
+    position: relative;
+    padding-left: 200px;
+    padding-right: 200px;
+    padding-bottom: 20px;
+    padding-top: 15px;
     background: #f2f2f2;
     text-align: center;
 }
+
 #welcome a {
     display: inline-block;
     padding: 7px 30px;
-    color: #FFD700;
+    color: #28a745;
     background: #222222;
 }
-#welcome p{
-    font-size:18px;
+
+#welcome p {
+    font-size: 18px;
 }
-.subscribe{
-    width: 180px; /* Set width */
-    height: 50px; /* Set height */
-    display: block; /* Change display to block */
-    margin: 0 auto; /* Center horizontally */
-    padding: 10px 30px; /* Adjust padding */
-    font-size: 24px; /* Increase font size */
-    color: #a8c2f3;
+
+.subscribe {
+    width: 180px;
+    height: 50px;
+    display: block;
+    margin: 0 auto;
+    padding: 10px 30px;
+    font-size: 24px;
+    color: #a8f3e9;
     background: #222222;
     border: none;
     border-radius: 5px;
 }
-.subscribe:hover{
+
+.subscribe:hover {
     color: #222222;
-    background: #a8c2f3;
+    background: #a8f3e9;
     cursor: pointer;
 }
+
 #welcome a:hover {
     color: #222222;
     background-image: linear-gradient(to top right, #6B097A, #274BDB, #00FF00, #FFA500, #FF0000);
@@ -375,13 +372,12 @@ header .icons #menu-bars {
 
 #welcome {
     position: relative;
-   padding-left:200px;
-   padding-right:200px;
-   padding-bottom:60px;
+    padding-left: 200px;
+    padding-right: 200px;
+    padding-bottom: 60px;
     background: #f2f2f2;
     text-align: center;
 }
-
 
 
 .Btn {
@@ -398,26 +394,25 @@ header .icons #menu-bars {
     transition-duration: .3s;
     box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.199);
     background-color: rgb(255, 65, 65);
-  }
-  
-  /* plus sign */
-  .sign {
+}
+
+.sign {
     width: 100%;
     transition-duration: .3s;
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-  
-  .sign svg {
+}
+
+.sign svg {
     width: 17px;
-  }
-  
-  .sign svg path {
+}
+
+.sign svg path {
     fill: white;
-  }
-  /* text */
-  .text {
+}
+
+.text {
     position: absolute;
     right: 0%;
     width: 0%;
@@ -426,27 +421,146 @@ header .icons #menu-bars {
     font-size: 1.2em;
     font-weight: 600;
     transition-duration: .3s;
-  }
-  /* hover effect on button width */
-  .Btn:hover {
+}
+
+.Btn:hover {
     width: 125px;
     border-radius: 40px;
     transition-duration: .3s;
-  }
-  
-  .Btn:hover .sign {
+}
+
+.Btn:hover .sign {
     width: 30%;
     transition-duration: .3s;
     padding-left: 20px;
-  }
-  /* hover effect button's text */
-  .Btn:hover .text {
+}
+
+.Btn:hover .text {
     opacity: 1;
     width: 70%;
     transition-duration: .3s;
     padding-right: 10px;
-  }
-  /* button click effect*/
-  .Btn:active {
+}
+
+.Btn:active {
     transform: translate(2px ,2px);
-  }
+}
+
+@media only screen and (max-width: 1200px) {
+    
+    header {
+        padding: 1rem 2%;
+    }
+    
+    .left-bar {
+        width: 150px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    
+    .products-container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .product {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    
+    .products-container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    
+    .product {
+        width: calc(50% - 20px);
+    }
+
+    
+    header {
+        padding: 1rem;
+    }
+
+    header .logo {
+        font-size: 2rem;
+    }
+
+    header .navbar {
+        flex-direction: column;
+        background: #fff;
+        box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        transform: translateY(-100%);
+        opacity: 0;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    header .navbar.active {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    header .navbar a {
+        display: block;
+        padding: 1rem 0;
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid #ccc;
+    }
+
+    header .icons #menu-bars {
+        display: block;
+    }
+
+    header .icons i,
+    header .icons a {
+        height: auto;
+        line-height: normal;
+        width: auto;
+        font-size: 2rem;
+        margin-left: 1rem;
+    }
+}
+
+
+
+.footer {
+    background-color: #f4f4f4;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.social-media {
+    margin-bottom: 10px;
+}
+
+.social-icon {
+    display: inline-block;
+    margin-right: 10px;
+    color: #333;
+    font-size: 24px;
+    transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+    color: #555;
+}
+
+.footer-text {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.5;
+}
