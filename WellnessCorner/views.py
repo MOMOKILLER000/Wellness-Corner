@@ -118,7 +118,7 @@ def registration_view(request):
             else:
                 messages.error(request, 'reCAPTCHA verification failed. Please try again.')
         else:
-            # Check for specific error messages
+            
             if 'email' in form.errors:
                 messages.error(request, 'Email already exists. Please choose a different one.')
             elif 'name' in form.errors:
@@ -205,19 +205,19 @@ class CustomPasswordChangeView(PasswordChangeView):
 def search_product_by_barcode(request, barcode):
     if request.method == 'GET':
         if barcode:
-            # Search in ApiProduct model
+            
             api_product = ApiProduct.objects.filter(ean_code=barcode).first()
             if api_product:
                 return redirect(reverse('product_detail', kwargs={'product_id': api_product.id, 'source': 'api'}))
             else:
-                # Search in Product model
+                
                 product = Product.objects.filter(ean_code=barcode).first()
                 if product:
                     return redirect(reverse('product_detail', kwargs={'product_id': product.id, 'source': 'database'}))
                 else:
-                    # Restart the barcode detection process after 15 seconds
+                    
                     time.sleep(35)
-                    return redirect('/barcode_scanner/')  # Adjust the URL to your barcode scanning page
+                    return redirect('/barcode_scanner/')  
         else:
             return JsonResponse({'status': 'error', 'message': 'Barcode parameter missing'})
     else:
@@ -225,18 +225,18 @@ def search_product_by_barcode(request, barcode):
 
 
 def search_product(product_name, user=None):
-    # Fetch products from the local database
+    
     database_products = Product.objects.filter(product_name__icontains=product_name)
 
-    # Initialize list for API products
+    
     api_products = []
 
-    # Fetch user allergies if user is authenticated
+    
     user_allergies = None
     if user and user.is_authenticated:
         user_allergies = user.allergies.all()
 
-    # Fetch products from the Open Food Facts API
+    
     api_url = f'https://world.openfoodfacts.org/cgi/search.pl?search_terms={product_name}&search_simple=1&action=process&json=1'
     response = requests.get(api_url)
 
@@ -244,12 +244,12 @@ def search_product(product_name, user=None):
         product_data = response.json()
         if 'products' in product_data:
             for product in product_data['products']:
-                # Check if product has a valid name
+                
                 name = product.get('product_name', '')
                 if not name:
-                    continue  # Skip this product if it has no name
+                    continue  
                 
-                # Extract product details
+                
                 brands = product.get('brands', '')
                 quantity = product.get('quantity', '')
                 categories = product.get('categories', '')
@@ -277,7 +277,7 @@ def search_product(product_name, user=None):
                 if nutriscore_grade is not None:
                     nutriscore_grade = nutriscore_grade.upper()
 
-                # Create or retrieve ApiProduct instance
+                
                 api_product, created = ApiProduct.objects.get_or_create(
                     product_name=name,
                     defaults={
@@ -295,38 +295,38 @@ def search_product(product_name, user=None):
                         'allergies': json.dumps(allergies) if allergies else None,
                         'is_vegan': is_vegan,
                         'is_vegetarian': is_vegetarian,
-                        'ean_code': ean_code  # Save EAN code to the model
+                        'ean_code': ean_code  
                     }
                 )
 
-                # Retrieve user rating
+                
                 rating = None
                 try:
                     api_product = ApiProduct.objects.get(product_name=name)
                     rating = api_product.user_rating
                 except ApiProduct.DoesNotExist:
-                    pass  # No need to handle if product doesn't exist
+                    pass  
 
-                # Update user rating
+                
                 api_product.user_rating = rating
 
-                # Append to list of API products
+                
                 api_products.append(api_product)
 
-                # Download and save image if available
+                
                 if product.get('image_url') and not api_product.image:
                     image_url = product.get('image_url')
                     response = requests.get(image_url)
                     if response.status_code == 200:
                         api_product.image.save(f'{name}_image.jpg', ContentFile(response.content), save=True)
 
-    # Merge database and API products
+    
     all_products = list(database_products) + api_products
 
-    # Filter out duplicates based on product name
+    
     unique_products = {product.product_name: product for product in all_products}
 
-    # Return unique products
+    
     return unique_products.values()
 
 def rate_product(request, product_id, source):

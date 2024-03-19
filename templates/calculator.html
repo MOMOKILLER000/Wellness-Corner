@@ -287,16 +287,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Get the canvas element
             var ctx = document.getElementById('caloriesPieChart').getContext('2d');
     
-            // Define JavaScript variables and assign values from Django template
             var breakfastCalories = {{ breakfast_total.total_calories|safe }};
             var lunchCalories = {{ lunch_total.total_calories|safe }};
             var dinnerCalories = {{ dinner_total.total_calories|safe }};
             var snacksCalories = {{ snacks_total.total_calories|safe }};
     
-            // Create the data for the pie chart
             var data = {
                 labels: ['Breakfast', 'Lunch', 'Dinner', 'Snacks'],
                 datasets: [{
@@ -318,7 +315,6 @@
                 }]
             };
     
-            // Create the pie chart
             var myPieChart = new Chart(ctx, {
                 type: 'pie',
                 data: data,

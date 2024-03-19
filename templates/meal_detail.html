@@ -140,10 +140,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Get the canvas element
         var ctx = document.getElementById('nutritionalChart').getContext('2d');
-
-        // Define data for the chart
         var data = {
             labels: ['Proteins', 'Carbs', 'Fats'],
             datasets: [{
@@ -163,7 +160,6 @@
             }]
         };
 
-        // Create the chart
         var myChart = new Chart(ctx, {
             type: 'pie',
             data: data,

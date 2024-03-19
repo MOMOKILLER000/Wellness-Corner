@@ -14,21 +14,21 @@
 </head>
 <style>
 #scannedBarcode {
-    display: none; /* Initially hide the container */
+    display: none; 
     justify-content: center;
     align-items: center;
-    height: 70vh; /* Adjust the height as needed */
-    margin-top: 20px; /* Adjust the margin as needed */
-    position: relative; /* Add position relative */
+    height: 70vh; 
+    margin-top: 20px; 
+    position: relative; 
 }
 
 #scannedBarcode video {
     width: auto;
-    height: 100%; /* Make the video fill the container */
-    position: absolute; /* Add position absolute */
-    left: 50%; /* Move the video to the center horizontally */
-    top: 50%; /* Move the video to the center vertically */
-    transform: translate(-50%, -50%); /* Center the video */
+    height: 100%; 
+    position: absolute; 
+    left: 50%; 
+    top: 50%; 
+    transform: translate(-50%, -50%); 
 }
 </style>
 <body>
@@ -78,7 +78,7 @@
 {% endif %}
 
     
-    <!-- Container to display the scanned barcode -->
+    
     <div id="scannedBarcode"></div>
     
 
@@ -306,13 +306,13 @@
         inputStream: {
             name: "Live",
             type: "LiveStream",
-            target: document.querySelector('#scannedBarcode'), // Container to display the scanned barcode
+            target: document.querySelector('#scannedBarcode'),
             constraints: {
-                facingMode: "environment" // Use the rear camera for scanning
+                facingMode: "environment" 
             },
         },
         decoder: {
-            readers: ["ean_reader"] // Specify the type of barcode to scan (EAN)
+            readers: ["ean_reader"]
         }
     }, function (err) {
         if (err) {
@@ -321,32 +321,25 @@
         }
         console.log("Initialization finished. Ready to start");
         Quagga.start();
-        // Show the video container once Quagga is initialized
         document.getElementById("scannedBarcode").style.display = "flex";
     });
 
     Quagga.onDetected(function (data) {
         console.log("Barcode detected and processed : [" + data.codeResult.code + "]", data);
-        // Redirect to the search_product_by_barcode view with the scanned barcode
         window.location.href = '/search_product_by_barcode/' + data.codeResult.code + '/';
         foundProduct = true;
     });
 
-    // Function to execute if product is not found after 15 seconds
     function productNotFound() {
         if (!foundProduct) {
             console.log("Product not found after 15 seconds");
-            // Stop the barcode detection process
             Quagga.stop();
-            // Hide the camera container
             document.getElementById("scannedBarcode").style.display = "none";
-            // Show the search container again
             document.getElementById("search-container").style.display = "none";
             location.reload();
         }
     }
 
-    // Call the productNotFound function after 15 seconds
     setTimeout(productNotFound, 35000);
 }
 </script>

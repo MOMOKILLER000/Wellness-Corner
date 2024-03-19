@@ -99,17 +99,17 @@
             if (this.value === 'Product') {
                 productDiv.style.display = 'block';
                 apiProductDiv.style.display = 'none';
-                productSelect.setAttribute('name', 'object_id');  // Set name attribute for product selection
-                productSelect.setAttribute('required', 'required');  // Make product selection required
-                apiProductSelect.removeAttribute('name');  // Remove name attribute for API product selection
-                apiProductSelect.removeAttribute('required');  // Remove required attribute for API product selection
+                productSelect.setAttribute('name', 'object_id');
+                productSelect.setAttribute('required', 'required');  
+                apiProductSelect.removeAttribute('name');  
+                apiProductSelect.removeAttribute('required');  
             } else if (this.value === 'ApiProduct') {
                 productDiv.style.display = 'none';
                 apiProductDiv.style.display = 'block';
-                apiProductSelect.setAttribute('name', 'object_id');  // Set name attribute for API product selection
-                apiProductSelect.setAttribute('required', 'required');  // Make API product selection required
-                productSelect.removeAttribute('name');  // Remove name attribute for product selection
-                productSelect.removeAttribute('required');  // Remove required attribute for product selection
+                apiProductSelect.setAttribute('name', 'object_id');  
+                apiProductSelect.setAttribute('required', 'required');  
+                productSelect.removeAttribute('name');  
+                productSelect.removeAttribute('required');  
             } else {
                 productDiv.style.display = 'none';
                 apiProductDiv.style.display = 'none';

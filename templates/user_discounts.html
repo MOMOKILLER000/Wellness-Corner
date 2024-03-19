@@ -152,10 +152,9 @@
                     var discountBox = this.closest('.discount-box');
                     var discountCode = discountBox.querySelector('.discount-code');
 
-                    // Toggle the 'revealed' class on the discount code element
+                    
                     discountCode.classList.toggle('revealed');
 
-                    // Toggle the button text between 'Reveal' and 'Hide'
                     if (this.textContent === 'Reveal') {
                         this.textContent = 'Hide';
                     } else {
