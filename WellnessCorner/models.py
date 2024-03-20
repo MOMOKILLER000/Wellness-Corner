@@ -607,9 +607,9 @@ class Recipe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     image = models.ImageField(upload_to='recipes/', null=True, blank=True)
-    name = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=200, unique=True)
     content = models.TextField()
-    description = models.TextField(max_length=120, null=True, blank=True)
+    description = models.TextField(max_length=500, null=True, blank=True)
 
 class Ingredient(models.Model):
     RECIPE_SOURCES = (

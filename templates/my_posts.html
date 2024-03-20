@@ -602,7 +602,7 @@ header .icons #menu-bars {
                 {% else %}
                 <p>No Product Data Available</p>
                 {% endif %}
-                <p>{{ post.content|truncatewords:30 }}</p>
+                <p>{{ post.content|truncatewords:20 }}</p>
                 <div class="button-group">
                     <div>
                         <a href="{% url 'edit_post' post.id %}" class="edit-button">
@@ -636,15 +636,14 @@ header .icons #menu-bars {
         </div>
     </div>
     <footer class="footer">
-        <div class="footer-container">
-            <div class="social-media">
-                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-            </div>
-            <p class="footer-text">Follow us on social media for updates on our latest food products! Connect with us to stay updated on new recipes, promotions, and more.</p>
+    <div class="footer-container">
+        <div class="social-media">
+            <a href="https://github.com/MOMOKILLER000/Wellness-Corner.git" class="social-icon"><i class="fa-brands fa-github"></i></a>
+            <a href="https://youtu.be/UTZtJQ2MCTs" class="social-icon"><i class="fa-brands fa-youtube"></i></a>        
         </div>
-    </footer>
+        <p class="footer-text">Project created by Buzdugan Mihnea-Andrei and Sănduleasa Daria-Elena</p>
+    </div>
+</footer>
     <script>
         function toggleBar() {
             document.querySelector(".left-bar").classList.toggle("left-bar-expanded");

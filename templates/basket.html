@@ -246,7 +246,10 @@ header .icons #menu-bars {
                 <div class="product">
                     <img src="{{ product.product.image.url }}">
                     <div class="product-info">
-                        <h3 class="product-name">{{ product.product.product_name }}</h3>
+                        <h3 class="product-name">{{ product.product.product_name }}- {% if product.product.nutriscore %}
+                            <p>Health rating:{{ product.product.nutriscore }}</p>
+                            {% else %}
+                            <p>No Health rating</p></h3>{% endif %}
                         <h4 class="product-price">$ {{ product.product.price }}</h4>
                         <div class="quantity-container">
                             <form method="post" action="{% url 'decrement_quantity' product_id=product.product.id source=product.source %}">
@@ -327,15 +330,14 @@ header .icons #menu-bars {
         </div>
     </div>
     <footer class="footer">
-        <div class="footer-container">
-            <div class="social-media">
-                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-            </div>
-            <p class="footer-text">Follow us on social media for updates on our latest food products! Connect with us to stay updated on new recipes, promotions, and more.</p>
+    <div class="footer-container">
+        <div class="social-media">
+            <a href="https://github.com/MOMOKILLER000/Wellness-Corner.git" class="social-icon"><i class="fa-brands fa-github"></i></a>
+            <a href="https://youtu.be/UTZtJQ2MCTs" class="social-icon"><i class="fa-brands fa-youtube"></i></a>        
         </div>
-    </footer>
+        <p class="footer-text">Project created by Buzdugan Mihnea-Andrei and Sănduleasa Daria-Elena</p>
+    </div>
+</footer>
 </body>
 <script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
 </html>

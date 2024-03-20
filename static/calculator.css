@@ -233,7 +233,7 @@ header .icons #menu-bars {
 }
 
 .product-button {
-    background-color:	#4169E1;
+    background-color:	 #28a745;
     color: white;
     text-decoration: none;
     font-size: 1.2rem;
@@ -308,7 +308,7 @@ form button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color:  #28a745;
     color: #fff;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -341,7 +341,7 @@ form button:hover {
     padding: 1rem 2rem; 
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #28a745;
     color: #fff;
     text-align: center;
     text-decoration: none;
@@ -350,7 +350,7 @@ form button:hover {
 }
 
 .back-button:hover {
-    background-color: #0056b3;
+    background-color: #00b368;
 }
 
 
@@ -375,13 +375,13 @@ form button:hover {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #28a745;
     color: #fff;
     cursor: pointer;
 }
 
 .search-button:hover {
-    background-color: #0056b3;
+    background-color: #00b377;
 }
 
 .search-icon {

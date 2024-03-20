@@ -21,6 +21,12 @@ class RegistrationForm(UserCreationForm):
         model = User
         fields = ['email', 'name', 'password1', 'password2', 'diet', 'allergies']
 
+    def clean_password1(self):
+        password1 = self.cleaned_data.get("password1")
+        if len(password1) < 8:
+            raise forms.ValidationError("Password must have at least 8 characters.")
+        return password1
+
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Email')
     password = forms.CharField(label='Password', widget=forms.PasswordInput)

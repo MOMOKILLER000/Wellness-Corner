@@ -132,7 +132,7 @@
     <div class="container">
         <div class="post-header">
             <h1>{{ post.title }}</h1>
-            <h3>{{ post.user.name }}</h3> 
+            <h3>Written by {{ post.user.name }}</h3> 
             <h3> {{ post.pub_date }}</h3>
         </div>
         <div class="post-content">
@@ -150,6 +150,14 @@
                     <textarea name="content">{{ comment.content }}</textarea>
                     <div class="comment-actions">
                         <button type="submit">Save</button>
+                        <button formaction="{% url 'delete_comment' comment.id %}" type="submit">Delete</button>
+                    </div>
+                </form>
+                {% elif post.user == request.user %}
+                <form method="post" action="{% url 'edit_comment' comment.id %}">
+                    {% csrf_token %}
+                    <p class="comment-content">{{ comment.content }}</p>
+                    <div class="comment-actions">
                         <button formaction="{% url 'delete_comment' comment.id %}" type="submit">Delete</button>
                     </div>
                 </form>
