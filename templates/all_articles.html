@@ -1,0 +1,251 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Articles</title>
+    <link rel="stylesheet" href="{% static 'index.css' %}">
+    <link rel="stylesheet" href="{% static 'footer.css' %}">
+</head>
+<style>
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+    gap: 20px; 
+    margin-top: 20px;
+    margin-left:20px;
+    margin-right:20px;
+    margin-bottom:20px;
+}
+
+.recipe {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px; 
+    text-align: center;
+    position: relative; 
+}
+
+.recipe img {
+    max-width: 100%;
+    border-radius: 5px;
+    max-height: 60%; 
+    margin-bottom: 20px; 
+}
+
+.recipe h2 {
+    margin-top: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+.recipe p {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+    height: 100px; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+}
+
+.recipe .add {
+    position: absolute; 
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+}
+
+    
+    .container a {
+        font-size: 18px; 
+        font-weight: bold; 
+        color: #007bff; 
+        text-decoration: none; 
+    }
+
+    .container a:hover {
+        color: #0056b3; 
+    }
+
+    .page-title {
+        font-size: 36px;
+        text-align: center;
+        margin-bottom: 20px; 
+    }
+    .create {
+        display: block; 
+        margin-top: 20px; 
+        margin-left: 20px;
+        font-size: 24px; 
+        font-weight: bold; 
+        color: #007bff; 
+        text-decoration: none; 
+    }
+
+    .create:hover {
+        color: #0056b3; 
+    }
+
+    .edit-button {
+    padding: 10px 20px;
+    border: 1px solid #ff69b4;
+    background-color: #ff69b4;
+    overflow: hidden;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 290px;
+    transform: translateX(0);
+    color: #fff;
+    font-weight: 600;
+    transition: all 0.3s;
+    margin-left:20px;
+}
+
+.edit-button .button__text {
+    transform: translateX(0);
+    color: #fff;
+    font-weight: 600;
+    font-size:22px;
+    transition: all 0.3s;
+}
+
+.edit-button .button__icon {
+    position: absolute;
+    left: calc(100% - 40px);
+    height: 100%;
+    width: 40px;
+    background-color: #ED62A7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.edit-button .svg {
+    width: 20px;
+}
+
+.edit-button:hover {
+    background: #ED62A7;
+}
+
+.edit-button:hover .button__text {
+    color: transparent;
+}
+
+.edit-button:hover .button__icon {
+    width: 100%;
+    left: 0;
+}
+
+.edit-button:active .button__icon {
+    background-color: #ED62A7;
+}
+
+.edit-button:active {
+    border: 1px solid #ED62A7;
+}
+
+    </style>
+<body>
+    <div class="left-bar">
+    <button class="close-button" onclick="closeBar()">
+        <i class="fa-solid fa-times"></i>
+    </button>
+    <div class="links">
+        <a href="{% url 'create' %}">Create Product</a>
+        <a href="{% url 'my_products' %}">My Products</a>
+        <a href="{% url 'create_post' %}">Create Post</a>
+        <a href="{% url 'post_list' %}">Posts</a>
+        <a href="{% url 'my_posts' %}">My posts</a>
+        {% if request.user.is_superuser %}
+        <a href="{% url 'approve_products' %}">Approve Products</a>
+        <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+        {% endif %}
+        <a href="{% url 'nearby_places' %}">Local Eats</a>
+        <a href="{% url 'chat' %}">AI support</a>
+        <a href="{% url 'all_articles' %}">Articles</a>
+        <a href="{% url 'contact' %}">Contact</a>
+    </div>
+</div>
+<header>
+    <div class="more">
+        <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+    </div>
+    <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+
+    <nav class="navbar">
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'all_recipes' %}">Recipes</a>
+        <a href="{% url 'user_discounts' %}">My discounts</a>
+        <a href="{% url 'myaccount' %}">My Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
+        <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
+        <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+    </div>
+
+</header>
+    <h1 style="margin-top:20px;" class="page-title">All Articles</h1>
+    {% if request.user.is_superuser %}
+    <div>
+        <a href="{% url 'create_article' %}" class="edit-button">
+            <span class="button__text">Create New Article</span>
+            <span class="button__icon">
+                <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" xml:space="preserve" fill="#ffffff">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                        <circle style="fill:#ff69b4;" cx="25" cy="25" r="25"></circle>
+                        <line style="fill:none;stroke:#FFFFFF;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="25" y1="13" x2="25" y2="38"></line>
+                        <line style="fill:none;stroke:#FFFFFF;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;" x1="37.5" y1="25" x2="12.5" y2="25"></line>
+                    </g>
+                </svg>
+            </span>
+        </a>
+    </div>
+    {% endif %}
+    <div class="container">
+        {% for article in articles %}
+        <div class="recipe">
+            {% if article.cover %}
+            <div class="form-container">
+                <img src="{{ article.cover.url }}" alt="{{ article.name }}" class="product-image">
+            </div>
+            {% endif %}
+            <p style="height:30px;text-align:left;margin-left:7px;font-size:14px;">{{ article.created_at }}</p>
+            <a href="{% url 'manage_article' article_id=article.id %}">{{ article.name }}</a>
+            <p>{{ article.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    <footer class="footer">
+    <div class="footer-container">
+        <div class="social-media">
+            <a href="https://github.com/MOMOKILLER000" class="social-icon"><i class="fa-brands fa-github"></i></a>      
+        </div>
+        <p class="footer-text">Project created by Buzdugan Mihnea-Andrei and Sănduleasa Daria-Elena</p>
+    </div>
+</footer>
+</body>
+<script>
+    function toggleBar() {
+document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+document.querySelector(".content-page").classList.toggle("content-page-extended");
+}
+
+function closeBar() {
+ document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+ document.querySelector(".content-page").classList.remove("content-page-extended");
+}
+</script>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>
+</html>

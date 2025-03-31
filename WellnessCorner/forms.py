@@ -3,7 +3,7 @@ from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from .models import User, Allergy
 from .models import PendingProduct, Product, ApiProduct, Post, Subscriber
 from itertools import chain
-from .models import MealProduct, MealApiProduct, UserProfile, Comment, Recipe
+from .models import MealProduct, MealApiProduct, UserProfile, Comment, Recipe, Article
 from django.contrib.auth.forms import PasswordChangeForm as DjangoPasswordChangeForm
 from django.contrib.auth import authenticate
 
@@ -156,8 +156,14 @@ class CommentForm(forms.ModelForm):
 class RecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['image', 'name', 'description', 'content']
+        fields = ['image', 'name', 'description', 'content', 'video']
         widgets = {
             'content': forms.Textarea(attrs={'rows': 8}),
             'description': forms.Textarea(attrs={'rows': 3, 'class': 'small-textarea'}),  
+            'video': forms.TextInput(attrs={'class': 'form-control'})  # Added style class for the link field
         }
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = ['name', 'content', 'description', 'cover']

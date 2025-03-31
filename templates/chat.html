@@ -1,0 +1,366 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT</title>
+    <style>
+        * {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-decoration: none;
+            outline: none;
+            border: none;
+            text-transform: capitalize;
+            transition: all .2s linear;
+        }
+
+        html {
+            font-size: 62.5%;
+            overflow-x: hidden;
+            scroll-padding-top: 5.5rem;
+            scroll-behavior: smooth;
+        }
+
+        .heading {
+            text-align: center;
+            color: black;
+            font-size: 3rem;
+            padding-bottom: 2rem;
+            text-transform: uppercase;
+        }
+
+        header {
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 1rem 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 2;
+            box-shadow: 0 8px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header .logo {
+            color: black;
+            font-size: 2.5rem;
+            font-weight: bolder;
+        }
+
+        header .logo i {
+            color: #28a745;
+        }
+
+        header .navbar a {
+            font-size: 1.7rem;
+            border-radius: .5rem;
+            padding: .5rem 1.5rem;
+            color: black;
+        }
+
+        .more {
+            font-size: 1.7rem;
+            color: black;
+        }
+
+        .more:hover {
+            cursor: pointer;
+        }
+
+        header .navbar a.active,
+        header .navbar a:hover {
+            color: #fff;
+            background: #28a745;
+        }
+
+        header .icons i,
+        header .icons a {
+            cursor: pointer;
+            margin-left: .5rem;
+            height: 4.5rem;
+            line-height: 4.5rem;
+            width: 4.5rem;
+            text-align: center;
+            font-size: 1.7rem;
+            color: black;
+            border-radius: 50%;
+            background: #eee;
+        }
+
+        header .icons i:hover,
+        header .icons a:hover {
+            color: #fff;
+            background: #8fbc8f;
+            transform: rotate(360deg);
+        }
+
+        header .icons #menu-bars {
+            display: none;
+        }
+
+        .left-bar {
+            position: fixed;
+            top: 0;
+            left: -200px;
+            height: 100%;
+            width: 200px;
+            background-color:#00a087;
+            color: white;
+            transition: left 0.3s ease;
+            z-index: 1000;
+        }
+
+        .left-bar-expanded {
+            left: 0;
+            z-index: 10;
+        }
+
+        .content-page {
+            transition: margin-left 0.3s ease;
+        }
+
+        .content-page-extended {
+            margin-left: 200px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 50px;
+        }
+
+        .links a {
+            font-size: 24px;
+            padding: 11.5px 20px;
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #bbfce3, #73f8db);
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .search-container {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: calc(100% - 130px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px;
+}
+
+.search-button:hover {
+    background-color: #0056b3;
+}
+
+.products-container {
+    padding: 30px; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    background-color: #f8f9fa; 
+}
+
+.result-title {
+    margin-top: 0;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px; 
+    text-align: center; 
+}
+
+.generated-text {
+    background-color: #fff; 
+    padding: 15px; 
+    border-radius: 15px; 
+    margin-bottom: 10px; 
+    font-size: 18px; 
+    line-height: 1.8; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+    text-align: justify; 
+}
+
+.user-message {
+    background-color: #007bff;
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px; 
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: right;
+}
+
+
+        .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f4f4f4;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.social-media {
+    margin-bottom: 10px;
+}
+
+.social-icon {
+    display: inline-block;
+    margin-right: 10px;
+    color: #333;
+    font-size: 24px;
+    transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+    color: #555;
+}
+
+.footer-text {
+    font-size: 18px;
+    color: #666;
+    line-height: 1.5;
+}
+    </style>
+</head>
+<body>
+    <div class="left-bar">
+    <button class="close-button" onclick="closeBar()">
+        <i class="fa-solid fa-times"></i>
+    </button>
+    <div class="links">
+        <a href="{% url 'create' %}">Create Product</a>
+        <a href="{% url 'my_products' %}">My Products</a>
+        <a href="{% url 'create_post' %}">Create Post</a>
+        <a href="{% url 'post_list' %}">Posts</a>
+        <a href="{% url 'my_posts' %}">My posts</a>
+        {% if request.user.is_superuser %}
+        <a href="{% url 'approve_products' %}">Approve Products</a>
+        <a href="{% url 'send_email_to_subscribers' %}">Send Email</a>
+        {% endif %}
+        <a href="{% url 'nearby_places' %}">Local Eats</a>
+        <a href="{% url 'chat' %}">AI support</a>
+        <a href="{% url 'all_articles' %}">Articles</a>
+        <a href="{% url 'contact' %}">Contact</a>
+    </div>
+</div>
+<header>
+    <div class="more">
+        <i class="fa-solid fa-bars" onclick="toggleBar()"></i>
+    </div>
+    <a class="logo"><i class="fas fa-utensils"></i>Wellnesscorner</a>
+
+    <nav class="navbar">
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'all_recipes' %}">Recipes</a>
+        <a href="{% url 'user_discounts' %}">My discounts</a>
+        <a href="{% url 'myaccount' %}">My Profile</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </nav>
+
+    <div class="icons">
+        <i class="fas fa-bars" id="menu-bars"></i>
+        <i class="fas fa-search" id="search-icon" onclick="toggleSearch()"></i>
+        <a href="{% url 'calculator' %}" class="fa-solid fa-calculator"></a>
+        <a href="{% url 'basket_page' %}" class="fas fa-shopping-cart"></a>
+    </div>
+
+</header>
+    <div class="container">
+        <div class="search-container">
+            <form action="{% url 'chat' %}" method="post" class="search-form">
+                {% csrf_token %}
+                <input type="text" class="search-input" name="search" placeholder="How can I assist you?">
+                <button class="search-button" type="submit">Search</button>
+            </form>
+        </div>
+
+        {% if search %}
+        <div class="products-container">
+            <h2 class="result-title">Results for "{{ search }}":</h2>
+            {% if result %}
+                <div class="generated-content">
+                    {% for item in result %}
+                        <div class="generated-text">{{ item.generated_text }}</div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No results found.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
+<script>
+    function toggleBar() {
+document.querySelector(".left-bar").classList.toggle("left-bar-expanded");
+document.querySelector(".content-page").classList.toggle("content-page-extended");
+}
+
+function closeBar() {
+ document.querySelector(".left-bar").classList.remove("left-bar-expanded");
+ document.querySelector(".content-page").classList.remove("content-page-extended");
+}
+</script>
+<script src="https://kit.fontawesome.com/cfeb3f9958.js" crossorigin="anonymous"></script>

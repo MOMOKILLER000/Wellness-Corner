@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Article</title>
+    <link rel="stylesheet" href="{% static 'post-form.css' %}">
+    <style>
+        
+        body {
+            display: flex;
+            justify-content: center; 
+            align-items: center; 
+            height: 100%; 
+            font-size: 1.6rem; 
+        }
+
+        .profile-container {
+            padding: 2rem; 
+            margin-bottom:50px;
+        }
+
+        .col-right {
+            padding: 1rem; 
+        }
+
+        label {
+            font-size: 1.8rem; 
+            margin-bottom: 1rem;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="number"],
+        select,
+        .select,
+        textarea {
+            font-size: 1.6rem; 
+            padding: 1rem; 
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+
+        textarea {
+            height: 180px; 
+        }
+
+        .small-textarea {
+            height: 80px; 
+        }
+
+        button[type="submit"] {
+            font-size: 1.8rem; 
+            padding: 1.2rem 2rem; 
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper profile">
+        <div class="profile-container">
+            <div class="col-right">
+                <h1>Create Article</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                
+                    <div>
+                        {{ form.name.errors }}
+                        <label for="{{ form.name.id_for_label }}">Name:</label>
+                        {{ form.name }}
+                    </div>
+                    
+                    <div>
+                        {{ form.description.errors }}
+                        <label for="{{ form.description.id_for_label }}">Description:</label>
+                        {{ form.description }}
+                    </div>
+                
+                    <div>
+                        {{ form.content.errors }}
+                        <label for="{{ form.content.id_for_label }}">Content:</label>
+                        {{ form.content }}
+                    </div>
+                    <div>
+                        {{ form.cover.errors }}
+                        <label for="{{ form.cover.id_for_label }}">Cover:</label>
+                        {{ form.cover }}
+                    </div>
+
+                    <div>
+                        <label for="id_images">Images:</label>
+                        <input type="file" id="id_images" name="images" multiple>
+                    </div>
+                
+                    <button type="submit">Create Article</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -12,7 +12,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from .forms import ProductForm
+from .forms import ProductForm, ArticleForm
 from .models import PendingProduct, Subscriber
 from django.core.files.base import ContentFile
 from django.http import HttpResponseForbidden
@@ -39,6 +39,8 @@ from django.utils import timezone
 from django.db.models import Q
 from django.http import JsonResponse
 import time
+from .models import Chat, Article, ArticleImage
+import math
 
 @login_required
 def index(request):
@@ -153,7 +155,7 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 def verify_recaptcha(response_token):
-    secret_key = '6Le2Qn4pAAAAAPMo61FnEEKdFKApauuRG9dh0Hrt'  
+    secret_key = ''  
     payload = {
         'secret': secret_key,
         'response': response_token
@@ -1607,3 +1609,97 @@ def create_recipe(request):
 
     context = {'form': form}
     return render(request, 'create_recipe.html', context)
+
+
+GPT_URL = "https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct"
+headers: {}
+
+def query(payload):
+    response = requests.post(GPT_URL, headers=headers, json=payload)
+    print(response.json())
+    return response.json()
+
+def chat(request):
+    if request.method == 'POST':
+        search = request.POST.get('search', '')
+        output = query({
+            "inputs": search,
+        })
+        return render(request, 'chat.html', {'search': search, 'result': output})
+    else:  
+        return render(request, 'chat.html')
+
+
+@login_required
+def all_articles(request):
+    articles = Article.objects.all()
+    context = {'articles': articles}
+    return render(request, 'all_articles.html', context)
+
+
+@login_required
+def manage_article(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    form = ArticleForm(instance=article)
+
+    images = ArticleImage.objects.filter(article=article)
+
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+
+    context = {'article': article, 'form': form, 'images': images}
+    return render(request, 'manage_article.html', context)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def create_article(request):
+    if request.method == 'POST':
+        form = ArticleForm(request.POST, request.FILES)  
+        if form.is_valid():
+            article = form.save(commit=False)
+            article.user = request.user 
+            article.save()
+
+            images = request.FILES.getlist('images')
+            for image in images:
+                ArticleImage.objects.create(article=article, image=image)
+
+            return redirect('all_articles')
+    else:
+        form = ArticleForm()
+
+    context = {'form': form}
+    return render(request, 'create_article.html', context)
+    
+
+def nearby_places(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
+
+        api_key = ''
+        types = 'supermarket|grocery_or_supermarket|restaurant|cafe|bakery|convenience_store|meal_delivery|meal_takeaway'
+        url = f'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={latitude},{longitude}&radius=4000&types={types}&key={api_key}'
+        response = requests.get(url)
+        places_data = response.json()
+
+        nearby_places = []
+        for place in places_data['results']:
+            if 'photos' in place and len(place['photos']) > 0:
+                place_info = {
+                    'name': place['name'],
+                    'address': place['vicinity'],
+                    'type': place['types'],
+                    'rating': place.get('rating', 'N/A'),
+                    'latitude': place['geometry']['location']['lat'],
+                    'longitude': place['geometry']['location']['lng'],
+                    'photo_reference': place['photos'][0]['photo_reference']
+                }
+                nearby_places.append(place_info)
+
+        return JsonResponse(nearby_places, safe=False)
+    else:
+        return render(request, 'nearby_places.html')

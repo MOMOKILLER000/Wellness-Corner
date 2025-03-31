@@ -59,6 +59,11 @@ urlpatterns = [
     path('add_to_recipe/<int:recipe_id>/', views.add_to_recipe, name='add_to_recipe'),
     path('create_recipe/', views.create_recipe, name='create_recipe'),
     path('search_product_by_barcode/<str:barcode>/', views.search_product_by_barcode, name='search_product_by_barcode'),
+    path('chat/', views.chat, name='chat'),
+    path('all_articles/', views.all_articles, name='all_articles'),
+    path('manage_article/<int:article_id>/', views.manage_article, name='manage_article'),
+    path('create_article/', views.create_article, name='create_article'),
+    path('nearby_places/', views.nearby_places, name='nearby_places'),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

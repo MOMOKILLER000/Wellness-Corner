@@ -610,6 +610,8 @@ class Recipe(models.Model):
     name = models.CharField(max_length=200, unique=True)
     content = models.TextField()
     description = models.TextField(max_length=500, null=True, blank=True)
+    video = models.URLField(null=True, blank=True)
+
 
 class Ingredient(models.Model):
     RECIPE_SOURCES = (
@@ -630,3 +632,28 @@ class Ingredient(models.Model):
             return f"API Product: {self.api_product.product_name}"
         else:
             return "Unknown Product"
+        
+
+class Chat(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message = models.TextField()
+    response = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username}: {self.message}'
+    
+
+class Article(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    name = models.CharField(max_length=200, unique=True)
+    content = models.TextField()
+    description = models.TextField(max_length=500, null=True, blank=True)
+    cover = models.ImageField(upload_to='articles/', null=True, blank=True)
+
+
+class ArticleImage(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='articles/', null=True, blank=True)

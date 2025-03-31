@@ -80,6 +80,10 @@
                     <label for="{{ form.content.id_for_label }}">Instructions:</label>
                     {{ form.content }}
 
+                    {{ form.video.errors }}
+                    <label for="{{ form.video.id_for_label }}">Video Link(must be embed):</label>
+                    {{ form.video }}
+
                     <button type="submit">Create Recipe</button>
                 </form>
             </div>
